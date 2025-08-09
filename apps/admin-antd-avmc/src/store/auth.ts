@@ -1,5 +1,7 @@
 import type { Recordable, UserInfo } from '@vben/types';
 
+import type { AuthApi } from '#/api';
+
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -10,7 +12,13 @@ import { resetAllStores, useAccessStore, useUserStore } from '@vben/stores';
 import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
-import { getAccessCodesApi, getUserInfoApi, loginApi, logoutApi } from '#/api';
+import {
+  getAccessCodesApi,
+  getAuthProfileApi,
+  getUserInfoApi,
+  loginPasswordApi as loginApi,
+  logoutApi,
+} from '#/api';
 import { $t } from '#/locales';
 
 export const useAuthStore = defineStore('auth', () => {
@@ -30,7 +38,7 @@ export const useAuthStore = defineStore('auth', () => {
     onSuccess?: () => Promise<void> | void,
   ) {
     // 异步处理用户登录操作并获取 accessToken
-    let userInfo: null | UserInfo = null;
+    let userInfo: AuthApi.ProfileResult | null | UserInfo = null;
     try {
       loginLoading.value = true;
       const { accessToken } = await loginApi(params);
@@ -41,7 +49,8 @@ export const useAuthStore = defineStore('auth', () => {
 
         // 获取用户信息并存储到 accessStore 中
         const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          fetchUserInfo(),
+          // fetchUserInfo(),
+          fetchAuthProfile(),
           getAccessCodesApi(),
         ]);
 
@@ -104,6 +113,13 @@ export const useAuthStore = defineStore('auth', () => {
     return userInfo;
   }
 
+  async function fetchAuthProfile() {
+    let userInfo: AuthApi.ProfileResult | null | UserInfo = null;
+    userInfo = await getAuthProfileApi();
+    userStore.setUserInfo(userInfo);
+    return userInfo;
+  }
+
   function $reset() {
     loginLoading.value = false;
   }
@@ -112,6 +128,7 @@ export const useAuthStore = defineStore('auth', () => {
     $reset,
     authLogin,
     fetchUserInfo,
+    fetchAuthProfile,
     loginLoading,
     logout,
   };

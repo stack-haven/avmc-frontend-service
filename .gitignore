@@ -49,3 +49,6 @@ vite.config.ts.*
 *.sln
 *.sw?
 .history
+
+# 自定义忽略
+apps/avmc-admin-copy

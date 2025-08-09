@@ -1,17 +1,17 @@
 {
-  "name": "@vben/avmc-admin",
-  "version": "5.5.7",
+  "name": "@vben/admin-antd-avmc",
+  "version": "5.5.8",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
-    "directory": "apps/avmc-admin"
+    "directory": "apps/admin-antd-avmc"
   },
   "license": "MIT",
   "author": {
-    "name": "vben",
-    "email": "ann.vben@gmail.com",
+    "name": "jayden",
+    "email": "xionglongjun@gmail.com",
     "url": "https://github.com/anncwb"
   },
   "type": "module",

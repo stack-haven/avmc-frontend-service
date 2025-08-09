@@ -1,3 +1,5 @@
+import type { UserInfo } from '@vben/types';
+
 import { baseRequestClient, requestClient } from '#/api/request';
 
 export namespace AuthApi {
@@ -15,6 +17,10 @@ export namespace AuthApi {
   export interface RefreshTokenResult {
     data: string;
     status: number;
+  }
+
+  export interface ProfileResult extends UserInfo {
+    accessToken: string;
   }
 }
 
@@ -44,7 +50,21 @@ export async function logoutApi() {
 }
 
 /**
- * 获取用户权限码
+ * 登录-用户名密码登录
+ */
+export async function loginPasswordApi(data: AuthApi.LoginParams) {
+  return requestClient.post<AuthApi.LoginResult>('/auth/login/password', data);
+}
+
+/**
+ * 获取登录用户信息
+ */
+export async function getAuthProfileApi() {
+  return requestClient.get<AuthApi.ProfileResult>('/auth/profile');
+}
+
+/**
+ * 获取登录用户权限码
  */
 export async function getAccessCodesApi() {
   return requestClient.get<string[]>('/auth/codes');
