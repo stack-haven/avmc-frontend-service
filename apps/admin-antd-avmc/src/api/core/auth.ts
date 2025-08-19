@@ -59,8 +59,8 @@ export async function loginPasswordApi(data: AuthApi.LoginParams) {
 /**
  * 获取登录用户信息
  */
-export async function getAuthProfileApi() {
-  return requestClient.get<AuthApi.ProfileResult>('/auth/profile');
+export async function getAcccessProfileApi() {
+  return requestClient.get<AuthApi.ProfileResult>('/auth/vben/profile');
 }
 
 /**
@@ -68,4 +68,11 @@ export async function getAuthProfileApi() {
  */
 export async function getAccessCodesApi() {
   return requestClient.get<string[]>('/auth/codes');
+}
+
+/**
+ * 获取登录用户菜单树
+ */
+export async function getAccessMenusApi() {
+  return requestClient.get<string[]>('/auth/menus');
 }

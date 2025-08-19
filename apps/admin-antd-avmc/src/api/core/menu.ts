@@ -7,5 +7,5 @@ import { requestClient } from '#/api/request';
  */
 export async function getAllMenusApi() {
   // return requestClient.get<RouteRecordStringComponent[]>('/menu/all');
-  return requestClient.get<RouteRecordStringComponent[]>('/menus');
+  return requestClient.get<RouteRecordStringComponent[]>('/menus/tree');
 }

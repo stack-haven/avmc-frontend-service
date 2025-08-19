@@ -13,9 +13,9 @@ import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import {
+  getAcccessProfileApi,
   getAccessCodesApi,
-  getAuthProfileApi,
-  getUserInfoApi,
+  // getUserInfoApi,
   loginPasswordApi as loginApi,
   logoutApi,
 } from '#/api';
@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', () => {
         // 获取用户信息并存储到 accessStore 中
         const [fetchUserInfoResult, accessCodes] = await Promise.all([
           // fetchUserInfo(),
-          fetchAuthProfile(),
+          getAcccessProfileApi(),
           getAccessCodesApi(),
         ]);
 
@@ -108,14 +108,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
-    userInfo = await getUserInfoApi();
-    userStore.setUserInfo(userInfo);
-    return userInfo;
-  }
-
-  async function fetchAuthProfile() {
-    let userInfo: AuthApi.ProfileResult | null | UserInfo = null;
-    userInfo = await getAuthProfileApi();
+    // userInfo = await getUserInfoApi();
+    userInfo = await getAcccessProfileApi();
     userStore.setUserInfo(userInfo);
     return userInfo;
   }
@@ -128,7 +122,6 @@ export const useAuthStore = defineStore('auth', () => {
     $reset,
     authLogin,
     fetchUserInfo,
-    fetchAuthProfile,
     loginLoading,
     logout,
   };
