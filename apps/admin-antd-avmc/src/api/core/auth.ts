@@ -1,4 +1,4 @@
-import type { UserInfo } from '@vben/types';
+import type { RouteRecordStringComponent, UserInfo } from '@vben/types';
 
 import { baseRequestClient, requestClient } from '#/api/request';
 
@@ -21,6 +21,10 @@ export namespace AuthApi {
 
   export interface ProfileResult extends UserInfo {
     accessToken: string;
+  }
+
+  export interface MenusResult {
+    routes: RouteRecordStringComponent[];
   }
 }
 
@@ -73,6 +77,56 @@ export async function getAccessCodesApi() {
 /**
  * 获取登录用户菜单树
  */
-export async function getAccessMenusApi() {
-  return requestClient.get<string[]>('/auth/menus');
+export async function getAccessMenusApi(): Promise<RouteRecordStringComponent[]> {
+  return requestClient.get<AuthApi.MenusResult>('/auth/menus').then(res => res.routes ?? []);
 }
+/**
+ * 获取登录用户菜单树
+ */
+// export async function getAccessMenusApi() {
+//   const menus: RouteRecordStringComponent[] = await requestClient.get<AuthApi.MenusResult>('/auth/menus').then(res => {
+//     console.log(res?.routes);
+//     return res.routes ?? []
+//   });
+
+//   console.log("menus", menus);
+
+//   const res = Promise.resolve<RouteRecordStringComponent[]>([
+//     {
+//       path: '/',
+//       redirect: '/dashboard',
+//       component: 'Layout', // 添加 component 属性
+//       children: [
+//         {
+//           path: '/dashboard',
+//           name: 'Dashboard',
+//           meta: {
+//             title: 'Dashboard',
+//             icon: 'ion:grid-outline',
+//           },
+//           component: 'DashboardPage', // 添加 component 属性
+//           children: []
+//         }
+//       ]
+//     },
+//     {
+//       path: '/home',
+//       redirect: '/home/index',
+//       component: 'Layout', // 添加 component 属性
+//       children: [
+//         {
+//           path: '/dashboard',
+//           name: 'Dashboard',
+//           meta: {
+//             title: 'Dashboard',
+//             icon: 'ion:grid-outline',
+//           },
+//           component: 'DashboardPage', // 添加 component 属性
+//           children: []
+//         }
+//       ]
+//     }
+//   ]);
+
+//   return res;
+// }

@@ -13,9 +13,8 @@ import { notification } from 'ant-design-vue';
 import { defineStore } from 'pinia';
 
 import {
-  getAcccessProfileApi,
   getAccessCodesApi,
-  // getUserInfoApi,
+  getAcccessProfileApi as getUserInfoApi,
   loginPasswordApi as loginApi,
   logoutApi,
 } from '#/api';
@@ -49,8 +48,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         // 获取用户信息并存储到 accessStore 中
         const [fetchUserInfoResult, accessCodes] = await Promise.all([
-          // fetchUserInfo(),
-          getAcccessProfileApi(),
+          fetchUserInfo(),
           getAccessCodesApi(),
         ]);
 
@@ -65,8 +63,8 @@ export const useAuthStore = defineStore('auth', () => {
           onSuccess
             ? await onSuccess?.()
             : await router.push(
-                userInfo.homePath || preferences.app.defaultHomePath,
-              );
+              userInfo.homePath || preferences.app.defaultHomePath,
+            );
         }
 
         if (userInfo?.realName) {
@@ -100,16 +98,15 @@ export const useAuthStore = defineStore('auth', () => {
       path: LOGIN_PATH,
       query: redirect
         ? {
-            redirect: encodeURIComponent(router.currentRoute.value.fullPath),
-          }
+          redirect: encodeURIComponent(router.currentRoute.value.fullPath),
+        }
         : {},
     });
   }
 
   async function fetchUserInfo() {
     let userInfo: null | UserInfo = null;
-    // userInfo = await getUserInfoApi();
-    userInfo = await getAcccessProfileApi();
+    userInfo = await getUserInfoApi();
     userStore.setUserInfo(userInfo);
     return userInfo;
   }
