@@ -77,8 +77,12 @@ export async function getAccessCodesApi() {
 /**
  * 获取登录用户菜单树
  */
-export async function getAccessMenusApi(): Promise<RouteRecordStringComponent[]> {
-  return requestClient.get<AuthApi.MenusResult>('/auth/menus').then(res => res.routes ?? []);
+export async function getAccessMenusApi(): Promise<
+  RouteRecordStringComponent[]
+> {
+  return requestClient
+    .get<AuthApi.MenusResult>('/auth/menus')
+    .then((res) => res.routes ?? []);
 }
 /**
  * 获取登录用户菜单树

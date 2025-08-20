@@ -63,8 +63,8 @@ export const useAuthStore = defineStore('auth', () => {
           onSuccess
             ? await onSuccess?.()
             : await router.push(
-              userInfo.homePath || preferences.app.defaultHomePath,
-            );
+                userInfo.homePath || preferences.app.defaultHomePath,
+              );
         }
 
         if (userInfo?.realName) {
@@ -98,8 +98,8 @@ export const useAuthStore = defineStore('auth', () => {
       path: LOGIN_PATH,
       query: redirect
         ? {
-          redirect: encodeURIComponent(router.currentRoute.value.fullPath),
-        }
+            redirect: encodeURIComponent(router.currentRoute.value.fullPath),
+          }
         : {},
     });
   }
