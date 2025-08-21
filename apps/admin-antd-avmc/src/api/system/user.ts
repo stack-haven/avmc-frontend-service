@@ -16,10 +16,9 @@ export namespace SystemUserApi {
  * 获取角色列表数据
  */
 async function getUserList(params: Recordable<any>) {
-  return requestClient.get<Array<SystemUserApi.SystemUser>>(
-    '/users',
-    { params },
-  );
+  return requestClient.get<Array<SystemUserApi.SystemUser>>('/users', {
+    params,
+  });
 }
 
 /**
