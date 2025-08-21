@@ -24,7 +24,7 @@ export namespace AuthApi {
   }
 
   export interface MenusResult {
-    routes: RouteRecordStringComponent[];
+    itmes: RouteRecordStringComponent[];
   }
 }
 
@@ -82,7 +82,7 @@ export async function getAccessMenusApi(): Promise<
 > {
   return requestClient
     .get<AuthApi.MenusResult>('/auth/menus')
-    .then((res) => res.routes ?? []);
+    .then((res) => res.itmes ?? []);
 }
 /**
  * 获取登录用户菜单树

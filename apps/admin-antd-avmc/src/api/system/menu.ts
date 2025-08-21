@@ -95,7 +95,7 @@ export namespace SystemMenuApi {
  */
 async function getMenuList() {
   return requestClient.get<Array<SystemMenuApi.SystemMenu>>(
-    '/system/menu/list',
+    '/menus/tree',
   );
 }
 

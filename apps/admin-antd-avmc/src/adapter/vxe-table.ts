@@ -7,6 +7,7 @@ import { setupVbenVxeTable, useVbenVxeGrid } from '@vben/plugins/vxe-table';
 import { Button, Image } from 'ant-design-vue';
 
 import { useVbenForm } from './form';
+import type { Recordable } from '@vben/types';
 
 setupVbenVxeTable({
   configVxeTable: (vxeUI) => {
@@ -65,5 +66,14 @@ setupVbenVxeTable({
 });
 
 export { useVbenVxeGrid };
+
+
+export type OnActionClickParams<T = Recordable<any>> = {
+  code: string;
+  row: T;
+};
+export type OnActionClickFn<T = Recordable<any>> = (
+  params: OnActionClickParams<T>,
+) => void;
 
 export type * from '@vben/plugins/vxe-table';

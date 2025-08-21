@@ -16,7 +16,7 @@ export namespace SystemDeptApi {
  */
 async function getDeptList() {
   return requestClient.get<Array<SystemDeptApi.SystemDept>>(
-    '/system/dept/list',
+    'depts',
   );
 }
 
