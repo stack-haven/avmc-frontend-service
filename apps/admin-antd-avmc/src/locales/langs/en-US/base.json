@@ -1,0 +1,18 @@
+{
+  "form": {
+    "title": "Form",
+    "basic": "Basic Form",
+    "layout": "Custom Layout",
+    "query": "Query Form",
+    "rules": "Form Rules",
+    "dynamic": "Dynamic Form",
+    "custom": "Custom Component",
+    "api": "Api",
+    "merge": "Merge Form",
+    "scrollToError": "Scroll to Error Field",
+    "upload-error": "Partial file upload failed",
+    "upload-urls": "Urls after file upload",
+    "file": "file",
+    "upload-image": "Click to upload image"
+  }
+}

@@ -3,6 +3,7 @@ import type { DataNode } from 'ant-design-vue/es/tree';
 
 import type { Recordable } from '@vben/types';
 
+import type { ApiType, SystemMenuApi } from '#/api';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { computed, ref } from 'vue';
@@ -69,8 +70,9 @@ const [Drawer, drawerApi] = useVbenDrawer({
 async function loadPermissions() {
   loadingPermissions.value = true;
   try {
-    const res = await getMenuList();
-    permissions.value = res as unknown as DataNode[];
+    const res =
+      (await getMenuList()) as ApiType.ListResponse<SystemMenuApi.SystemMenu>;
+    permissions.value = res.items as unknown as DataNode[];
   } finally {
     loadingPermissions.value = false;
   }

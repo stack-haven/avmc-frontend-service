@@ -37,6 +37,9 @@ const [Grid, gridApi] = useVbenVxeGrid({
           return await getMenuList();
         },
       },
+      response: {
+        list: 'items',
+      },
     },
     rowConfig: {
       keyField: 'id',
@@ -48,7 +51,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       zoom: true,
     },
     treeConfig: {
-      parentField: 'pid',
+      parentField: 'parentId',
       rowField: 'id',
       transform: false,
     },

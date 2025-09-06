@@ -2,6 +2,7 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api';
 
+import { ApiType } from '#/api';
 import { $t } from '#/locales';
 
 export function useFormSchema(): VbenFormSchema[] {
@@ -16,13 +17,10 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'RadioGroup',
       componentProps: {
         buttonStyle: 'solid',
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
+        options: ApiType.StatusOptions(),
         optionType: 'button',
       },
-      defaultValue: 1,
+      defaultValue: ApiType.Enabled,
       fieldName: 'status',
       label: $t('system.role.status'),
     },
@@ -53,10 +51,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
       component: 'Select',
       componentProps: {
         allowClear: true,
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
+        options: ApiType.StatusOptions(),
       },
       fieldName: 'status',
       label: $t('system.role.status'),
@@ -68,7 +63,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'RangePicker',
-      fieldName: 'createTime',
+      fieldName: 'createdAt',
       label: $t('system.role.createTime'),
     },
   ];
@@ -93,6 +88,7 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       cellRender: {
         attrs: { beforeChange: onStatusChange },
         name: onStatusChange ? 'CellSwitch' : 'CellTag',
+        props: ApiType.SwitchOptions(),
       },
       field: 'status',
       title: $t('system.role.status'),
@@ -104,7 +100,7 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       title: $t('system.role.remark'),
     },
     {
-      field: 'createTime',
+      field: 'createdAt',
       title: $t('system.role.createTime'),
       width: 200,
     },

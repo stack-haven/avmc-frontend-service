@@ -14,7 +14,6 @@ import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createUser, updateUser } from '#/api';
-import { getMenuList } from '#/api/system/menu';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -58,23 +57,9 @@ const [Drawer, drawerApi] = useVbenDrawer({
       } else {
         id.value = undefined;
       }
-
-      if (permissions.value.length === 0) {
-        loadPermissions();
-      }
     }
   },
 });
-
-async function loadPermissions() {
-  loadingPermissions.value = true;
-  try {
-    const res = await getMenuList();
-    permissions.value = res as unknown as DataNode[];
-  } finally {
-    loadingPermissions.value = false;
-  }
-}
 
 const getDrawerTitle = computed(() => {
   return formData.value?.id

@@ -39,7 +39,7 @@ async function updateUser(
   id: string,
   data: Omit<SystemUserApi.SystemUser, 'id'>,
 ) {
-  return requestClient.put(`/users/${id}`, data);
+  return requestClient.put(`/users/status-update/${id}`, data);
 }
 
 /**

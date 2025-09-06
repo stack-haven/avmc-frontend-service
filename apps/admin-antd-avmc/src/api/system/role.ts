@@ -16,6 +16,7 @@ export namespace SystemRoleApi {
 /**
  * 获取角色列表数据
  */
+
 async function getRoleList(params: Recordable<any>) {
   return requestClient.get<Array<SystemRoleApi.SystemRole>>('/roles', {
     params,
@@ -51,4 +52,17 @@ async function deleteRole(id: string) {
   return requestClient.delete(`/roles/${id}`);
 }
 
-export { createRole, deleteRole, getRoleList, updateRole };
+/**
+ * 更新角色状态
+ *
+ * @param id 角色 ID
+ * @param data 角色数据
+ */
+async function updateRoleStatus(
+  id: string,
+  data: Omit<SystemRoleApi.SystemRole, 'id'>,
+) {
+  return requestClient.put(`/roles/status-update/${id}`, data);
+}
+
+export { createRole, deleteRole, getRoleList, updateRole, updateRoleStatus };

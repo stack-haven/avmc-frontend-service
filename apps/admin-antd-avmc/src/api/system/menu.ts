@@ -1,25 +1,27 @@
 import type { Recordable } from '@vben/types';
 
+import type { ApiType } from '../type';
+
 import { requestClient } from '#/api/request';
 
 export namespace SystemMenuApi {
   /** 徽标颜色集合 */
   export const BadgeVariants = [
-    'default',
-    'destructive',
-    'primary',
-    'success',
-    'warning',
+    'BADGE_VARIANTS_DEFAULT',
+    'BADGE_VARIANTS_DESTRUCTIVE',
+    'BADGE_VARIANTS_PRIMARY',
+    'BADGE_VARIANTS_SUCCESS',
+    'BADGE_VARIANTS_WARNING',
   ] as const;
   /** 徽标类型集合 */
-  export const BadgeTypes = ['dot', 'normal'] as const;
+  export const BadgeTypes = ['BADGE_TYPE_DOT', 'BADGE_TYPE_NORMAL'] as const;
   /** 菜单类型集合 */
   export const MenuTypes = [
-    'catalog',
-    'menu',
-    'embedded',
-    'link',
-    'button',
+    'MENU_TYPE_CATALOG',
+    'MENU_TYPE_MENU',
+    'MENU_TYPE_EMBEDDED',
+    'MENU_TYPE_LINK',
+    'MENU_TYPE_BUTTON',
   ] as const;
   /** 系统菜单 */
   export interface SystemMenu {
@@ -45,9 +47,11 @@ export namespace SystemMenuApi {
       /** 徽标内容(当徽标类型为normal时有效) */
       badge?: string;
       /** 徽标类型 */
-      badgeType?: (typeof BadgeTypes)[number];
+      badgeType?: (typeof BadgeTypes)[number] | keyof typeof BadgeTypes;
       /** 徽标颜色 */
-      badgeVariants?: (typeof BadgeVariants)[number];
+      badgeVariants?:
+        | (typeof BadgeVariants)[number]
+        | keyof typeof BadgeVariants;
       /** 在菜单中隐藏下级 */
       hideChildrenInMenu?: boolean;
       /** 在面包屑中隐藏 */
@@ -82,39 +86,53 @@ export namespace SystemMenuApi {
     /** 路由路径 */
     path: string;
     /** 父级ID */
-    pid: string;
+    parentId: string;
     /** 重定向 */
     redirect?: string;
     /** 菜单类型 */
-    type: (typeof MenuTypes)[number];
+    type: (typeof MenuTypes)[number] | keyof typeof MenuTypes;
+  }
+
+  export interface ExitstMenu {
+    exist: boolean;
   }
 }
 
 /**
  * 获取菜单数据列表
  */
+// async function getMenuList(): Promise<Array<SystemMenuApi.SystemMenu>> {
+//   const res = await requestClient.get<ApiType.ListResponse<SystemMenuApi.SystemMenu>>('/menus/tree')
+//   return res.items;
+// }
 async function getMenuList() {
-  return requestClient.get<Array<SystemMenuApi.SystemMenu>>('/menus/tree');
+  return requestClient.get<
+    | ApiType.ListResponse<SystemMenuApi.SystemMenu>
+    | Array<SystemMenuApi.SystemMenu>
+  >('/menus/tree');
 }
 
 async function isMenuNameExists(
   name: string,
   id?: SystemMenuApi.SystemMenu['id'],
-) {
-  return requestClient.get<boolean>('/menus/name-exists', {
-    params: { id, name },
-  });
+): Promise<boolean> {
+  const res = await requestClient.post<SystemMenuApi.ExitstMenu>(
+    '/menus/name-exists',
+    { id, name },
+  );
+  return res.exist;
 }
 
 async function isMenuPathExists(
   path: string,
   id?: SystemMenuApi.SystemMenu['id'],
-) {
-  return requestClient.get<boolean>('/menus/path-exists', {
-    params: { id, path },
-  });
+): Promise<boolean> {
+  const res = await requestClient.post<SystemMenuApi.ExitstMenu>(
+    '/menus/path-exists',
+    { id, path },
+  );
+  return res.exist;
 }
-
 /**
  * 创建菜单
  * @param data 菜单数据

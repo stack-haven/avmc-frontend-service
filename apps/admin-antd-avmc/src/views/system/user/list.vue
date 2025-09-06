@@ -1,6 +1,4 @@
 <script lang="ts" setup>
-import type { Recordable } from '@vben/types';
-
 import type {
   OnActionClickParams,
   VxeTableGridOptions,
@@ -13,7 +11,7 @@ import { Plus } from '@vben/icons';
 import { Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { deleteUser, getUserList, updateUser } from '#/api';
+import { ApiType, deleteUser, getUserList, updateUser } from '#/api';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
@@ -26,7 +24,7 @@ const [FormDrawer, formDrawerApi] = useVbenDrawer({
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
-    fieldMappingTime: [['createTime', ['startTime', 'endTime']]],
+    fieldMappingTime: [['createdAt', ['startTime', 'endTime']]],
     schema: useGridFormSchema(),
     submitOnChange: true,
   },
@@ -99,16 +97,19 @@ function confirm(content: string, title: string) {
  * @returns 返回false则中止改变，返回其他值（undefined、true）则允许改变
  */
 async function onStatusChange(
-  newStatus: number,
+  newStatus: string,
   row: SystemUserApi.SystemUser,
 ) {
-  const status: Recordable<string> = {
-    0: '禁用',
-    1: '启用',
-  };
+  // const status: Recordable<string> = {
+  //   0: '禁用',
+  //   1: '启用',
+  // };
+  const status = ApiType.StatusOptions().find(
+    (item) => item.value === newStatus,
+  );
   try {
     await confirm(
-      `你要将${row.name}的状态切换为 【${status[newStatus.toString()]}】 吗？`,
+      `你要将${row.name}的状态切换为 【${status?.label}】 吗？`,
       `切换状态`,
     );
     await updateUser(row.id, { status: newStatus });

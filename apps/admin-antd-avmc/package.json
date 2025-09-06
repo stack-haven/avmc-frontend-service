@@ -26,8 +26,9 @@
     "#/*": "./src/*"
   },
   "dependencies": {
-    "@vben/access": "workspace:*",
+    "@bufbuild/protobuf": "^2.7.0",
     "@vben-core/menu-ui": "workspace:*",
+    "@vben/access": "workspace:*",
     "@vben/common-ui": "workspace:*",
     "@vben/constants": "workspace:*",
     "@vben/hooks": "workspace:*",

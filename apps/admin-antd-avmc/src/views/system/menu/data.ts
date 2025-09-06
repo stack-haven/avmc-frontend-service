@@ -1,6 +1,7 @@
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemMenuApi } from '#/api/system/menu';
 
+import { ApiType } from '#/api/type/index';
 import { $t } from '#/locales';
 
 export function getMenuTypeOptions() {
@@ -8,16 +9,73 @@ export function getMenuTypeOptions() {
     {
       color: 'processing',
       label: $t('system.menu.typeCatalog'),
-      value: 'catalog',
+      value: 'MENU_TYPE_CATALOG',
     },
-    { color: 'default', label: $t('system.menu.typeMenu'), value: 'menu' },
-    { color: 'error', label: $t('system.menu.typeButton'), value: 'button' },
+    {
+      color: 'default',
+      label: $t('system.menu.typeMenu'),
+      value: 'MENU_TYPE_MENU',
+    },
+    {
+      color: 'error',
+      label: $t('system.menu.typeButton'),
+      value: 'MENU_TYPE_BUTTON',
+    },
     {
       color: 'success',
       label: $t('system.menu.typeEmbedded'),
-      value: 'embedded',
+      value: 'MENU_TYPE_EMBEDDED',
     },
-    { color: 'warning', label: $t('system.menu.typeLink'), value: 'link' },
+    {
+      color: 'warning',
+      label: $t('system.menu.typeLink'),
+      value: 'MENU_TYPE_LINK',
+    },
+  ];
+}
+
+export function getMenuBadgeTypesOptions() {
+  return [
+    {
+      color: 'default',
+      label: $t('system.menu.badgeType.dot'),
+      value: 'BADGE_TYPE_DOT',
+    },
+    {
+      color: 'processing',
+      label: $t('system.menu.badgeType.normal'),
+      value: 'BADGE_TYPE_NORMAL',
+    },
+  ];
+}
+
+export function getMenuBadgeVariantsOptions() {
+  return [
+    {
+      color: 'default',
+      label: 'defualt',
+      value: 'BADGE_VARIANTS_DEFAULT',
+    },
+    {
+      color: 'processing',
+      label: 'destructive',
+      value: 'BADGE_VARIANTS_DESTRUCTIVE',
+    },
+    {
+      color: 'success',
+      label: 'primary',
+      value: 'BADGE_VARIANTS_PRIMARY',
+    },
+    {
+      color: 'success',
+      label: 'success',
+      value: 'BADGE_VARIANTS_SUCCESS',
+    },
+    {
+      color: 'warning',
+      label: 'warning',
+      value: 'BADGE_VARIANTS_WARNING',
+    },
   ];
 }
 
@@ -58,14 +116,14 @@ export function useColumns(
       field: 'component',
       formatter: ({ row }) => {
         switch (row.type) {
-          case 'catalog':
-          case 'menu': {
+          case 'MENU_TYPE_CATALOG':
+          case 'MENU_TYPE_MENU': {
             return row.component ?? '';
           }
-          case 'embedded': {
+          case 'MENU_TYPE_EMBEDDED': {
             return row.meta?.iframeSrc ?? '';
           }
-          case 'link': {
+          case 'MENU_TYPE_LINK': {
             return row.meta?.link ?? '';
           }
         }
@@ -75,7 +133,7 @@ export function useColumns(
       title: $t('system.menu.component'),
     },
     {
-      cellRender: { name: 'CellTag' },
+      cellRender: { name: 'CellTag', options: ApiType.StatusOptions() },
       field: 'status',
       title: $t('system.menu.status'),
       width: 100,

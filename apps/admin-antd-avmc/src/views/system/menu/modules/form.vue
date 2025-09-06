@@ -23,10 +23,15 @@ import {
   SystemMenuApi,
   updateMenu,
 } from '#/api/system/menu';
+import { ApiType } from '#/api/type/index';
 import { $t } from '#/locales';
 import { componentKeys } from '#/router/routes';
 
-import { getMenuTypeOptions } from '../data';
+import {
+  getMenuBadgeTypesOptions,
+  getMenuBadgeVariantsOptions,
+  getMenuTypeOptions,
+} from '../data';
 
 const emit = defineEmits<{
   success: [];
@@ -41,7 +46,7 @@ const schema: VbenFormSchema[] = [
       options: getMenuTypeOptions(),
       optionType: 'button',
     },
-    defaultValue: 'menu',
+    defaultValue: 'MENU_TYPE_MENU',
     fieldName: 'type',
     formItemClass: 'col-span-2 md:col-span-2',
     label: $t('system.menu.type'),
@@ -85,8 +90,9 @@ const schema: VbenFormSchema[] = [
       treeDefaultExpandAll: true,
       valueField: 'id',
       childrenField: 'children',
+      resultField: 'items',
     },
-    fieldName: 'pid',
+    fieldName: 'parentId',
     label: $t('system.menu.parent'),
     renderComponentContent() {
       return {
@@ -121,7 +127,11 @@ const schema: VbenFormSchema[] = [
     component: 'Input',
     dependencies: {
       show: (values) => {
-        return ['catalog', 'embedded', 'menu'].includes(values.type);
+        return [
+          'MENU_TYPE_CATALOG',
+          'MENU_TYPE_EMBEDDED',
+          'MENU_TYPE_MENU',
+        ].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -153,7 +163,7 @@ const schema: VbenFormSchema[] = [
     component: 'Input',
     dependencies: {
       show: (values) => {
-        return ['embedded', 'menu'].includes(values.type);
+        return ['MENU_TYPE_EMBEDDED', 'MENU_TYPE_MENU'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -182,7 +192,12 @@ const schema: VbenFormSchema[] = [
     },
     dependencies: {
       show: (values) => {
-        return ['catalog', 'embedded', 'link', 'menu'].includes(values.type);
+        return [
+          'MENU_TYPE_CATALOG',
+          'MENU_TYPE_EMBEDDED',
+          'MENU_TYPE_LINK',
+          'MENU_TYPE_MENU',
+        ].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -196,7 +211,11 @@ const schema: VbenFormSchema[] = [
     },
     dependencies: {
       show: (values) => {
-        return ['catalog', 'embedded', 'menu'].includes(values.type);
+        return [
+          'MENU_TYPE_CATALOG',
+          'MENU_TYPE_EMBEDDED',
+          'MENU_TYPE_MENU',
+        ].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -215,10 +234,10 @@ const schema: VbenFormSchema[] = [
     },
     dependencies: {
       rules: (values) => {
-        return values.type === 'menu' ? 'required' : null;
+        return values.type === 'MENU_TYPE_MENU' ? 'required' : null;
       },
       show: (values) => {
-        return values.type === 'menu';
+        return values.type === 'MENU_TYPE_MENU';
       },
       triggerFields: ['type'],
     },
@@ -229,7 +248,7 @@ const schema: VbenFormSchema[] = [
     component: 'Input',
     dependencies: {
       show: (values) => {
-        return ['embedded', 'link'].includes(values.type);
+        return ['MENU_TYPE_EMBEDDED', 'MENU_TYPE_LINK'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -241,10 +260,15 @@ const schema: VbenFormSchema[] = [
     component: 'Input',
     dependencies: {
       rules: (values) => {
-        return values.type === 'button' ? 'required' : null;
+        return values.type === 'MENU_TYPE_BUTTON' ? 'required' : null;
       },
       show: (values) => {
-        return ['button', 'catalog', 'embedded', 'menu'].includes(values.type);
+        return [
+          'MENU_TYPE_BUTTON',
+          'MENU_TYPE_CATALOG',
+          'MENU_TYPE_EMBEDDED',
+          'MENU_TYPE_MENU',
+        ].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -255,13 +279,10 @@ const schema: VbenFormSchema[] = [
     component: 'RadioGroup',
     componentProps: {
       buttonStyle: 'solid',
-      options: [
-        { label: $t('common.enabled'), value: 1 },
-        { label: $t('common.disabled'), value: 0 },
-      ],
+      options: ApiType.StatusOptions(),
       optionType: 'button',
     },
-    defaultValue: 1,
+    defaultValue: ApiType.Enabled,
     fieldName: 'status',
     label: $t('system.menu.status'),
   },
@@ -270,14 +291,11 @@ const schema: VbenFormSchema[] = [
     componentProps: {
       allowClear: true,
       class: 'w-full',
-      options: [
-        { label: $t('system.menu.badgeType.dot'), value: 'dot' },
-        { label: $t('system.menu.badgeType.normal'), value: 'normal' },
-      ],
+      options: getMenuBadgeTypesOptions(),
     },
     dependencies: {
       show: (values) => {
-        return values.type !== 'button';
+        return values.type !== 'MENU_TYPE_BUTTON';
       },
       triggerFields: ['type'],
     },
@@ -290,12 +308,12 @@ const schema: VbenFormSchema[] = [
       return {
         allowClear: true,
         class: 'w-full',
-        disabled: values.meta?.badgeType !== 'normal',
+        disabled: values.meta?.badgeType !== 'BADGE_TYPE_NORMAL',
       };
     },
     dependencies: {
       show: (values) => {
-        return values.type !== 'button';
+        return values.type !== 'MENU_TYPE_BUTTON';
       },
       triggerFields: ['type'],
     },
@@ -307,14 +325,11 @@ const schema: VbenFormSchema[] = [
     componentProps: {
       allowClear: true,
       class: 'w-full',
-      options: SystemMenuApi.BadgeVariants.map((v) => ({
-        label: v,
-        value: v,
-      })),
+      options: getMenuBadgeVariantsOptions(),
     },
     dependencies: {
       show: (values) => {
-        return values.type !== 'button';
+        return values.type !== 'MENU_TYPE_BUTTON';
       },
       triggerFields: ['type'],
     },
@@ -325,7 +340,7 @@ const schema: VbenFormSchema[] = [
     component: 'Divider',
     dependencies: {
       show: (values) => {
-        return !['button', 'link'].includes(values.type);
+        return !['MENU_TYPE_BUTTON', 'MENU_TYPE_LINK'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -342,7 +357,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return ['menu'].includes(values.type);
+        return ['MENU_TYPE_MENU'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -357,7 +372,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return ['embedded', 'menu'].includes(values.type);
+        return ['MENU_TYPE_EMBEDDED', 'MENU_TYPE_MENU'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -372,7 +387,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return !['button'].includes(values.type);
+        return !['MENU_TYPE_BUTTON'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -387,7 +402,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return ['catalog', 'menu'].includes(values.type);
+        return ['MENU_TYPE_CATALOG', 'MENU_TYPE_MENU'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -402,7 +417,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return !['button', 'link'].includes(values.type);
+        return !['MENU_TYPE_BUTTON', 'MENU_TYPE_LINK'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -417,7 +432,7 @@ const schema: VbenFormSchema[] = [
     component: 'Checkbox',
     dependencies: {
       show: (values) => {
-        return !['button', 'link'].includes(values.type);
+        return !['MENU_TYPE_BUTTON', 'MENU_TYPE_LINK'].includes(values.type);
       },
       triggerFields: ['type'],
     },
@@ -448,9 +463,9 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemMenuApi.SystemMenu>();
-      if (data?.type === 'link') {
+      if (data?.type === 'MENU_TYPE_LINK') {
         data.linkSrc = data.meta?.link;
-      } else if (data?.type === 'embedded') {
+      } else if (data?.type === 'MENU_TYPE_EMBEDDED') {
         data.linkSrc = data.meta?.iframeSrc;
       }
       if (data) {
@@ -475,9 +490,9 @@ async function onSubmit() {
       await formApi.getValues<
         Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>
       >();
-    if (data.type === 'link') {
+    if (data.type === 'MENU_TYPE_LINK') {
       data.meta = { ...data.meta, link: data.linkSrc };
-    } else if (data.type === 'embedded') {
+    } else if (data.type === 'MENU_TYPE_EMBEDDED') {
       data.meta = { ...data.meta, iframeSrc: data.linkSrc };
     }
     delete data.linkSrc;

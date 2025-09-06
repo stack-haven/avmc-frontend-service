@@ -35,7 +35,7 @@ function onEdit(row: SystemDeptApi.SystemDept) {
  * @param row
  */
 function onAppend(row: SystemDeptApi.SystemDept) {
-  formModalApi.setData({ pid: row.id }).open();
+  formModalApi.setData({ parentId: row.id }).open();
 }
 
 /**

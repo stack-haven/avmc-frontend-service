@@ -5,6 +5,7 @@ import type { OnActionClickFn } from '#/adapter/vxe-table';
 import type { SystemDeptApi } from '#/api/system/dept';
 
 import { z } from '#/adapter/form';
+import { ApiType } from '#/api';
 import { getDeptList } from '#/api/system/dept';
 import { $t } from '#/locales';
 
@@ -34,21 +35,19 @@ export function useSchema(): VbenFormSchema[] {
         labelField: 'name',
         valueField: 'id',
         childrenField: 'children',
+        resultField: 'items',
       },
-      fieldName: 'pid',
+      fieldName: 'parentId',
       label: $t('system.dept.parentDept'),
     },
     {
       component: 'RadioGroup',
       componentProps: {
         buttonStyle: 'solid',
-        options: [
-          { label: $t('common.enabled'), value: 1 },
-          { label: $t('common.disabled'), value: 0 },
-        ],
+        options: ApiType.StatusOptions(),
         optionType: 'button',
       },
-      defaultValue: 1,
+      defaultValue: ApiType.Enabled,
       fieldName: 'status',
       label: $t('system.dept.status'),
     },
@@ -87,13 +86,13 @@ export function useColumns(
       width: 150,
     },
     {
-      cellRender: { name: 'CellTag' },
+      cellRender: { name: 'CellTag', options: ApiType.StatusOptions() },
       field: 'status',
       title: $t('system.dept.status'),
       width: 100,
     },
     {
-      field: 'createTime',
+      field: 'createdAt',
       title: $t('system.dept.createTime'),
       width: 180,
     },

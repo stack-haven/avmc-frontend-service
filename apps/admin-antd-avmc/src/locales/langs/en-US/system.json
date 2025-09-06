@@ -71,6 +71,14 @@
     "status": "Status",
     "remark": "Remark",
     "createTime": "Creation Time",
-    "operation": "Operation"
+    "operation": "Operation",
+    "avatar": "User Avatar",
+    "nikename": "User NickName",
+    "realname": "User RealName",
+    "phone": "User Phone",
+    "email": "User Email",
+    "birthday": "User Birthday",
+    "gender": "User Gender",
+    "description": "User Description"
   }
 }
