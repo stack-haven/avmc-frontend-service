@@ -5,10 +5,6 @@
       "path": "apps/admin-antd-avmc",
     },
     {
-      "name": "@vben/web-antd",
-      "path": "apps/avmc-admin-copy",
-    },
-    {
       "name": "@vben/backend-mock",
       "path": "apps/backend-mock",
     },
