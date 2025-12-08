@@ -634,7 +634,7 @@ importers:
     dependencies:
       '@bufbuild/protobuf':
         specifier: ^2.7.0
-        version: 2.7.0
+        version: 2.10.1
       '@vben-core/menu-ui':
         specifier: workspace:*
         version: link:../../packages/@core/ui-kit/menu-ui
@@ -682,22 +682,22 @@ importers:
         version: link:../../packages/utils
       '@vueuse/core':
         specifier: 'catalog:'
-        version: 13.4.0(vue@3.5.17(typescript@5.8.3))
+        version: 13.9.0(vue@3.5.24(typescript@5.9.3))
       ant-design-vue:
         specifier: 'catalog:'
-        version: 4.2.6(vue@3.5.17(typescript@5.8.3))
+        version: 4.2.6(vue@3.5.24(typescript@5.9.3))
       dayjs:
         specifier: 'catalog:'
-        version: 1.11.13
+        version: 1.11.19
       pinia:
         specifier: ^3.0.3
-        version: 3.0.3(typescript@5.8.3)(vue@3.5.17(typescript@5.8.3))
+        version: 3.0.4(typescript@5.9.3)(vue@3.5.24(typescript@5.9.3))
       vue:
-        specifier: ^3.5.17
-        version: 3.5.17(typescript@5.8.3)
+        specifier: ^3.5.24
+        version: 3.5.24(typescript@5.9.3)
       vue-router:
         specifier: 'catalog:'
-        version: 4.5.1(vue@3.5.17(typescript@5.8.3))
+        version: 4.6.3(vue@3.5.24(typescript@5.9.3))
 
   apps/backend-mock:
     dependencies:
@@ -2765,6 +2765,9 @@ packages:
   '@babel/types@7.28.5':
     resolution: {integrity: sha512-qQ5m48eI/MFLQ5PxQj4PFaprjyCTLI37ElWMmNs0K8Lk3dVeOdNpB3ks8jc7yM5CDmVC73eMVk/trk3fgmrUpA==}
     engines: {node: '>=6.9.0'}
+
+  '@bufbuild/protobuf@2.10.1':
+    resolution: {integrity: sha512-ckS3+vyJb5qGpEYv/s1OebUHDi/xSNtfgw1wqKZo7MR9F2z+qXr0q5XagafAG/9O0QPVIUfST0smluYSTpYFkg==}
 
   '@cacheable/memory@2.0.5':
     resolution: {integrity: sha512-fkiAxCvssEyJZ5fxX4tcdZFRmW9JehSTGvvqmXn6rTzG5cH6V/3C4ad8yb01vOjp2xBydHkHrgpW0qeGtzt6VQ==}
@@ -11742,6 +11745,8 @@ snapshots:
     dependencies:
       '@babel/helper-string-parser': 7.27.1
       '@babel/helper-validator-identifier': 7.28.5
+
+  '@bufbuild/protobuf@2.10.1': {}
 
   '@cacheable/memory@2.0.5':
     dependencies:
