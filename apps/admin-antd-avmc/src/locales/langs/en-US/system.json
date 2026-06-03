@@ -1,5 +1,23 @@
 {
   "title": "System Management",
+  "project": {
+    "title": "Project Management",
+    "list": "Project List",
+    "name": "Project",
+    "projectName": "Project Name",
+    "id": "Project ID",
+    "code": "Project Code",
+    "owner": "Owner",
+    "ownerId": "Owner ID",
+    "memberIds": "Member IDs",
+    "memberIdsPlaceholder": "Separate member IDs with commas",
+    "status": "Status",
+    "description": "Description",
+    "createTime": "Creation Time",
+    "operation": "Operation",
+    "statusChangeTitle": "Switch Status",
+    "statusChangeConfirm": "Switch {0} status to [{1}]?"
+  },
   "dept": {
     "name": "Department",
     "title": "Department Management",

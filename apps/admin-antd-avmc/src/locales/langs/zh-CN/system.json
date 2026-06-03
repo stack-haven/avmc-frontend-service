@@ -1,4 +1,22 @@
 {
+  "project": {
+    "title": "项目管理",
+    "list": "项目列表",
+    "name": "项目",
+    "projectName": "项目名称",
+    "id": "项目ID",
+    "code": "项目标识",
+    "owner": "负责人",
+    "ownerId": "负责人ID",
+    "memberIds": "成员ID",
+    "memberIdsPlaceholder": "多个成员ID用英文逗号分隔",
+    "status": "状态",
+    "description": "项目描述",
+    "createTime": "创建时间",
+    "operation": "操作",
+    "statusChangeTitle": "切换状态",
+    "statusChangeConfirm": "你要将{0}的状态切换为【{1}】吗？"
+  },
   "dept": {
     "list": "部门列表",
     "createTime": "创建时间",

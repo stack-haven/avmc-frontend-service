@@ -13,6 +13,15 @@ const routes: RouteRecordRaw[] = [
     path: '/system',
     children: [
       {
+        path: '/system/project',
+        name: 'SystemProject',
+        meta: {
+          icon: 'mdi:folder-cog-outline',
+          title: $t('system.project.title'),
+        },
+        component: () => import('#/views/system/project/list.vue'),
+      },
+      {
         path: '/system/role',
         name: 'SystemRole',
         meta: {
