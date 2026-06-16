@@ -1,16 +1,16 @@
 {
   "folders": [
     {
-      "name": "@vben/admin-antd-avmc",
-      "path": "apps/admin-antd-avmc",
-    },
-    {
       "name": "@vben/backend-mock",
       "path": "apps/backend-mock",
     },
     {
       "name": "@vben/web-antd",
       "path": "apps/web-antd",
+    },
+    {
+      "name": "@vben/web-antd-admin",
+      "path": "apps/web-antd-admin",
     },
     {
       "name": "@vben/web-ele",

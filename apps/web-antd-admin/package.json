@@ -1,12 +1,12 @@
 {
-  "name": "@vben/admin-antd-avmc",
+  "name": "@vben/web-antd-admin",
   "version": "5.5.8",
   "homepage": "https://vben.pro",
   "bugs": "https://github.com/vbenjs/vue-vben-admin/issues",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/vbenjs/vue-vben-admin.git",
-    "directory": "apps/admin-antd-avmc"
+    "directory": "apps/web-antd-admin"
   },
   "license": "MIT",
   "author": {
