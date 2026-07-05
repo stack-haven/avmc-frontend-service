@@ -74,10 +74,28 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/system/dictionary/list.vue'),
       },
       {
+        path: '/system/parameter',
+        name: 'SystemParameter',
+        meta: {
+          icon: 'mdi:tune-variant',
+          title: $t('system.parameter.title'),
+        },
+        component: () => import('#/views/system/parameter/list.vue'),
+      },
+      {
         path: '/system/operation-log',
         name: 'SystemOperationLog',
         meta: { icon: 'mdi:clipboard-text-clock-outline', title: $t('system.operationLog.title') },
         component: () => import('#/views/system/operation-log/list.vue'),
+      },
+      {
+        path: '/system/async-task',
+        name: 'SystemAsyncTask',
+        meta: {
+          icon: 'mdi:progress-clock',
+          title: $t('system.asyncTask.title'),
+        },
+        component: () => import('#/views/system/async-task/list.vue'),
       },
       {
         path: '/system/login-log',

@@ -8,7 +8,7 @@ import type { SystemMenuPermissionGroupApi } from '#/api/system/menu-permission-
 
 import { computed, ref } from 'vue';
 
-import { useVbenDrawer } from '@vben/common-ui';
+import { useVbenDrawer, VbenTree } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
 import { Spin } from 'ant-design-vue';

@@ -150,11 +150,7 @@ async function resolveTenantGroupIds(data: SystemTenantApi.SystemTenant) {
     />
     <Form v-show="currentStep === 0" />
     <div v-show="currentStep === 1" class="space-y-4">
-      <Alert
-        :message="$t('system.tenant.packageHelp')"
-        show-icon
-        type="info"
-      />
+      <Alert :message="$t('system.tenant.packageHelp')" show-icon type="info" />
       <Select
         v-model:value="selectedGroupIds"
         :options="packageOptions"

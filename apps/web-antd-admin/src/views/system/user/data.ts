@@ -2,40 +2,18 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api';
 
-import { ApiType, upload_file } from '#/api';
+import { ApiType } from '#/api';
 import { $t } from '#/locales';
 
-export function useFormSchema(): VbenFormSchema[] {
+export function useFormSchema(
+  roleOptions: Array<{ label: string; value: number }>,
+  deptOptions: Array<{ label: string; value: number }>,
+): VbenFormSchema[] {
   return [
     {
       component: 'Input',
       fieldName: 'avatar',
       label: $t('system.user.avatar'),
-      rules: 'required',
-    },
-
-    {
-      component: 'Upload',
-      componentProps: {
-        // 更多属性见：https://ant.design/components/upload-cn
-        accept: '.png,.jpg,.jpeg',
-        // 自动携带认证信息
-        customRequest: upload_file,
-        disabled: false,
-        maxCount: 1,
-        multiple: false,
-        showUploadList: true,
-        // 上传列表的内建样式，支持四种基本样式 text, picture, picture-card 和 picture-circle
-        listType: 'picture-card',
-      },
-      fieldName: 'avatar',
-      label: $t('system.user.avatar'),
-      renderComponentContent: () => {
-        return {
-          default: () => $t('base.form.upload-image'),
-        };
-      },
-      rules: 'required',
     },
     {
       component: 'Input',
@@ -44,40 +22,67 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
+      component: 'InputPassword',
+      fieldName: 'password',
+      label: $t('system.user.password'),
+    },
+    {
       component: 'Input',
-      fieldName: 'nikename',
+      fieldName: 'nickname',
       label: $t('system.user.nikename'),
-      rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'realname',
       label: $t('system.user.realname'),
-      rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'phone',
       label: $t('system.user.phone'),
-      rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'email',
       label: $t('system.user.email'),
-      rules: 'required',
     },
     {
-      component: 'Input',
+      component: 'DatePicker',
+      componentProps: { class: 'w-full', valueFormat: 'YYYY-MM-DD' },
       fieldName: 'birthday',
       label: $t('system.user.birthday'),
-      rules: 'required',
     },
     {
-      component: 'Input',
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: deptOptions,
+        placeholder: $t('system.user.deptPlaceholder'),
+      },
+      fieldName: 'deptId',
+      label: $t('system.user.department'),
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        allowClear: true,
+        options: [
+          { label: $t('system.user.genderMale'), value: 'GENDER_MALE' },
+          { label: $t('system.user.genderFemale'), value: 'GENDER_FEMALE' },
+        ],
+      },
       fieldName: 'gender',
       label: $t('system.user.gender'),
-      rules: 'required',
+    },
+    {
+      component: 'Select',
+      componentProps: {
+        mode: 'multiple',
+        options: roleOptions,
+        placeholder: $t('system.user.rolePlaceholder'),
+      },
+      fieldName: 'roleIds',
+      label: $t('system.user.roles'),
     },
     {
       component: 'RadioGroup',
@@ -94,11 +99,6 @@ export function useFormSchema(): VbenFormSchema[] {
       component: 'Textarea',
       fieldName: 'description',
       label: $t('system.user.description'),
-    },
-    {
-      component: 'Textarea',
-      fieldName: 'remark',
-      label: $t('system.user.remark'),
     },
   ];
 }
@@ -119,11 +119,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
       },
       fieldName: 'status',
       label: $t('system.user.status'),
-    },
-    {
-      component: 'Input',
-      fieldName: 'remark',
-      label: $t('system.user.remark'),
     },
     {
       component: 'RangePicker',
@@ -147,6 +142,13 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       field: 'id',
       title: $t('system.user.id'),
       width: 200,
+    },
+    {
+      field: 'isTenantAdmin',
+      formatter: ({ cellValue }) =>
+        cellValue ? $t('system.user.tenantAdmin') : '-',
+      title: $t('system.user.identity'),
+      width: 120,
     },
     {
       cellRender: {

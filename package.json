@@ -68,7 +68,6 @@
   "devDependencies": {
     "@changesets/changelog-github": "catalog:",
     "@changesets/cli": "catalog:",
-    "@tsdown/css": "catalog:",
     "@types/node": "catalog:",
     "@vben/commitlint-config": "workspace:*",
     "@vben/eslint-config": "workspace:*",

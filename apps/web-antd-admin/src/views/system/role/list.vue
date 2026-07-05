@@ -36,8 +36,8 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           return await getRoleList({
-            page: page.currentPage,
             pageSize: page.pageSize,
+            pageToken: String((page.currentPage - 1) * page.pageSize),
             // query: JSON.stringify(formValues)
             ...formValues,
           });
@@ -104,6 +104,10 @@ async function onStatusChange(
   newStatus: string,
   row: SystemRoleApi.SystemRole,
 ) {
+  if (row.isTenantAdmin) {
+    message.warning($t('system.role.tenantAdminProtected'));
+    return false;
+  }
   const status = ApiType.StatusOptions().find(
     (item) => item.value === newStatus,
   );

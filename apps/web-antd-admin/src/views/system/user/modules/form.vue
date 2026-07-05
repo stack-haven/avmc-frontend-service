@@ -3,17 +3,17 @@ import type { DataNode } from 'ant-design-vue/es/tree';
 
 import type { Recordable } from '@vben/types';
 
-import type { SystemUserApi } from '#/api';
+import type { SystemDeptApi, SystemUserApi } from '#/api';
 
-import { computed, ref } from 'vue';
+import { computed, reactive, ref } from 'vue';
 
 import { useVbenDrawer, VbenTree } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Spin } from 'ant-design-vue';
+import { message, Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { createUser, updateUser } from '#/api';
+import { createUser, getDeptList, getRoleList, getUser, updateUser } from '#/api';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
@@ -21,9 +21,11 @@ import { useFormSchema } from '../data';
 const emits = defineEmits(['success']);
 
 const formData = ref<SystemUserApi.SystemUser>();
+const roleOptions = reactive<Array<{ label: string; value: number }>>([]);
+const deptOptions = reactive<Array<{ label: string; value: number }>>([]);
 
 const [Form, formApi] = useVbenForm({
-  schema: useFormSchema(),
+  schema: useFormSchema(roleOptions, deptOptions),
   showDefaultActions: false,
 });
 
@@ -36,8 +38,22 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const { valid } = await formApi.validate();
     if (!valid) return;
     const values = await formApi.getValues();
+    if (!id.value && !values.password) {
+      message.error($t('system.user.passwordRequired'));
+      return;
+    }
+    if (id.value && !values.password) {
+      delete values.password;
+    }
     drawerApi.lock();
-    (id.value ? updateUser(id.value, values) : createUser(values))
+    (id.value
+      ? updateUser(id.value, values)
+      : createUser(
+          values as Omit<
+            SystemUserApi.SystemUser,
+            'id' | 'isTenantAdmin'
+          >,
+        ))
       .then(() => {
         emits('success');
         drawerApi.close();
@@ -46,20 +62,49 @@ const [Drawer, drawerApi] = useVbenDrawer({
         drawerApi.unlock();
       });
   },
-  onOpenChange(isOpen) {
+  async onOpenChange(isOpen) {
     if (isOpen) {
       const data = drawerApi.getData<SystemUserApi.SystemUser>();
       formApi.resetForm();
+      const roles = await getRoleList({ pageSize: 100 });
+      roleOptions.splice(
+        0,
+        roleOptions.length,
+        ...(roles.items ?? []).map((role) => ({
+          label: role.isTenantAdmin
+            ? `${role.name} (${$t('system.user.tenantAdmin')})`
+            : role.name,
+          value: role.id,
+        })),
+      );
+      const departments = await getDeptList();
+      deptOptions.splice(
+        0,
+        deptOptions.length,
+        ...flattenDepartments(departments),
+      );
       if (data) {
-        formData.value = data;
         id.value = data.id;
-        formApi.setValues(data);
+        const detail = await getUser(data.id);
+        formData.value = detail;
+        formApi.setValues({ ...detail, password: undefined });
       } else {
+        formData.value = undefined;
         id.value = undefined;
       }
     }
   },
 });
+
+function flattenDepartments(
+  items: SystemDeptApi.SystemDept[],
+  prefix = '',
+): Array<{ label: string; value: number }> {
+  return items.flatMap((item) => [
+    { label: `${prefix}${item.name}`, value: item.id },
+    ...flattenDepartments(item.children ?? [], `${prefix}  `),
+  ]);
+}
 
 const getDrawerTitle = computed(() => {
   return formData.value?.id

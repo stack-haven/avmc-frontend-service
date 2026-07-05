@@ -3,7 +3,7 @@ import type { DataNode } from 'ant-design-vue/es/tree';
 
 import type { Recordable } from '@vben/types';
 
-import type { ApiType, SystemMenuApi } from '#/api';
+import type { ApiType, SystemDeptApi, SystemMenuApi } from '#/api';
 import type { SystemRoleApi } from '#/api/system/role';
 
 import { computed, ref } from 'vue';
@@ -15,6 +15,7 @@ import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getCurrentTenantEffectiveMenus } from '#/api/system/menu-permission-group';
+import { getDeptList } from '#/api/system/dept';
 import { createRole, updateRole } from '#/api/system/role';
 import { $t } from '#/locales';
 
@@ -30,6 +31,7 @@ const [Form, formApi] = useVbenForm({
 });
 
 const menuTree = ref<DataNode[]>([]);
+const deptTree = ref<SystemDeptApi.SystemDept[]>([]);
 const loadingPermissions = ref(false);
 
 const id = ref();
@@ -42,6 +44,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
       'id'
     >;
     values.menuIds = (values.menuIds ?? []).map(Number);
+    values.deptIds = (values.deptIds ?? []).map(Number);
     drawerApi.lock();
     (id.value ? updateRole(id.value, values) : createRole(values))
       .then(() => {
@@ -69,6 +72,9 @@ const [Drawer, drawerApi] = useVbenDrawer({
       if (menuTree.value.length === 0) {
         loadPermissions();
       }
+      if (deptTree.value.length === 0) {
+        loadDepartments();
+      }
     }
   },
 });
@@ -82,6 +88,10 @@ async function loadPermissions() {
   } finally {
     loadingPermissions.value = false;
   }
+}
+
+async function loadDepartments() {
+  deptTree.value = await getDeptList();
 }
 
 const getDrawerTitle = computed(() => {
@@ -124,6 +134,17 @@ function getNodeClass(node: Recordable<any>) {
             </template>
           </VbenTree>
         </Spin>
+      </template>
+      <template #deptIds="slotProps">
+        <VbenTree
+          :tree-data="deptTree"
+          multiple
+          bordered
+          :default-expanded-level="2"
+          v-bind="slotProps"
+          value-field="id"
+          label-field="name"
+        />
       </template>
     </Form>
   </Drawer>

@@ -2,52 +2,59 @@ import type { Recordable } from '@vben/types';
 
 import { requestClient } from '#/api/request';
 
+import type { ApiType } from '../type';
+
 export namespace SystemUserApi {
   export interface SystemUser {
-    [key: string]: any;
-    id: string;
+    id: number;
     name: string;
-    remark?: string;
-    status: 0 | 1;
+    password?: string;
+    nickname?: string;
+    realname?: string;
+    birthday?: string;
+    gender?: string;
+    phone?: string;
+    email?: string;
+    avatar?: string;
+    status?: string;
+    description?: string;
+    deptId?: number;
+    roleIds?: number[];
+    isTenantAdmin?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
   }
 }
 
-/**
- * 获取角色列表数据
- */
-async function getUserList(params: Recordable<any>) {
-  return requestClient.get<Array<SystemUserApi.SystemUser>>('/users', {
+export const getUserList = (params?: Recordable<any>) =>
+  requestClient.get<ApiType.ListResponse<SystemUserApi.SystemUser>>('/users', {
     params,
   });
-}
 
-/**
- * 创建角色
- * @param data 角色数据
- */
-async function createUser(data: Omit<SystemUserApi.SystemUser, 'id'>) {
-  return requestClient.post('/users', data);
-}
+export const getUser = (id: number) =>
+  requestClient.get<SystemUserApi.SystemUser>(`/users/${id}`);
 
-/**
- * 更新角色
- *
- * @param id 角色 ID
- * @param data 角色数据
- */
-async function updateUser(
-  id: string,
-  data: Omit<SystemUserApi.SystemUser, 'id'>,
-) {
-  return requestClient.put(`/users/status-update/${id}`, data);
-}
+export const createUser = (
+  data: Omit<SystemUserApi.SystemUser, 'id' | 'isTenantAdmin'>,
+) => requestClient.post('/users', data);
 
-/**
- * 删除角色
- * @param id 角色 ID
- */
-async function deleteUser(id: string) {
-  return requestClient.delete(`/users/${id}`);
-}
+export const updateUser = (
+  id: number,
+  data: Partial<SystemUserApi.SystemUser>,
+) => {
+  const user = { ...data };
+  delete user.id;
+  delete user.isTenantAdmin;
+  delete user.createdAt;
+  delete user.updatedAt;
+  return requestClient.put(`/users/${id}`, {
+    updateMask: Object.keys(user).join(','),
+    user,
+  });
+};
 
-export { createUser, deleteUser, getUserList, updateUser };
+export const updateUserStatus = (id: number, status: string) =>
+  requestClient.put(`/users/status-update/${id}`, { status });
+
+export const deleteUser = (id: number) =>
+  requestClient.delete(`/users/${id}`);

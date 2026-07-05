@@ -8,4 +8,6 @@ export * from './dictionary';
 export * from './operation-log';
 export * from './login-log';
 export * from './session';
+export * from './parameter';
+export * from './async-task';
 export * from './user';

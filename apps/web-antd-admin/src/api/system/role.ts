@@ -1,15 +1,19 @@
 import type { Recordable } from '@vben/types';
 
 import { requestClient } from '#/api/request';
+import type { ApiType } from '../type';
 
 export namespace SystemRoleApi {
   export interface SystemRole {
     [key: string]: any;
-    id: string;
+    id: number;
+    isTenantAdmin?: boolean;
+    dataScope?: number;
+    deptIds?: number[];
     menuIds?: number[];
     name: string;
     remark?: string;
-    status: 0 | 1;
+    status: string;
   }
 }
 
@@ -17,8 +21,8 @@ export namespace SystemRoleApi {
  * 获取角色列表数据
  */
 
-async function getRoleList(params: Recordable<any>) {
-  return requestClient.get<Array<SystemRoleApi.SystemRole>>('/roles', {
+async function getRoleList(params?: Recordable<any>) {
+  return requestClient.get<ApiType.ListResponse<SystemRoleApi.SystemRole>>('/roles', {
     params,
   });
 }
@@ -38,17 +42,22 @@ async function createRole(data: Omit<SystemRoleApi.SystemRole, 'id'>) {
  * @param data 角色数据
  */
 async function updateRole(
-  id: string,
+  id: number,
   data: Omit<SystemRoleApi.SystemRole, 'id'>,
 ) {
-  return requestClient.put(`/roles/${id}`, data);
+  const role = { ...data };
+  delete role.isTenantAdmin;
+  return requestClient.put(`/roles/${id}`, {
+    role,
+    updateMask: Object.keys(role).join(','),
+  });
 }
 
 /**
  * 删除角色
  * @param id 角色 ID
  */
-async function deleteRole(id: string) {
+async function deleteRole(id: number) {
   return requestClient.delete(`/roles/${id}`);
 }
 
@@ -59,8 +68,8 @@ async function deleteRole(id: string) {
  * @param data 角色数据
  */
 async function updateRoleStatus(
-  id: string,
-  data: Omit<SystemRoleApi.SystemRole, 'id'>,
+  id: number,
+  data: Partial<SystemRoleApi.SystemRole>,
 ) {
   return requestClient.put(`/roles/status-update/${id}`, data);
 }

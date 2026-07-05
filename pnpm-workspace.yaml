@@ -25,9 +25,13 @@ publicHoistPattern:
 
 strictPeerDependencies: false
 autoInstallPeers: true
+autoInstallPeersExclude:
+  - sass-embedded
 dedupePeerDependents: true
 verifyDepsBeforeRun: false
 minimumReleaseAge: 0
+ignoredOptionalDependencies:
+  - sass-embedded
 
 overrides:
   '@ast-grep/napi': 'catalog:'

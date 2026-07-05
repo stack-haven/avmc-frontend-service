@@ -24,8 +24,14 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.tenant.tenantName'),
       rules: z
         .string()
-        .min(1, $t('ui.formRules.minLength', [$t('system.tenant.tenantName'), 1]))
-        .max(50, $t('ui.formRules.maxLength', [$t('system.tenant.tenantName'), 50])),
+        .min(
+          1,
+          $t('ui.formRules.minLength', [$t('system.tenant.tenantName'), 1]),
+        )
+        .max(
+          50,
+          $t('ui.formRules.maxLength', [$t('system.tenant.tenantName'), 50]),
+        ),
     },
     {
       component: 'Input',
@@ -49,17 +55,6 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.tenant.sort'),
     },
     {
-      component: 'RadioGroup',
-      componentProps: {
-        buttonStyle: 'solid',
-        options: ApiType.StatusOptions(),
-        optionType: 'button',
-      },
-      defaultValue: ApiType.Enabled,
-      fieldName: 'status',
-      label: $t('system.tenant.status'),
-    },
-    {
       component: 'Textarea',
       componentProps: {
         maxLength: 500,
@@ -70,7 +65,10 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.tenant.remark'),
       rules: z
         .string()
-        .max(500, $t('ui.formRules.maxLength', [$t('system.tenant.remark'), 500]))
+        .max(
+          500,
+          $t('ui.formRules.maxLength', [$t('system.tenant.remark'), 500]),
+        )
         .optional(),
     },
   ];
@@ -84,8 +82,14 @@ export function useAdminFormSchema(): VbenFormSchema[] {
       label: $t('system.tenant.adminUsername'),
       rules: z
         .string()
-        .min(3, $t('ui.formRules.minLength', [$t('system.tenant.adminUsername'), 3]))
-        .max(32, $t('ui.formRules.maxLength', [$t('system.tenant.adminUsername'), 32]))
+        .min(
+          3,
+          $t('ui.formRules.minLength', [$t('system.tenant.adminUsername'), 3]),
+        )
+        .max(
+          32,
+          $t('ui.formRules.maxLength', [$t('system.tenant.adminUsername'), 32]),
+        )
         .regex(/^[\w-]+$/, $t('system.tenant.adminUsernameRule')),
     },
     {
@@ -97,8 +101,14 @@ export function useAdminFormSchema(): VbenFormSchema[] {
       label: $t('system.tenant.adminPassword'),
       rules: z
         .string()
-        .min(12, $t('ui.formRules.minLength', [$t('system.tenant.adminPassword'), 12]))
-        .max(72, $t('ui.formRules.maxLength', [$t('system.tenant.adminPassword'), 72]))
+        .min(
+          12,
+          $t('ui.formRules.minLength', [$t('system.tenant.adminPassword'), 12]),
+        )
+        .max(
+          72,
+          $t('ui.formRules.maxLength', [$t('system.tenant.adminPassword'), 72]),
+        )
         .regex(
           /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\dA-Za-z]).+$/,
           $t('system.tenant.adminPasswordRule'),

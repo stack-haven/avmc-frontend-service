@@ -28,7 +28,11 @@ export namespace AuthApi {
   }
 
   export interface MenusResult {
-    itmes: RouteRecordStringComponent[];
+    items: RouteRecordStringComponent[];
+  }
+
+  export interface AccessCodesResult {
+    codes: string[];
   }
 }
 
@@ -77,7 +81,28 @@ export async function getAcccessProfileApi() {
  * 获取登录用户权限码
  */
 export async function getAccessCodesApi() {
-  return requestClient.get<string[]>('/auth/codes');
+  return requestClient
+    .get<AuthApi.AccessCodesResult>('/auth/codes')
+    .then((res) => res.codes ?? []);
+}
+
+function normalizeMenuQuery(
+  menu: RouteRecordStringComponent,
+): RouteRecordStringComponent {
+  const rawQuery = menu.meta?.query;
+  let query = rawQuery;
+  if (typeof rawQuery === 'string') {
+    try {
+      query = rawQuery ? JSON.parse(rawQuery) : undefined;
+    } catch {
+      query = undefined;
+    }
+  }
+  return {
+    ...menu,
+    children: menu.children?.map(normalizeMenuQuery),
+    meta: menu.meta ? { ...menu.meta, query } : undefined,
+  };
 }
 
 /**
@@ -88,7 +113,7 @@ export async function getAccessMenusApi(): Promise<
 > {
   return requestClient
     .get<AuthApi.MenusResult>('/auth/menus')
-    .then((res) => res.itmes ?? []);
+    .then((res) => (res.items ?? []).map(normalizeMenuQuery));
 }
 /**
  * 获取登录用户菜单树

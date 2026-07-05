@@ -11,7 +11,7 @@ import { Plus } from '@vben/icons';
 import { Button, message, Modal } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { ApiType, deleteUser, getUserList, updateUser } from '#/api';
+import { ApiType, deleteUser, getUserList, updateUserStatus } from '#/api';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
@@ -36,12 +36,13 @@ const [Grid, gridApi] = useVbenVxeGrid({
       ajax: {
         query: async ({ page }, formValues) => {
           return await getUserList({
-            page: page.currentPage,
             pageSize: page.pageSize,
+            pageToken: String((page.currentPage - 1) * page.pageSize),
             ...formValues,
           });
         },
       },
+      response: { list: 'items' },
     },
     rowConfig: {
       keyField: 'id',
@@ -112,7 +113,7 @@ async function onStatusChange(
       `你要将${row.name}的状态切换为 【${status?.label}】 吗？`,
       `切换状态`,
     );
-    await updateUser(row.id, { status: newStatus });
+    await updateUserStatus(row.id, newStatus);
     return true;
   } catch {
     return false;

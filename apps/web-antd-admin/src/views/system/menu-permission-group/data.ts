@@ -20,17 +20,6 @@ export function useFormSchema(): VbenFormSchema[] {
       rules: 'required',
     },
     {
-      component: 'RadioGroup',
-      componentProps: {
-        buttonStyle: 'solid',
-        options: ApiType.StatusOptions(),
-        optionType: 'button',
-      },
-      defaultValue: ApiType.Enabled,
-      fieldName: 'status',
-      label: $t('system.menuPermissionGroup.status'),
-    },
-    {
       component: 'InputNumber',
       defaultValue: 10,
       fieldName: 'sort',
@@ -75,7 +64,9 @@ export function useGridFormSchema(): VbenFormSchema[] {
   ];
 }
 
-export function useColumns<T = SystemMenuPermissionGroupApi.MenuPermissionGroup>(
+export function useColumns<
+  T = SystemMenuPermissionGroupApi.MenuPermissionGroup,
+>(
   onActionClick: OnActionClickFn<T>,
   onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
 ): VxeTableGridOptions['columns'] {
@@ -101,6 +92,13 @@ export function useColumns<T = SystemMenuPermissionGroupApi.MenuPermissionGroup>
       width: 100,
     },
     {
+      field: 'currentVersion',
+      formatter: ({ cellValue }: { cellValue: number }) =>
+        cellValue ? `v${cellValue}` : '-',
+      title: $t('system.menuPermissionGroup.currentVersion'),
+      width: 100,
+    },
+    {
       field: 'tenantCount',
       title: $t('system.menuPermissionGroup.tenantCount'),
       width: 120,
@@ -122,13 +120,21 @@ export function useColumns<T = SystemMenuPermissionGroupApi.MenuPermissionGroup>
           nameField: 'name',
           nameTitle: $t('system.menuPermissionGroup.name'),
           onClick: onActionClick,
+          options: [
+            {
+              code: 'versions',
+              text: $t('system.menuPermissionGroup.versions'),
+            },
+            { code: 'edit', text: $t('common.edit') },
+            { code: 'delete', text: $t('common.delete') },
+          ],
         },
         name: 'CellOperation',
       },
       field: 'operation',
       fixed: 'right',
       title: $t('system.menuPermissionGroup.operation'),
-      width: 130,
+      width: 220,
     },
   ];
 }

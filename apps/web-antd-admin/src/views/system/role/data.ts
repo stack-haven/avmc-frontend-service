@@ -25,6 +25,29 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.role.status'),
     },
     {
+      component: 'Select',
+      componentProps: {
+        options: [
+          { label: $t('system.role.scopeAll'), value: 1 },
+          { label: $t('system.role.scopeSelf'), value: 2 },
+          { label: $t('system.role.scopeDept'), value: 3 },
+          { label: $t('system.role.scopeDeptTree'), value: 4 },
+          { label: $t('system.role.scopeCustom'), value: 5 },
+        ],
+      },
+      defaultValue: 2,
+      fieldName: 'dataScope',
+      label: $t('system.role.dataScope'),
+      rules: 'required',
+    },
+    {
+      component: 'Input',
+      fieldName: 'deptIds',
+      formItemClass: 'items-start',
+      label: $t('system.role.customDepartments'),
+      modelPropName: 'modelValue',
+    },
+    {
       component: 'Textarea',
       fieldName: 'remark',
       label: $t('system.role.remark'),
@@ -85,6 +108,13 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
       width: 200,
     },
     {
+      field: 'isTenantAdmin',
+      formatter: ({ cellValue }: { cellValue: boolean }) =>
+        cellValue ? $t('system.role.tenantAdmin') : '-',
+      title: $t('system.role.roleType'),
+      width: 120,
+    },
+    {
       cellRender: {
         attrs: { beforeChange: onStatusChange },
         name: onStatusChange ? 'CellSwitch' : 'CellTag',
@@ -111,6 +141,19 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
           nameField: 'name',
           nameTitle: $t('system.role.name'),
           onClick: onActionClick,
+          options: [
+            {
+              code: 'edit',
+              show: (row: SystemRoleApi.SystemRole) => !row.isTenantAdmin,
+              text: $t('common.edit'),
+            },
+            {
+              code: 'delete',
+              danger: true,
+              show: (row: SystemRoleApi.SystemRole) => !row.isTenantAdmin,
+              text: $t('common.delete'),
+            },
+          ],
         },
         name: 'CellOperation',
       },
