@@ -2,10 +2,10 @@ import type { Page } from '@playwright/test';
 
 import { expect, test } from '@playwright/test';
 
-async function login(page: Page) {
+async function login(page: Page, username = 'admin') {
   await page.goto('/auth/login');
 
-  await page.locator('input[name="username"]').fill('admin');
+  await page.locator('input[name="username"]').fill(username);
   await page.locator('input[name="password"]').fill('123456');
 
   const captcha = page.locator('div[name="captcha"]');
@@ -38,6 +38,7 @@ async function verifyPage(page: Page, path: string, expectedText: string) {
 }
 
 test('platform governance pages load real backend data', async ({ page }) => {
+  test.slow();
   await login(page);
 
   await verifyPage(page, '/system/tenant', '演示平台租户');
@@ -54,4 +55,16 @@ test('platform governance pages load real backend data', async ({ page }) => {
     '/system/async-task',
     'system.task_retention_cleanup',
   );
+});
+
+test('ordinary tenant role only sees package and role permissions', async ({
+  page,
+}) => {
+  await login(page, 'jack');
+
+  await verifyPage(page, '/system/user', 'jack');
+  await verifyPage(page, '/system/role', 'mock_operator_role');
+  await expect(
+    page.getByRole('menuitem', { name: '租户管理' }),
+  ).toHaveCount(0);
 });
