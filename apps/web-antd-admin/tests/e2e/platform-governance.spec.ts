@@ -34,7 +34,12 @@ async function login(page: Page, username = 'admin') {
 
 async function verifyPage(page: Page, path: string, expectedText: string) {
   await page.goto(path);
-  await expect(page.getByText(expectedText, { exact: true }).first()).toBeVisible();
+  await expect(page.getByText('加载菜单中...')).toBeHidden({
+    timeout: 30_000,
+  });
+  await expect(page.getByText(expectedText, { exact: true }).first()).toBeVisible(
+    { timeout: 30_000 },
+  );
 }
 
 test('platform governance pages load real backend data', async ({ page }) => {
