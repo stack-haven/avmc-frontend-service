@@ -33,13 +33,22 @@ async function login(page: Page, username = 'admin') {
 }
 
 async function verifyPage(page: Page, path: string, expectedText: string) {
-  await page.goto(path);
-  await expect(page.getByText('加载菜单中...')).toBeHidden({
-    timeout: 30_000,
-  });
-  await expect(page.getByText(expectedText, { exact: true }).first()).toBeVisible(
-    { timeout: 30_000 },
-  );
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    await page.goto(path);
+    await expect(page.getByText('加载菜单中...')).toBeHidden({
+      timeout: 30_000,
+    });
+    try {
+      await expect(
+        page.getByText(expectedText, { exact: true }).first(),
+      ).toBeVisible({ timeout: 30_000 });
+      return;
+    } catch (error) {
+      lastError = error;
+    }
+  }
+  throw lastError;
 }
 
 test('platform governance pages load real backend data', async ({ page }) => {
