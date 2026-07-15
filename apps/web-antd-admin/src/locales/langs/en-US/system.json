@@ -255,7 +255,14 @@
     "cancelConfirm": "Cancel pending task {0}?",
     "retryConfirm": "Retry failed task {0}?",
     "cancelSuccess": "Task canceled",
-    "retrySuccess": "Task queued again"
+    "retrySuccess": "Task queued again",
+    "health": "Task Health",
+    "refreshStats": "Refresh",
+    "total": "Total",
+    "pendingOverdue": "Pending Overdue",
+    "runningLeaseExpired": "Lease Expired",
+    "failedCount": "Failed",
+    "retryPressure": "Retry Pressure"
   },
   "loginLog": {
     "title": "Login Logs",

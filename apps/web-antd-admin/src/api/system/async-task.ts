@@ -33,11 +33,32 @@ export namespace SystemAsyncTaskApi {
     createdAt?: string;
     updatedAt?: string;
   }
+
+  export interface AsyncTaskStatusCount {
+    status: TaskStatus;
+    count: number;
+  }
+
+  export interface AsyncTaskStats {
+    statusCounts: AsyncTaskStatusCount[];
+    total: number;
+    pendingOverdue: number;
+    runningLeaseExpired: number;
+    failed: number;
+    retryPressure: number;
+    checkedAt?: string;
+  }
 }
 
 export const getAsyncTaskList = (params?: Recordable<any>) =>
   requestClient.get<ApiType.ListResponse<SystemAsyncTaskApi.AsyncTask>>(
     '/async-tasks',
+    { params },
+  );
+
+export const getAsyncTaskStats = (params?: Recordable<any>) =>
+  requestClient.get<{ stats: SystemAsyncTaskApi.AsyncTaskStats }>(
+    '/async-tasks:stats',
     { params },
   );
 

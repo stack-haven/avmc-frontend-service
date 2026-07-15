@@ -256,7 +256,14 @@
     "cancelConfirm": "确定取消待执行任务 {0} 吗？",
     "retryConfirm": "确定重新执行失败任务 {0} 吗？",
     "cancelSuccess": "任务已取消",
-    "retrySuccess": "任务已重新进入队列"
+    "retrySuccess": "任务已重新进入队列",
+    "health": "任务健康",
+    "refreshStats": "刷新",
+    "total": "任务总数",
+    "pendingOverdue": "待执行超时",
+    "runningLeaseExpired": "租约过期",
+    "failedCount": "失败任务",
+    "retryPressure": "重试压力"
   },
   "loginLog": {
     "title": "登录日志",
