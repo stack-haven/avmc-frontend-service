@@ -262,7 +262,17 @@
     "pendingOverdue": "Pending Overdue",
     "runningLeaseExpired": "Lease Expired",
     "failedCount": "Failed",
-    "retryPressure": "Retry Pressure"
+    "retryPressure": "Retry Pressure",
+    "healthHealthy": "Healthy",
+    "healthWarning": "Warning",
+    "healthCritical": "Critical",
+    "healthUnknown": "Unknown",
+    "alerts": {
+      "pending_overdue": "Pending overdue {0}",
+      "failed": "Failed tasks {0}",
+      "running_lease_expired": "Lease expired {0}",
+      "retry_pressure": "Retry pressure {0}"
+    }
   },
   "loginLog": {
     "title": "Login Logs",

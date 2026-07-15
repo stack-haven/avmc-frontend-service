@@ -20,6 +20,30 @@ import { columns, searchSchema } from './data';
 const stats = ref<SystemAsyncTaskApi.AsyncTaskStats>();
 const statsLoading = ref(false);
 
+const healthColorMap: Record<SystemAsyncTaskApi.TaskHealthStatus, string> = {
+  ASYNC_TASK_HEALTH_STATUS_CRITICAL: 'error',
+  ASYNC_TASK_HEALTH_STATUS_HEALTHY: 'success',
+  ASYNC_TASK_HEALTH_STATUS_UNSPECIFIED: 'default',
+  ASYNC_TASK_HEALTH_STATUS_WARNING: 'warning',
+};
+
+function healthLabel(status?: SystemAsyncTaskApi.TaskHealthStatus) {
+  if (status === 'ASYNC_TASK_HEALTH_STATUS_CRITICAL') {
+    return $t('system.asyncTask.healthCritical');
+  }
+  if (status === 'ASYNC_TASK_HEALTH_STATUS_WARNING') {
+    return $t('system.asyncTask.healthWarning');
+  }
+  if (status === 'ASYNC_TASK_HEALTH_STATUS_HEALTHY') {
+    return $t('system.asyncTask.healthHealthy');
+  }
+  return $t('system.asyncTask.healthUnknown');
+}
+
+function alertLabel(alert: SystemAsyncTaskApi.AsyncTaskHealthAlert) {
+  return $t(`system.asyncTask.alerts.${alert.code}`, [alert.count]);
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: { schema: searchSchema(), submitOnChange: true },
   gridOptions: {
@@ -91,12 +115,33 @@ onMounted(loadStats);
   <Page auto-content-height>
     <div class="mb-4 rounded-md border border-border bg-background px-4 py-3">
       <div class="mb-3 flex items-center justify-between gap-3">
-        <div class="text-base font-medium">
-          {{ $t('system.asyncTask.health') }}
+        <div class="flex items-center gap-2">
+          <span class="text-base font-medium">
+            {{ $t('system.asyncTask.health') }}
+          </span>
+          <a-tag
+            :color="
+              healthColorMap[
+                stats?.healthStatus ??
+                  'ASYNC_TASK_HEALTH_STATUS_UNSPECIFIED'
+              ]
+            "
+          >
+            {{ healthLabel(stats?.healthStatus) }}
+          </a-tag>
         </div>
         <a-button :loading="statsLoading" size="small" @click="loadStats">
           {{ $t('system.asyncTask.refreshStats') }}
         </a-button>
+      </div>
+      <div v-if="stats?.alerts?.length" class="mb-3 flex flex-wrap gap-2">
+        <a-tag
+          v-for="alert in stats.alerts"
+          :key="alert.code"
+          :color="healthColorMap[alert.status]"
+        >
+          {{ alertLabel(alert) }}
+        </a-tag>
       </div>
       <div class="grid gap-3 md:grid-cols-5">
         <a-statistic

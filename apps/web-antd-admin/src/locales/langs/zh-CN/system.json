@@ -263,7 +263,17 @@
     "pendingOverdue": "待执行超时",
     "runningLeaseExpired": "租约过期",
     "failedCount": "失败任务",
-    "retryPressure": "重试压力"
+    "retryPressure": "重试压力",
+    "healthHealthy": "健康",
+    "healthWarning": "预警",
+    "healthCritical": "严重",
+    "healthUnknown": "未知",
+    "alerts": {
+      "pending_overdue": "待执行超时 {0}",
+      "failed": "失败任务 {0}",
+      "running_lease_expired": "租约过期 {0}",
+      "retry_pressure": "重试压力 {0}"
+    }
   },
   "loginLog": {
     "title": "登录日志",

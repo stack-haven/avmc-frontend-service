@@ -12,6 +12,12 @@ export namespace SystemAsyncTaskApi {
     | 'ASYNC_TASK_STATUS_RUNNING'
     | 'ASYNC_TASK_STATUS_SUCCEEDED';
 
+  export type TaskHealthStatus =
+    | 'ASYNC_TASK_HEALTH_STATUS_CRITICAL'
+    | 'ASYNC_TASK_HEALTH_STATUS_HEALTHY'
+    | 'ASYNC_TASK_HEALTH_STATUS_UNSPECIFIED'
+    | 'ASYNC_TASK_HEALTH_STATUS_WARNING';
+
   export interface AsyncTask {
     id: number;
     tenantId?: number;
@@ -39,6 +45,12 @@ export namespace SystemAsyncTaskApi {
     count: number;
   }
 
+  export interface AsyncTaskHealthAlert {
+    code: string;
+    status: TaskHealthStatus;
+    count: number;
+  }
+
   export interface AsyncTaskStats {
     statusCounts: AsyncTaskStatusCount[];
     total: number;
@@ -47,6 +59,8 @@ export namespace SystemAsyncTaskApi {
     failed: number;
     retryPressure: number;
     checkedAt?: string;
+    healthStatus: TaskHealthStatus;
+    alerts: AsyncTaskHealthAlert[];
   }
 }
 
