@@ -37,6 +37,30 @@ export function useFormSchema(): VbenFormSchema[] {
       label: $t('system.menuPermissionGroup.menus'),
       modelPropName: 'modelValue',
     },
+    {
+      component: 'Textarea',
+      componentProps: {
+        rows: 3,
+      },
+      fieldName: 'apiPermissionsText',
+      label: $t('system.menuPermissionGroup.apiPermissions'),
+    },
+    {
+      component: 'Textarea',
+      componentProps: {
+        rows: 3,
+      },
+      fieldName: 'featureFlagsText',
+      label: $t('system.menuPermissionGroup.featureFlags'),
+    },
+    {
+      component: 'Textarea',
+      componentProps: {
+        rows: 3,
+      },
+      fieldName: 'resourceQuotasText',
+      label: $t('system.menuPermissionGroup.resourceQuotas'),
+    },
   ];
 }
 
@@ -101,6 +125,13 @@ export function useColumns<
     {
       field: 'tenantCount',
       title: $t('system.menuPermissionGroup.tenantCount'),
+      width: 120,
+    },
+    {
+      field: 'apiPermissions',
+      formatter: ({ cellValue }: { cellValue?: string[] }) =>
+        cellValue?.length ?? 0,
+      title: $t('system.menuPermissionGroup.apiPermissionCount'),
       width: 120,
     },
     {

@@ -11,7 +11,7 @@ import { computed, ref } from 'vue';
 import { useVbenDrawer, VbenTree } from '@vben/common-ui';
 import { IconifyIcon } from '@vben/icons';
 
-import { Spin } from 'ant-design-vue';
+import { message, Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { getMenuList } from '#/api/system/menu';
@@ -40,15 +40,34 @@ const [Drawer, drawerApi] = useVbenDrawer({
   async onConfirm() {
     const { valid } = await formApi.validate();
     if (!valid) return;
-    const values = (await formApi.getValues()) as Omit<
-      SystemMenuPermissionGroupApi.MenuPermissionGroup,
-      'id'
-    >;
+    const values = (await formApi.getValues()) as Recordable<any>;
     values.menuIds = (values.menuIds ?? []).map(Number);
+    try {
+      values.apiPermissions = parseList(values.apiPermissionsText);
+      values.featureFlags = parseBoolRecord(values.featureFlagsText);
+      values.resourceQuotas = parseNumberRecord(values.resourceQuotasText);
+    } catch {
+      message.warning($t('system.menuPermissionGroup.capabilityJsonInvalid'));
+      return;
+    }
+    delete values.apiPermissionsText;
+    delete values.featureFlagsText;
+    delete values.resourceQuotasText;
     drawerApi.lock();
     (id.value
-      ? updateMenuPermissionGroup(id.value, values)
-      : createMenuPermissionGroup(values)
+      ? updateMenuPermissionGroup(
+          id.value,
+          values as Omit<
+            SystemMenuPermissionGroupApi.MenuPermissionGroup,
+            'id'
+          >,
+        )
+      : createMenuPermissionGroup(
+          values as Omit<
+            SystemMenuPermissionGroupApi.MenuPermissionGroup,
+            'id'
+          >,
+        )
     )
       .then(() => {
         emits('success');
@@ -66,13 +85,18 @@ const [Drawer, drawerApi] = useVbenDrawer({
     if (data?.id) {
       getMenuPermissionGroup(data.id).then((detail) => {
         formData.value = detail;
-        formApi.setValues(detail);
+        formApi.setValues(toFormValues(detail));
       });
       id.value = data.id;
     } else {
       formData.value = undefined;
       id.value = undefined;
-      formApi.setValues({ menuIds: [] });
+      formApi.setValues({
+        apiPermissionsText: '',
+        featureFlagsText: '{}',
+        menuIds: [],
+        resourceQuotasText: '{}',
+      });
     }
     if (menus.value.length === 0) {
       loadMenus();
@@ -103,6 +127,44 @@ function getNodeClass(node: Recordable<any>) {
     classes.push('inline-flex');
   }
   return classes.join(' ');
+}
+
+function toFormValues(
+  detail: SystemMenuPermissionGroupApi.MenuPermissionGroup,
+) {
+  return {
+    ...detail,
+    apiPermissionsText: (detail.apiPermissions ?? []).join('\n'),
+    featureFlagsText: JSON.stringify(detail.featureFlags ?? {}, null, 2),
+    resourceQuotasText: JSON.stringify(detail.resourceQuotas ?? {}, null, 2),
+  };
+}
+
+function parseList(value: unknown) {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean);
+  if (typeof value !== 'string') return [];
+  return value
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseBoolRecord(value: unknown): Record<string, boolean> {
+  if (!value) return {};
+  if (typeof value === 'object') return value as Record<string, boolean>;
+  const parsed = JSON.parse(String(value)) as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(parsed).map(([key, item]) => [key, Boolean(item)]),
+  );
+}
+
+function parseNumberRecord(value: unknown): Record<string, number> {
+  if (!value) return {};
+  if (typeof value === 'object') return value as Record<string, number>;
+  const parsed = JSON.parse(String(value)) as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(parsed).map(([key, item]) => [key, Number(item)]),
+  );
 }
 </script>
 

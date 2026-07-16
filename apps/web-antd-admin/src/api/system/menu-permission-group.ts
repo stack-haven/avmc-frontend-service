@@ -16,6 +16,9 @@ export namespace SystemMenuPermissionGroupApi {
     description?: string;
     remark?: string;
     menuIds?: number[];
+    apiPermissions?: string[];
+    featureFlags?: Record<string, boolean>;
+    resourceQuotas?: Record<string, number>;
     tenantCount?: number;
     createdAt?: string;
     updatedAt?: string;
@@ -29,6 +32,9 @@ export namespace SystemMenuPermissionGroupApi {
     version: number;
     state: number;
     menuIds: number[];
+    apiPermissions?: string[];
+    featureFlags?: Record<string, boolean>;
+    resourceQuotas?: Record<string, number>;
     changeSummary?: string;
     createdBy?: number;
     publishedBy?: number;
@@ -97,7 +103,13 @@ async function getMenuPermissionGroupVersions(groupId: string | number) {
 
 async function publishMenuPermissionGroupVersion(
   groupId: string | number,
-  data: { changeSummary?: string; menuIds: number[] },
+  data: {
+    apiPermissions?: string[];
+    changeSummary?: string;
+    featureFlags?: Record<string, boolean>;
+    menuIds: number[];
+    resourceQuotas?: Record<string, number>;
+  },
 ) {
   return requestClient.post(
     `/menu-permission-groups/${groupId}/versions:publish`,

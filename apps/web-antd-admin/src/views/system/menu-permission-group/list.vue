@@ -48,6 +48,9 @@ const versionLoading = ref(false);
 const publishLoading = ref(false);
 const publishMenuIds = ref<number[]>([]);
 const publishSummary = ref('');
+const publishApiPermissionsText = ref('');
+const publishFeatureFlagsText = ref('{}');
+const publishResourceQuotasText = ref('{}');
 const menuOptions = ref<{ label: string; value: number }[]>([]);
 
 const [FormDrawer, formDrawerApi] = useVbenDrawer({
@@ -141,6 +144,19 @@ async function openPublish() {
   }
   publishMenuIds.value = selectedGroup.value.menuIds?.map(Number) ?? [];
   publishSummary.value = '';
+  publishApiPermissionsText.value = (
+    selectedGroup.value.apiPermissions ?? []
+  ).join('\n');
+  publishFeatureFlagsText.value = JSON.stringify(
+    selectedGroup.value.featureFlags ?? {},
+    null,
+    2,
+  );
+  publishResourceQuotasText.value = JSON.stringify(
+    selectedGroup.value.resourceQuotas ?? {},
+    null,
+    2,
+  );
   publishModalOpen.value = true;
 }
 
@@ -149,11 +165,25 @@ async function publishVersion() {
     message.warning($t('system.menuPermissionGroup.menuRequired'));
     return;
   }
+  let apiPermissions: string[];
+  let featureFlags: Record<string, boolean>;
+  let resourceQuotas: Record<string, number>;
+  try {
+    apiPermissions = parseList(publishApiPermissionsText.value);
+    featureFlags = parseBoolRecord(publishFeatureFlagsText.value);
+    resourceQuotas = parseNumberRecord(publishResourceQuotasText.value);
+  } catch {
+    message.warning($t('system.menuPermissionGroup.capabilityJsonInvalid'));
+    return;
+  }
   publishLoading.value = true;
   try {
     await publishMenuPermissionGroupVersion(selectedGroup.value.id, {
+      apiPermissions,
       changeSummary: publishSummary.value,
+      featureFlags,
       menuIds: publishMenuIds.value,
+      resourceQuotas,
     });
     publishModalOpen.value = false;
     await openVersions(selectedGroup.value);
@@ -161,6 +191,33 @@ async function publishVersion() {
   } finally {
     publishLoading.value = false;
   }
+}
+
+function parseList(value: unknown) {
+  if (Array.isArray(value)) return value.map(String).filter(Boolean);
+  if (typeof value !== 'string') return [];
+  return value
+    .split(/[\n,]/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function parseBoolRecord(value: unknown): Record<string, boolean> {
+  if (!value) return {};
+  if (typeof value === 'object') return value as Record<string, boolean>;
+  const parsed = JSON.parse(String(value)) as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(parsed).map(([key, item]) => [key, Boolean(item)]),
+  );
+}
+
+function parseNumberRecord(value: unknown): Record<string, number> {
+  if (!value) return {};
+  if (typeof value === 'object') return value as Record<string, number>;
+  const parsed = JSON.parse(String(value)) as Record<string, unknown>;
+  return Object.fromEntries(
+    Object.entries(parsed).map(([key, item]) => [key, Number(item)]),
+  );
 }
 
 async function rollbackVersion(
@@ -355,6 +412,21 @@ function onCreate() {
         <Input
           v-model:value="publishSummary"
           :placeholder="$t('system.menuPermissionGroup.changeSummary')"
+        />
+        <Input.TextArea
+          v-model:value="publishApiPermissionsText"
+          :placeholder="$t('system.menuPermissionGroup.apiPermissions')"
+          :rows="3"
+        />
+        <Input.TextArea
+          v-model:value="publishFeatureFlagsText"
+          :placeholder="$t('system.menuPermissionGroup.featureFlags')"
+          :rows="3"
+        />
+        <Input.TextArea
+          v-model:value="publishResourceQuotasText"
+          :placeholder="$t('system.menuPermissionGroup.resourceQuotas')"
+          :rows="3"
         />
       </Space>
     </Modal>
