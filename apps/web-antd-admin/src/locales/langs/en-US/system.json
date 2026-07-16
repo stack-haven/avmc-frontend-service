@@ -271,7 +271,9 @@
       "pending_overdue": "Pending overdue {0}",
       "failed": "Failed tasks {0}",
       "running_lease_expired": "Lease expired {0}",
-      "retry_pressure": "Retry pressure {0}"
+      "retry_pressure": "Retry pressure {0}",
+      "permission_cache_failed": "Permission cache failures {0}",
+      "permission_cache_retry_pressure": "Permission cache retry pressure {0}"
     }
   },
   "loginLog": {
