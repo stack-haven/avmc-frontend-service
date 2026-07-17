@@ -5,8 +5,11 @@ import { defineStore } from 'pinia';
 import type { PlatformCapabilityApi } from '#/api/system/platform-capability';
 
 import {
+  checkCurrentTenantResourceQuota,
+  consumeCurrentTenantResourceQuota,
   getCurrentTenantCapabilities,
   listCurrentTenantResourceQuotas,
+  releaseCurrentTenantResourceQuota,
 } from '#/api/system/platform-capability';
 
 export const usePlatformCapabilityStore = defineStore(
@@ -53,6 +56,32 @@ export const usePlatformCapabilityStore = defineStore(
       }
     }
 
+    async function checkQuota(resourceKey: string, amount = 1) {
+      return checkCurrentTenantResourceQuota(resourceKey, amount);
+    }
+
+    async function consumeQuota(resourceKey: string, amount = 1) {
+      const result = await consumeCurrentTenantResourceQuota(
+        resourceKey,
+        amount,
+      );
+      if (result.usage) {
+        upsertQuotaUsage(result.usage);
+      }
+      return result.usage;
+    }
+
+    async function releaseQuota(resourceKey: string, amount = 1) {
+      const result = await releaseCurrentTenantResourceQuota(
+        resourceKey,
+        amount,
+      );
+      if (result.usage) {
+        upsertQuotaUsage(result.usage);
+      }
+      return result.usage;
+    }
+
     function hasApiPermission(permission: string) {
       return apiPermissions.value.includes(permission);
     }
@@ -84,6 +113,19 @@ export const usePlatformCapabilityStore = defineStore(
       return used + amount <= limit;
     }
 
+    function upsertQuotaUsage(
+      usage: PlatformCapabilityApi.TenantResourceQuotaUsage,
+    ) {
+      const index = quotaUsages.value.findIndex(
+        (item) => item.resourceKey === usage.resourceKey,
+      );
+      if (index >= 0) {
+        quotaUsages.value[index] = usage;
+      } else {
+        quotaUsages.value.push(usage);
+      }
+    }
+
     function $reset() {
       capabilities.value = null;
       quotaUsages.value = [];
@@ -96,7 +138,9 @@ export const usePlatformCapabilityStore = defineStore(
       $reset,
       apiPermissions,
       canConsumeCached,
+      checkQuota,
       capabilities,
+      consumeQuota,
       featureFlags,
       fetched,
       getQuotaLimit,
@@ -108,6 +152,7 @@ export const usePlatformCapabilityStore = defineStore(
       quotaUsages,
       refreshCapabilities,
       refreshResourceQuotas,
+      releaseQuota,
       resourceQuotas,
     };
   },
