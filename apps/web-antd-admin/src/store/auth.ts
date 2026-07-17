@@ -19,9 +19,11 @@ import {
   logoutApi,
 } from '#/api';
 import { $t } from '#/locales';
+import { usePlatformCapabilityStore } from '#/store/platform-capability';
 
 export const useAuthStore = defineStore('auth', () => {
   const accessStore = useAccessStore();
+  const capabilityStore = usePlatformCapabilityStore();
   const userStore = useUserStore();
   const router = useRouter();
 
@@ -109,11 +111,15 @@ export const useAuthStore = defineStore('auth', () => {
     let userInfo: null | UserInfo = null;
     userInfo = await getUserInfoApi();
     userStore.setUserInfo(userInfo);
+    if (accessStore.accessToken && !capabilityStore.fetched) {
+      await capabilityStore.refreshCapabilities().catch(() => null);
+    }
     return userInfo;
   }
 
   function $reset() {
     loginLoading.value = false;
+    capabilityStore.$reset();
   }
 
   return {

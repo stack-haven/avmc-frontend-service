@@ -10,4 +10,5 @@ export * from './login-log';
 export * from './session';
 export * from './parameter';
 export * from './async-task';
+export * from './platform-capability';
 export * from './user';
