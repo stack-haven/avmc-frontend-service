@@ -4,7 +4,7 @@ import { usePlatformCapabilityStore } from '#/store';
 
 export type FeatureGateMode = 'all' | 'any';
 
-function matchFeatureFlags(
+export function matchFeatureFlags(
   flags: string | string[],
   hasFeature: (featureKey: string) => boolean,
   mode: FeatureGateMode = 'all',

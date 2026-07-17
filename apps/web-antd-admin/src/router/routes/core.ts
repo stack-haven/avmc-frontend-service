@@ -92,6 +92,17 @@ const coreRoutes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    component: () => import('#/views/_core/fallback/forbidden.vue'),
+    meta: {
+      hideInBreadcrumb: true,
+      hideInMenu: true,
+      hideInTab: true,
+      title: '403',
+    },
+    name: 'FallbackForbidden',
+    path: '/403',
+  },
 ];
 
 export { coreRoutes, fallbackNotFoundRoute };

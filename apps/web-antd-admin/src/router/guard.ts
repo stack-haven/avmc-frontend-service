@@ -1,14 +1,22 @@
-import type { Router } from 'vue-router';
+import type { RouteLocationNormalized, Router } from 'vue-router';
 
 import { LOGIN_PATH } from '@vben/constants';
 import { preferences } from '@vben/preferences';
 import { useAccessStore, useUserStore } from '@vben/stores';
 import { startProgress, stopProgress } from '@vben/utils';
 
+import type { FeatureGateMode } from '#/hooks/use-platform-capability';
+
+import { matchFeatureFlags } from '#/hooks/use-platform-capability';
 import { accessRoutes, coreRouteNames } from '#/router/routes';
-import { useAuthStore } from '#/store';
+import { useAuthStore, usePlatformCapabilityStore } from '#/store';
 
 import { generateAccess } from './access';
+
+type FeatureRouteMeta = {
+  featureFlagMode?: FeatureGateMode;
+  featureFlags?: string | string[];
+};
 
 /**
  * 通用守卫配置
@@ -47,6 +55,7 @@ function setupCommonGuard(router: Router) {
 function setupAccessGuard(router: Router) {
   router.beforeEach(async (to, from) => {
     const accessStore = useAccessStore();
+    const capabilityStore = usePlatformCapabilityStore();
     const userStore = useUserStore();
     const authStore = useAuthStore();
 
@@ -87,6 +96,9 @@ function setupAccessGuard(router: Router) {
 
     // 是否已经生成过动态路由
     if (accessStore.isAccessChecked) {
+      if (!(await hasRouteFeatureAccess(to, capabilityStore))) {
+        return { name: 'FallbackForbidden', replace: true };
+      }
       return true;
     }
 
@@ -117,6 +129,29 @@ function setupAccessGuard(router: Router) {
       replace: true,
     };
   });
+}
+
+async function hasRouteFeatureAccess(
+  to: RouteLocationNormalized,
+  capabilityStore: ReturnType<typeof usePlatformCapabilityStore>,
+) {
+  const routeFeatureMetas = to.matched
+    .map((record) => record.meta as FeatureRouteMeta)
+    .filter((meta) => Boolean(meta.featureFlags));
+
+  if (routeFeatureMetas.length === 0) {
+    return true;
+  }
+  if (!capabilityStore.fetched) {
+    await capabilityStore.refreshCapabilities().catch(() => null);
+  }
+  return routeFeatureMetas.every((meta) =>
+    matchFeatureFlags(
+      meta.featureFlags ?? [],
+      capabilityStore.hasFeature,
+      meta.featureFlagMode,
+    ),
+  );
 }
 
 /**
