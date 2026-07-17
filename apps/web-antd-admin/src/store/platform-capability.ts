@@ -60,10 +60,15 @@ export const usePlatformCapabilityStore = defineStore(
       return checkCurrentTenantResourceQuota(resourceKey, amount);
     }
 
-    async function consumeQuota(resourceKey: string, amount = 1) {
+    async function consumeQuota(
+      resourceKey: string,
+      amount = 1,
+      idempotencyKey?: string,
+    ) {
       const result = await consumeCurrentTenantResourceQuota(
         resourceKey,
         amount,
+        idempotencyKey,
       );
       if (result.usage) {
         upsertQuotaUsage(result.usage);
@@ -71,10 +76,15 @@ export const usePlatformCapabilityStore = defineStore(
       return result.usage;
     }
 
-    async function releaseQuota(resourceKey: string, amount = 1) {
+    async function releaseQuota(
+      resourceKey: string,
+      amount = 1,
+      idempotencyKey?: string,
+    ) {
       const result = await releaseCurrentTenantResourceQuota(
         resourceKey,
         amount,
+        idempotencyKey,
       );
       if (result.usage) {
         upsertQuotaUsage(result.usage);

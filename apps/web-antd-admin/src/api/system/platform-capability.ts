@@ -68,20 +68,22 @@ async function checkCurrentTenantResourceQuota(
 async function consumeCurrentTenantResourceQuota(
   resourceKey: string,
   amount: number,
+  idempotencyKey?: string,
 ) {
   return requestClient.post<PlatformCapabilityApi.ResourceQuotaUsageResponse>(
     `/current-tenant/resource-quotas/${encodeResourceKey(resourceKey)}:consume`,
-    { amount, resourceKey },
+    { amount, idempotencyKey, resourceKey },
   );
 }
 
 async function releaseCurrentTenantResourceQuota(
   resourceKey: string,
   amount: number,
+  idempotencyKey?: string,
 ) {
   return requestClient.post<PlatformCapabilityApi.ResourceQuotaUsageResponse>(
     `/current-tenant/resource-quotas/${encodeResourceKey(resourceKey)}:release`,
-    { amount, resourceKey },
+    { amount, idempotencyKey, resourceKey },
   );
 }
 
