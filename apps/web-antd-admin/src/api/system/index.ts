@@ -5,6 +5,7 @@ export * from './project';
 export * from './role';
 export * from './tenant';
 export * from './dictionary';
+export * from './file-center';
 export * from './operation-log';
 export * from './login-log';
 export * from './session';

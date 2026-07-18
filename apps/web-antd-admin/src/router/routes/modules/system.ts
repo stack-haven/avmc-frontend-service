@@ -92,6 +92,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/system/storage-provider/list.vue'),
       },
       {
+        path: '/system/file-center',
+        name: 'SystemFileCenter',
+        meta: {
+          icon: 'mdi:file-cloud-outline',
+          title: $t('system.fileCenter.title'),
+        },
+        component: () => import('#/views/system/file-center/list.vue'),
+      },
+      {
         path: '/system/operation-log',
         name: 'SystemOperationLog',
         meta: { icon: 'mdi:clipboard-text-clock-outline', title: $t('system.operationLog.title') },
