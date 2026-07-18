@@ -101,6 +101,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/system/file-center/list.vue'),
       },
       {
+        path: '/system/notification',
+        name: 'SystemNotification',
+        meta: {
+          icon: 'mdi:bell-outline',
+          title: $t('system.notification.title'),
+        },
+        component: () => import('#/views/system/notification/list.vue'),
+      },
+      {
         path: '/system/operation-log',
         name: 'SystemOperationLog',
         meta: { icon: 'mdi:clipboard-text-clock-outline', title: $t('system.operationLog.title') },

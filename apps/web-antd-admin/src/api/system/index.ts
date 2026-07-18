@@ -1,6 +1,7 @@
 export * from './dept';
 export * from './menu';
 export * from './menu-permission-group';
+export * from './notification';
 export * from './project';
 export * from './role';
 export * from './tenant';
