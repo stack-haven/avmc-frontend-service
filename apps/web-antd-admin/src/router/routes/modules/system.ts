@@ -83,6 +83,15 @@ const routes: RouteRecordRaw[] = [
         component: () => import('#/views/system/parameter/list.vue'),
       },
       {
+        path: '/system/storage-provider',
+        name: 'SystemStorageProvider',
+        meta: {
+          icon: 'mdi:database-cog-outline',
+          title: $t('system.storageProvider.title'),
+        },
+        component: () => import('#/views/system/storage-provider/list.vue'),
+      },
+      {
         path: '/system/operation-log',
         name: 'SystemOperationLog',
         meta: { icon: 'mdi:clipboard-text-clock-outline', title: $t('system.operationLog.title') },

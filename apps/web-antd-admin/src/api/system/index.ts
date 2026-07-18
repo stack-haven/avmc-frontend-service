@@ -9,6 +9,7 @@ export * from './operation-log';
 export * from './login-log';
 export * from './session';
 export * from './parameter';
+export * from './storage-provider';
 export * from './async-task';
 export * from './platform-capability';
 export * from './user';
