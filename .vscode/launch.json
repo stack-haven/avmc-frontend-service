@@ -40,12 +40,12 @@
     },
     {
       "type": "chrome",
-      "name": "avmc admin antd dev",
+      "name": "ark admin antd dev",
       "request": "launch",
       "url": "http://localhost:5999",
       "env": { "NODE_ENV": "development" },
       "sourceMaps": true,
-      "webRoot": "${workspaceFolder}/apps/admin-antd-avmc"
+      "webRoot": "${workspaceFolder}/apps/web-antd-admin"
     }
   ]
 }

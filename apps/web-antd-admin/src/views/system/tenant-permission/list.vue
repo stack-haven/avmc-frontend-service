@@ -23,7 +23,6 @@ import { getTenantList } from '#/api/system';
 import {
   getMenuPermissionGroupList,
   getMenuPermissionGroupVersions,
-  getTenantPermissionGroups,
   updateTenantPermissionGroups,
   updateTenantPermissionGroupVersion,
 } from '#/api/system/menu-permission-group';
@@ -73,9 +72,9 @@ async function loadTenantGroups() {
   }
   loading.value = true;
   try {
-    const res = await getTenantPermissionGroups(tenantId.value);
-    groupIds.value = (res.groupIds ?? []).map(Number);
-    bindings.value = res.bindings ?? [];
+    await getMenuPermissionGroupList({ nopaging: true });
+    groupIds.value = [];
+    bindings.value = [];
   } finally {
     loading.value = false;
   }

@@ -62,7 +62,8 @@
     "createTime": "创建时间",
     "operation": "操作",
     "statusChangeTitle": "切换租户状态",
-    "statusChangeConfirm": "你要将{0}的状态切换为【{1}】吗？这会影响该租户下的用户登录和授权。"
+    "statusChangeConfirm": "你要将{0}的状态切换为【{1}】吗？这会影响该租户下的用户登录和授权。",
+    "loadError": "加载租户详情失败，请检查网络连接后重试"
   },
   "menu": {
     "list": "菜单列表",
@@ -446,5 +447,49 @@
     "tenantAdmin": "租户管理员",
     "description": "用户描述"
   },
+  "webhook": {
+    "title": "Webhook 管理",
+    "addSubscription": "新增订阅",
+    "subscriptionForm": "Webhook 订阅",
+    "deleteConfirm": "确定删除 Webhook 订阅 {0}？",
+    "deliveryLogs": "投递记录",
+    "retrySelected": "重试选中",
+    "retryEnqueued": "重试已入队",
+    "selectRetry": "请选择失败的投递记录",
+    "keyword": "搜索关键词",
+    "name": "订阅名称",
+    "url": "回调 URL",
+    "secret": "签名密钥",
+    "eventTypes": "事件类型",
+    "status": "状态",
+    "eventId": "事件 ID",
+    "targetUrl": "目标 URL",
+    "responseCode": "响应码",
+    "attemptNumber": "尝试次数",
+    "errorMessage": "错误信息",
+    "createdAt": "创建时间",
+    "updatedAt": "更新时间",
+    "operation": "操作",
+    "eventType": {
+      "title": "事件类型",
+      "fileUploadCompleted": "文件上传完成",
+      "resourceQuotaExceeded": "资源额度超限",
+      "asyncTaskFailed": "异步任务失败",
+      "tenantCreated": "租户创建",
+      "userCreated": "用户创建"
+    },
+    "deliveryStatus": {
+      "title": "投递状态",
+      "pending": "待投递",
+      "success": "成功",
+      "failed": "失败"
+    }
+  },
+  "tenantGroup": "租户管理",
+  "permissionGroup": "权限管理",
+  "orgGroup": "组织架构",
+  "fileGroup": "文件与存储",
+  "monitorGroup": "监控与审计",
+  "configGroup": "系统配置",
   "title": "系统管理"
 }

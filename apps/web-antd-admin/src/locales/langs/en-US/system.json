@@ -62,7 +62,8 @@
     "createTime": "Creation Time",
     "operation": "Operation",
     "statusChangeTitle": "Switch Tenant Status",
-    "statusChangeConfirm": "Switch {0} status to [{1}]? This affects user login and authorization for the tenant."
+    "statusChangeConfirm": "Switch {0} status to [{1}]? This affects user login and authorization for the tenant.",
+    "loadError": "Failed to load tenant details. Please check your network and try again."
   },
   "menu": {
     "title": "Menu Management",
@@ -444,5 +445,49 @@
     "identity": "Admin Identity",
     "tenantAdmin": "Tenant Admin",
     "description": "User Description"
-  }
+  },
+  "webhook": {
+    "title": "Webhook Management",
+    "addSubscription": "Add Subscription",
+    "subscriptionForm": "Webhook Subscription",
+    "deleteConfirm": "Delete webhook subscription {0}?",
+    "deliveryLogs": "Delivery Logs",
+    "retrySelected": "Retry Selected",
+    "retryEnqueued": "Retries enqueued",
+    "selectRetry": "Please select failed delivery records",
+    "keyword": "Search",
+    "name": "Subscription Name",
+    "url": "Callback URL",
+    "secret": "Signing Secret",
+    "eventTypes": "Event Types",
+    "status": "Status",
+    "eventId": "Event ID",
+    "targetUrl": "Target URL",
+    "responseCode": "Response Code",
+    "attemptNumber": "Attempts",
+    "errorMessage": "Error Message",
+    "createdAt": "Created At",
+    "updatedAt": "Updated At",
+    "operation": "Actions",
+    "eventType": {
+      "title": "Event Type",
+      "fileUploadCompleted": "File Upload Completed",
+      "resourceQuotaExceeded": "Resource Quota Exceeded",
+      "asyncTaskFailed": "Async Task Failed",
+      "tenantCreated": "Tenant Created",
+      "userCreated": "User Created"
+    },
+    "deliveryStatus": {
+      "title": "Delivery Status",
+      "pending": "Pending",
+      "success": "Success",
+      "failed": "Failed"
+    }
+  },
+  "tenantGroup": "Tenant Management",
+  "permissionGroup": "Permission Management",
+  "orgGroup": "Organization",
+  "fileGroup": "Files & Storage",
+  "monitorGroup": "Monitoring & Audit",
+  "configGroup": "System Configuration"
 }

@@ -10,10 +10,7 @@ import { Alert, Select, Steps, Tag, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { createTenant, getTenant, updateTenant } from '#/api';
-import {
-  getMenuPermissionGroupList,
-  getTenantPermissionGroups,
-} from '#/api/system/menu-permission-group';
+import { getMenuPermissionGroupList } from '#/api/system/menu-permission-group';
 import { $t } from '#/locales';
 
 import { useAdminFormSchema, useFormSchema } from '../data';
@@ -80,19 +77,28 @@ const [Drawer, drawerApi] = useVbenDrawer({
         drawerApi.unlock();
       });
   },
-  async onOpenChange(isOpen) {
+  async onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = drawerApi.getData<SystemTenantApi.SystemTenant>();
       formApi.resetForm();
       adminFormApi.resetForm();
       currentStep.value = 0;
-      await loadPackages();
+      try {
+        await loadPackages();
+      } catch (_) {
+        packages.value = [];
+        packageOptions.value = [];
+      }
       if (data?.id) {
-        const detail = await getTenant(data.id);
-        formData.value = detail;
-        id.value = data.id;
-        formApi.setValues(detail);
-        selectedGroupIds.value = await resolveTenantGroupIds(detail);
+        try {
+          const detail = await getTenant(data.id);
+          formData.value = detail;
+          id.value = data.id;
+          formApi.setValues(detail);
+          selectedGroupIds.value = await resolveTenantGroupIds(detail);
+        } catch {
+          message.error($t('system.tenant.loadError'));
+        }
       } else {
         formData.value = undefined;
         id.value = undefined;
@@ -131,8 +137,7 @@ async function resolveTenantGroupIds(data: SystemTenantApi.SystemTenant) {
   if (data.groups?.length) {
     return data.groups.map((item) => Number(item.id));
   }
-  const resp = await getTenantPermissionGroups(data.id);
-  return (resp.groupIds ?? []).map(Number);
+  return [];
 }
 </script>
 

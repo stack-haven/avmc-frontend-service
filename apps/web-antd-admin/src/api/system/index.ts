@@ -15,3 +15,4 @@ export * from './storage-provider';
 export * from './async-task';
 export * from './platform-capability';
 export * from './user';
+export * from './webhook';
