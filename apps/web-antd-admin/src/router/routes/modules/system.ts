@@ -12,26 +12,6 @@ const routes: RouteRecordRaw[] = [
     name: 'System',
     path: '/system',
     children: [
-      // ===== 租户管理 =====
-      {
-        meta: { icon: 'mdi:office-building-cog-outline', title: $t('system.tenantGroup') },
-        name: 'TenantGroup',
-        path: '/system/tenant-group',
-        children: [
-          {
-            path: '/system/tenant',
-            name: 'SystemTenant',
-            meta: { icon: 'mdi:office-building-cog-outline', title: $t('system.tenant.title') },
-            component: () => import('#/views/system/tenant/list.vue'),
-          },
-          {
-            path: '/system/tenant-permission',
-            name: 'SystemTenantPermission',
-            meta: { icon: 'mdi:domain', title: $t('system.tenantPermission.title') },
-            component: () => import('#/views/system/tenant-permission/list.vue'),
-          },
-        ],
-      },
       // ===== 权限管理 =====
       {
         meta: { icon: 'mdi:shield-lock-outline', title: $t('system.permissionGroup') },
