@@ -131,6 +131,7 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useColumns<T = SystemUserApi.SystemUser>(
   onActionClick: OnActionClickFn<T>,
   onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
+  getDeptName?: (deptId?: number) => string,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -139,9 +140,16 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       width: 200,
     },
     {
-      field: 'id',
-      title: $t('system.user.id'),
-      width: 200,
+      field: 'realname',
+      formatter: ({ cellValue }) => cellValue || '-',
+      title: $t('system.user.realname'),
+      width: 140,
+    },
+    {
+      field: 'deptId',
+      formatter: ({ cellValue }) => getDeptName?.(cellValue) || '-',
+      title: $t('system.user.department'),
+      width: 160,
     },
     {
       field: 'isTenantAdmin',
@@ -161,9 +169,10 @@ export function useColumns<T = SystemUserApi.SystemUser>(
       width: 100,
     },
     {
-      field: 'remark',
-      minWidth: 100,
-      title: $t('system.user.remark'),
+      field: 'phone',
+      formatter: ({ cellValue }) => cellValue || '-',
+      minWidth: 130,
+      title: $t('system.user.phone'),
     },
     {
       field: 'createdAt',

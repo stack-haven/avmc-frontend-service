@@ -1,69 +1,35 @@
 <script lang="ts" setup>
 import type { VbenFormSchema } from '@vben/common-ui';
-import type { BasicOption } from '@vben/types';
 
 import { computed, markRaw } from 'vue';
 
 import { AuthenticationLogin, SliderCaptcha, z } from '@vben/common-ui';
 import { $t } from '@vben/locales';
 
+import { message } from 'ant-design-vue';
+
+import { searchTenantsByName } from '#/api/system/tenant';
 import { useAuthStore } from '#/store';
 
 defineOptions({ name: 'Login' });
 
 const authStore = useAuthStore();
 
-const MOCK_USER_OPTIONS: BasicOption[] = [
-  {
-    label: 'Super',
-    value: 'vben',
-  },
-  {
-    label: 'Admin',
-    value: 'admin',
-  },
-  {
-    label: 'User',
-    value: 'jack',
-  },
-];
-
 const formSchema = computed((): VbenFormSchema[] => {
   return [
     {
-      component: 'VbenSelect',
+      component: 'VbenInput',
       componentProps: {
-        options: MOCK_USER_OPTIONS,
-        placeholder: $t('authentication.selectAccount'),
+        placeholder: $t('authentication.tenantPlaceholder'),
       },
-      fieldName: 'selectAccount',
-      label: $t('authentication.selectAccount'),
-      rules: z
-        .string()
-        .min(1, { message: $t('authentication.selectAccount') })
-        .optional()
-        .default('admin'),
+      fieldName: 'tenant',
+      label: $t('authentication.tenant'),
+      rules: z.string().min(1, { message: $t('authentication.tenantRequired') }),
     },
     {
       component: 'VbenInput',
       componentProps: {
         placeholder: $t('authentication.usernameTip'),
-      },
-      dependencies: {
-        trigger(values, form) {
-          if (values.selectAccount) {
-            const findUser = MOCK_USER_OPTIONS.find(
-              (item) => item.value === values.selectAccount,
-            );
-            if (findUser) {
-              form.setValues({
-                password: '123456',
-                username: findUser.value,
-              });
-            }
-          }
-        },
-        triggerFields: ['selectAccount'],
       },
       fieldName: 'username',
       label: $t('authentication.username'),
@@ -87,12 +53,28 @@ const formSchema = computed((): VbenFormSchema[] => {
     },
   ];
 });
+
+async function handleLogin(values: Record<string, any>) {
+  const { tenant, username, password } = values;
+
+  // Resolve tenant name to ID
+  try {
+    const res = await searchTenantsByName({ name: tenant, pageSize: 1 });
+    if (!res.items || res.items.length === 0) {
+      message.error('未找到匹配的租户，请检查租户名称');
+      return;
+    }
+    const tenantId = res.items[0]!.id;
+    authStore.authLogin({ tenantId, username, password });
+  } catch {
+    message.error('租户查询失败，请稍后重试');
+  }
+}
 </script>
 
 <template>
   <AuthenticationLogin
     :form-schema="formSchema"
     :loading="authStore.loginLoading"
-    @submit="authStore.authLogin"
-  />
+    @submit="handleLogin" />
 </template>

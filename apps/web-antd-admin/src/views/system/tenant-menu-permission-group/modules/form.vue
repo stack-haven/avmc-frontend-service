@@ -1,35 +1,27 @@
 <script lang="ts" setup>
-import type { DataNode } from 'ant-design-vue/es/tree';
-
 import type { Recordable } from '@vben/types';
 
-import type { ApiType, SystemMenuApi } from '#/api';
-import type { SystemMenuPermissionGroupApi } from '#/api/system/menu-permission-group';
+import type { SystemTenantTenantMenuPermissionGroupApi } from '#/api/system/tenant-menu-permission-group';
 
 import { computed, ref } from 'vue';
 
-import { useVbenDrawer, VbenTree } from '@vben/common-ui';
-import { IconifyIcon } from '@vben/icons';
+import { useVbenDrawer } from '@vben/common-ui';
 
-import { message, Spin } from 'ant-design-vue';
+import { message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getMenuList } from '#/api/system/menu';
 import {
-  createMenuPermissionGroup,
-  getMenuPermissionGroup,
-  updateMenuPermissionGroup,
-} from '#/api/system/menu-permission-group';
+  createTenantMenuPermissionGroup,
+  updateTenantMenuPermissionGroup,
+} from '#/api/system/tenant-menu-permission-group';
 import { $t } from '#/locales';
 
 import { useFormSchema } from '../data';
 
 const emits = defineEmits(['success']);
 
-const formData = ref<SystemMenuPermissionGroupApi.MenuPermissionGroup>();
+const formData = ref<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>();
 const id = ref<string>();
-const menus = ref<DataNode[]>([]);
-const loadingMenus = ref(false);
 
 const [Form, formApi] = useVbenForm({
   schema: useFormSchema(),
@@ -41,13 +33,14 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const { valid } = await formApi.validate();
     if (!valid) return;
     const values = (await formApi.getValues()) as Recordable<any>;
-    values.menuIds = (values.menuIds ?? []).map(Number);
+    // 菜单权限由独立模态框维护。编辑基础信息时必须保留原值，避免误清空。
+    values.menuIds = (formData.value?.menuIds ?? []).map(Number);
     try {
       values.apiPermissions = parseList(values.apiPermissionsText);
       values.featureFlags = parseBoolRecord(values.featureFlagsText);
       values.resourceQuotas = parseNumberRecord(values.resourceQuotasText);
     } catch {
-      message.warning($t('system.menuPermissionGroup.capabilityJsonInvalid'));
+      message.warning($t('system.tenantMenuPermissionGroup.capabilityJsonInvalid'));
       return;
     }
     delete values.apiPermissionsText;
@@ -55,16 +48,16 @@ const [Drawer, drawerApi] = useVbenDrawer({
     delete values.resourceQuotasText;
     drawerApi.lock();
     (id.value
-      ? updateMenuPermissionGroup(
+      ? updateTenantMenuPermissionGroup(
           id.value,
           values as Omit<
-            SystemMenuPermissionGroupApi.MenuPermissionGroup,
+            SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
             'id'
           >,
         )
-      : createMenuPermissionGroup(
+      : createTenantMenuPermissionGroup(
           values as Omit<
-            SystemMenuPermissionGroupApi.MenuPermissionGroup,
+            SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
             'id'
           >,
         )
@@ -80,57 +73,32 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onOpenChange(isOpen) {
     if (!isOpen) return;
     const data =
-      drawerApi.getData<SystemMenuPermissionGroupApi.MenuPermissionGroup>();
+      drawerApi.getData<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>();
     formApi.resetForm();
     if (data?.id) {
-      getMenuPermissionGroup(data.id).then((detail) => {
-        formData.value = detail;
-        formApi.setValues(toFormValues(detail));
-      });
+      formData.value = data;
       id.value = data.id;
+      formApi.setValues(toFormValues(data));
     } else {
       formData.value = undefined;
       id.value = undefined;
       formApi.setValues({
         apiPermissionsText: '',
         featureFlagsText: '{}',
-        menuIds: [],
         resourceQuotasText: '{}',
       });
-    }
-    if (menus.value.length === 0) {
-      loadMenus();
     }
   },
 });
 
-async function loadMenus() {
-  loadingMenus.value = true;
-  try {
-    const res =
-      (await getMenuList()) as ApiType.ListResponse<SystemMenuApi.SystemMenu>;
-    menus.value = res.items as unknown as DataNode[];
-  } finally {
-    loadingMenus.value = false;
-  }
-}
-
 const drawerTitle = computed(() => {
   return formData.value?.id
-    ? $t('common.edit', $t('system.menuPermissionGroup.name'))
-    : $t('common.create', $t('system.menuPermissionGroup.name'));
+    ? $t('common.edit', $t('system.tenantMenuPermissionGroup.name'))
+    : $t('common.create', $t('system.tenantMenuPermissionGroup.name'));
 });
 
-function getNodeClass(node: Recordable<any>) {
-  const classes: string[] = [];
-  if (node.value?.type === 'MENU_TYPE_BUTTON') {
-    classes.push('inline-flex');
-  }
-  return classes.join(' ');
-}
-
 function toFormValues(
-  detail: SystemMenuPermissionGroupApi.MenuPermissionGroup,
+  detail: SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
 ) {
   return {
     ...detail,
@@ -170,27 +138,14 @@ function parseNumberRecord(value: unknown): Record<string, number> {
 
 <template>
   <Drawer :title="drawerTitle">
-    <Form>
-      <template #menuIds="slotProps">
-        <Spin :spinning="loadingMenus" wrapper-class-name="w-full">
-          <VbenTree
-            :tree-data="menus"
-            multiple
-            bordered
-            :default-expanded-level="2"
-            :get-node-class="getNodeClass"
-            v-bind="slotProps"
-            value-field="id"
-            label-field="meta.title"
-            icon-field="meta.icon"
-          >
-            <template #node="{ value }">
-              <IconifyIcon v-if="value.meta?.icon" :icon="value.meta.icon" />
-              {{ $t(value.meta?.title) }}
-            </template>
-          </VbenTree>
-        </Spin>
-      </template>
-    </Form>
+    <div class="mb-4 rounded-lg border border-border bg-muted/30 px-4 py-3">
+      <div class="text-sm font-medium">
+        {{ $t('system.tenantMenuPermissionGroup.basicInfo') }}
+      </div>
+      <div class="text-muted-foreground mt-1 text-xs leading-5">
+        {{ $t('system.tenantMenuPermissionGroup.basicInfoHint') }}
+      </div>
+    </div>
+    <Form />
   </Drawer>
 </template>

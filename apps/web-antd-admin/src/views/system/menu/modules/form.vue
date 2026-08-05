@@ -109,6 +109,17 @@ const schema: VbenFormSchema[] = [
     },
   },
   {
+    component: 'InputNumber',
+    componentProps: {
+      class: 'w-full',
+      max: 1000,
+      min: 0,
+    },
+    defaultValue: 10,
+    fieldName: 'meta.order',
+    label: $t('system.menu.order'),
+  },
+  {
     component: 'Input',
     componentProps() {
       // 不需要处理多语言时就无需这么做
@@ -470,6 +481,13 @@ const [Drawer, drawerApi] = useVbenDrawer({
       }
       if (data) {
         formData.value = data;
+        // Clear UNSPECIFIED enum values so selects don't display raw strings
+        if (data.meta) {
+          if (data.meta.badgeType === 'BADGE_TYPE_UNSPECIFIED')
+            data.meta.badgeType = undefined;
+          if (data.meta.badgeVariants === 'BADGE_VARIANTS_UNSPECIFIED')
+            data.meta.badgeVariants = undefined;
+        }
         formApi.setValues(formData.value);
         titleSuffix.value = formData.value.meta?.title
           ? $t(formData.value.meta.title)
@@ -496,6 +514,13 @@ async function onSubmit() {
       data.meta = { ...data.meta, iframeSrc: data.linkSrc };
     }
     delete data.linkSrc;
+    // Strip UNSPECIFIED enum values to avoid backend validation errors
+    if (data.meta) {
+      if (data.meta.badgeType === 'BADGE_TYPE_UNSPECIFIED')
+        delete data.meta.badgeType;
+      if (data.meta.badgeVariants === 'BADGE_VARIANTS_UNSPECIFIED')
+        delete data.meta.badgeVariants;
+    }
     try {
       await (formData.value?.id
         ? updateMenu(formData.value.id, data)

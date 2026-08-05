@@ -81,7 +81,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
       deptOptions.splice(
         0,
         deptOptions.length,
-        ...flattenDepartments(departments),
+        ...flattenDepartments(departments.items ?? []),
       );
       if (data) {
         id.value = data.id;

@@ -12,6 +12,16 @@ const routes: RouteRecordRaw[] = [
     name: 'System',
     path: '/system',
     children: [
+      // ===== 租户管理 =====
+      {
+        path: '/system/tenant',
+        name: 'SystemTenant',
+        meta: {
+          icon: 'mdi:office-building-cog-outline',
+          title: $t('system.tenant.title'),
+        },
+        component: () => import('#/views/system/tenant/list.vue'),
+      },
       // ===== 权限管理 =====
       {
         meta: { icon: 'mdi:shield-lock-outline', title: $t('system.permissionGroup') },
@@ -31,10 +41,10 @@ const routes: RouteRecordRaw[] = [
             component: () => import('#/views/system/menu/list.vue'),
           },
           {
-            path: '/system/menu-permission-group',
-            name: 'SystemMenuPermissionGroup',
-            meta: { icon: 'mdi:shield-key-outline', title: $t('system.menuPermissionGroup.title') },
-            component: () => import('#/views/system/menu-permission-group/list.vue'),
+            path: '/system/tenant-menu-permission-group',
+            name: 'SystemTenantMenuPermissionGroup',
+            meta: { icon: 'mdi:shield-key-outline', title: $t('system.tenantMenuPermissionGroup.title') },
+            component: () => import('#/views/system/tenant-menu-permission-group/list.vue'),
           },
         ],
       },
@@ -49,12 +59,6 @@ const routes: RouteRecordRaw[] = [
             name: 'SystemUser',
             meta: { icon: 'charm:organisation', title: $t('system.user.title') },
             component: () => import('#/views/system/user/list.vue'),
-          },
-          {
-            path: '/system/dept',
-            name: 'SystemDept',
-            meta: { icon: 'charm:organisation', title: $t('system.dept.title') },
-            component: () => import('#/views/system/dept/list.vue'),
           },
         ],
       },

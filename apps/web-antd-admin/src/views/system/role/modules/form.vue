@@ -14,7 +14,7 @@ import { IconifyIcon } from '@vben/icons';
 import { Spin } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
-import { getCurrentTenantEffectiveMenus } from '#/api/system/menu-permission-group';
+import { getCurrentTenantEffectiveMenus } from '#/api/system/tenant-menu-permission-group';
 import { getDeptList } from '#/api/system/dept';
 import { createRole, updateRole } from '#/api/system/role';
 import { $t } from '#/locales';
@@ -91,7 +91,8 @@ async function loadPermissions() {
 }
 
 async function loadDepartments() {
-  deptTree.value = await getDeptList();
+  const departments = await getDeptList();
+  deptTree.value = departments.items ?? [];
 }
 
 const getDrawerTitle = computed(() => {

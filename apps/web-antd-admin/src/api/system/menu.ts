@@ -7,6 +7,7 @@ import { requestClient } from '#/api/request';
 export namespace SystemMenuApi {
   /** 徽标颜色集合 */
   export const BadgeVariants = [
+    'BADGE_VARIANTS_UNSPECIFIED',
     'BADGE_VARIANTS_DEFAULT',
     'BADGE_VARIANTS_DESTRUCTIVE',
     'BADGE_VARIANTS_PRIMARY',
@@ -14,7 +15,7 @@ export namespace SystemMenuApi {
     'BADGE_VARIANTS_WARNING',
   ] as const;
   /** 徽标类型集合 */
-  export const BadgeTypes = ['BADGE_TYPE_DOT', 'BADGE_TYPE_NORMAL'] as const;
+  export const BadgeTypes = ['BADGE_TYPE_UNSPECIFIED', 'BADGE_TYPE_DOT', 'BADGE_TYPE_NORMAL'] as const;
   /** 菜单类型集合 */
   export const MenuTypes = [
     'MENU_TYPE_CATALOG',

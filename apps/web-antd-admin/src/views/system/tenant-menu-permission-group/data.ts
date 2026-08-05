@@ -1,6 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
-import type { SystemMenuPermissionGroupApi } from '#/api/system/menu-permission-group';
+import type { SystemTenantTenantMenuPermissionGroupApi } from '#/api/system/tenant-menu-permission-group';
 
 import { ApiType } from '#/api';
 import { $t } from '#/locales';
@@ -10,32 +10,25 @@ export function useFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'name',
-      label: $t('system.menuPermissionGroup.groupName'),
+      label: $t('system.tenantMenuPermissionGroup.groupName'),
       rules: 'required',
     },
     {
       component: 'Input',
       fieldName: 'code',
-      label: $t('system.menuPermissionGroup.code'),
+      label: $t('system.tenantMenuPermissionGroup.code'),
       rules: 'required',
     },
     {
       component: 'InputNumber',
       defaultValue: 10,
       fieldName: 'sort',
-      label: $t('system.menuPermissionGroup.sort'),
+      label: $t('system.tenantMenuPermissionGroup.sort'),
     },
     {
       component: 'Textarea',
       fieldName: 'description',
-      label: $t('system.menuPermissionGroup.description'),
-    },
-    {
-      component: 'Input',
-      fieldName: 'menuIds',
-      formItemClass: 'items-start',
-      label: $t('system.menuPermissionGroup.menus'),
-      modelPropName: 'modelValue',
+      label: $t('system.tenantMenuPermissionGroup.description'),
     },
     {
       component: 'Textarea',
@@ -43,7 +36,7 @@ export function useFormSchema(): VbenFormSchema[] {
         rows: 3,
       },
       fieldName: 'apiPermissionsText',
-      label: $t('system.menuPermissionGroup.apiPermissions'),
+      label: $t('system.tenantMenuPermissionGroup.apiPermissions'),
     },
     {
       component: 'Textarea',
@@ -51,7 +44,7 @@ export function useFormSchema(): VbenFormSchema[] {
         rows: 3,
       },
       fieldName: 'featureFlagsText',
-      label: $t('system.menuPermissionGroup.featureFlags'),
+      label: $t('system.tenantMenuPermissionGroup.featureFlags'),
     },
     {
       component: 'Textarea',
@@ -59,7 +52,7 @@ export function useFormSchema(): VbenFormSchema[] {
         rows: 3,
       },
       fieldName: 'resourceQuotasText',
-      label: $t('system.menuPermissionGroup.resourceQuotas'),
+      label: $t('system.tenantMenuPermissionGroup.resourceQuotas'),
     },
   ];
 }
@@ -69,12 +62,12 @@ export function useGridFormSchema(): VbenFormSchema[] {
     {
       component: 'Input',
       fieldName: 'name',
-      label: $t('system.menuPermissionGroup.groupName'),
+      label: $t('system.tenantMenuPermissionGroup.groupName'),
     },
     {
       component: 'Input',
       fieldName: 'code',
-      label: $t('system.menuPermissionGroup.code'),
+      label: $t('system.tenantMenuPermissionGroup.code'),
     },
     {
       component: 'Select',
@@ -83,13 +76,13 @@ export function useGridFormSchema(): VbenFormSchema[] {
         options: ApiType.StatusOptions(),
       },
       fieldName: 'status',
-      label: $t('system.menuPermissionGroup.status'),
+      label: $t('system.tenantMenuPermissionGroup.status'),
     },
   ];
 }
 
 export function useColumns<
-  T = SystemMenuPermissionGroupApi.MenuPermissionGroup,
+  T = SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
 >(
   onActionClick: OnActionClickFn<T>,
   onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
@@ -97,12 +90,12 @@ export function useColumns<
   return [
     {
       field: 'name',
-      title: $t('system.menuPermissionGroup.groupName'),
+      title: $t('system.tenantMenuPermissionGroup.groupName'),
       width: 180,
     },
     {
       field: 'code',
-      title: $t('system.menuPermissionGroup.code'),
+      title: $t('system.tenantMenuPermissionGroup.code'),
       width: 180,
     },
     {
@@ -112,36 +105,36 @@ export function useColumns<
         props: ApiType.SwitchOptions(),
       },
       field: 'status',
-      title: $t('system.menuPermissionGroup.status'),
+      title: $t('system.tenantMenuPermissionGroup.status'),
       width: 100,
     },
     {
       field: 'currentVersion',
       formatter: ({ cellValue }: { cellValue: number }) =>
         cellValue ? `v${cellValue}` : '-',
-      title: $t('system.menuPermissionGroup.currentVersion'),
+      title: $t('system.tenantMenuPermissionGroup.currentVersion'),
       width: 100,
     },
     {
       field: 'tenantCount',
-      title: $t('system.menuPermissionGroup.tenantCount'),
+      title: $t('system.tenantMenuPermissionGroup.tenantCount'),
       width: 120,
     },
     {
       field: 'apiPermissions',
       formatter: ({ cellValue }: { cellValue?: string[] }) =>
         cellValue?.length ?? 0,
-      title: $t('system.menuPermissionGroup.apiPermissionCount'),
+      title: $t('system.tenantMenuPermissionGroup.apiPermissionCount'),
       width: 120,
     },
     {
       field: 'description',
       minWidth: 180,
-      title: $t('system.menuPermissionGroup.description'),
+      title: $t('system.tenantMenuPermissionGroup.description'),
     },
     {
       field: 'createdAt',
-      title: $t('system.menuPermissionGroup.createTime'),
+      title: $t('system.tenantMenuPermissionGroup.createTime'),
       width: 180,
     },
     {
@@ -149,23 +142,27 @@ export function useColumns<
       cellRender: {
         attrs: {
           nameField: 'name',
-          nameTitle: $t('system.menuPermissionGroup.name'),
+          nameTitle: $t('system.tenantMenuPermissionGroup.name'),
           onClick: onActionClick,
-          options: [
-            {
-              code: 'versions',
-              text: $t('system.menuPermissionGroup.versions'),
-            },
-            { code: 'edit', text: $t('common.edit') },
-            { code: 'delete', text: $t('common.delete') },
-          ],
         },
         name: 'CellOperation',
+        options: [
+          {
+            code: 'menuPermissions',
+            text: $t('system.tenantMenuPermissionGroup.menuPermissionAction'),
+          },
+          {
+            code: 'versions',
+            text: $t('system.tenantMenuPermissionGroup.versions'),
+          },
+          { code: 'edit', text: $t('common.edit') },
+          { code: 'delete', text: $t('common.delete') },
+        ],
       },
       field: 'operation',
       fixed: 'right',
-      title: $t('system.menuPermissionGroup.operation'),
-      width: 220,
+      title: $t('system.tenantMenuPermissionGroup.operation'),
+      width: 290,
     },
   ];
 }

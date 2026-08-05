@@ -5,8 +5,8 @@ import type { SystemMenuApi } from './menu';
 
 import { requestClient } from '#/api/request';
 
-export namespace SystemMenuPermissionGroupApi {
-  export interface MenuPermissionGroup {
+export namespace SystemTenantTenantMenuPermissionGroupApi {
+  export interface TenantMenuPermissionGroup {
     id: string;
     name: string;
     code: string;
@@ -26,7 +26,7 @@ export namespace SystemMenuPermissionGroupApi {
     currentVersion?: number;
   }
 
-  export interface MenuPermissionGroupVersion {
+  export interface TenantTenantMenuPermissionGroupVersion {
     id: number;
     groupId: number;
     version: number;
@@ -53,55 +53,55 @@ export namespace SystemMenuPermissionGroupApi {
   }
 
   export interface TenantPermissionGroups {
-    groups: MenuPermissionGroup[];
+    groups: TenantMenuPermissionGroup[];
     groupIds: number[];
     bindings?: TenantPermissionGroupBinding[];
   }
 }
 
-async function getMenuPermissionGroupList(params?: Recordable<any>) {
+async function getTenantMenuPermissionGroupList(params?: Recordable<any>) {
   return requestClient.get<
-    ApiType.ListResponse<SystemMenuPermissionGroupApi.MenuPermissionGroup>
-  >('/menu-permission-groups', { params });
+    ApiType.ListResponse<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>
+  >('/tenant-menu-permission-groups', { params });
 }
 
-async function getMenuPermissionGroup(id: string) {
-  return requestClient.get<SystemMenuPermissionGroupApi.MenuPermissionGroup>(
-    `/menu-permission-groups/${id}`,
+async function getTenantMenuPermissionGroup(id: string) {
+  return requestClient.get<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>(
+    `/tenant-menu-permission-groups/${id}`,
   );
 }
 
-async function createMenuPermissionGroup(
-  data: Omit<SystemMenuPermissionGroupApi.MenuPermissionGroup, 'id'>,
+async function createTenantMenuPermissionGroup(
+  data: Omit<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'id'>,
 ) {
-  return requestClient.post('/menu-permission-groups', data);
+  return requestClient.post('/tenant-menu-permission-groups', data);
 }
 
-async function updateMenuPermissionGroup(
+async function updateTenantMenuPermissionGroup(
   id: string,
-  data: Omit<SystemMenuPermissionGroupApi.MenuPermissionGroup, 'id'>,
+  data: Omit<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'id'>,
 ) {
-  return requestClient.put(`/menu-permission-groups/${id}`, data);
+  return requestClient.put(`/tenant-menu-permission-groups/${id}`, data);
 }
 
-async function deleteMenuPermissionGroup(id: string) {
-  return requestClient.delete(`/menu-permission-groups/${id}`);
+async function deleteTenantMenuPermissionGroup(id: string) {
+  return requestClient.delete(`/tenant-menu-permission-groups/${id}`);
 }
 
-async function updateMenuPermissionGroupStatus(
+async function updateTenantMenuPermissionGroupStatus(
   id: string,
-  data: Pick<SystemMenuPermissionGroupApi.MenuPermissionGroup, 'status'>,
+  data: Pick<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'status'>,
 ) {
-  return requestClient.put(`/menu-permission-groups/status-update/${id}`, data);
+  return requestClient.put(`/tenant-menu-permission-groups/status-update/${id}`, data);
 }
 
-async function getMenuPermissionGroupVersions(groupId: string | number) {
+async function getTenantTenantMenuPermissionGroupVersions(groupId: string | number) {
   return requestClient.get<{
-    items: SystemMenuPermissionGroupApi.MenuPermissionGroupVersion[];
-  }>(`/menu-permission-groups/${groupId}/versions`);
+    items: SystemTenantTenantMenuPermissionGroupApi.TenantTenantMenuPermissionGroupVersion[];
+  }>(`/tenant-menu-permission-groups/${groupId}/versions`);
 }
 
-async function publishMenuPermissionGroupVersion(
+async function publishTenantTenantMenuPermissionGroupVersion(
   groupId: string | number,
   data: {
     apiPermissions?: string[];
@@ -112,7 +112,7 @@ async function publishMenuPermissionGroupVersion(
   },
 ) {
   return requestClient.post(
-    `/menu-permission-groups/${groupId}/versions:publish`,
+    `/tenant-menu-permission-groups/${groupId}/versions:publish`,
     {
       ...data,
       groupId: Number(groupId),
@@ -120,12 +120,12 @@ async function publishMenuPermissionGroupVersion(
   );
 }
 
-async function rollbackMenuPermissionGroupVersion(
+async function rollbackTenantTenantMenuPermissionGroupVersion(
   groupId: string | number,
   sourceVersionId: number,
 ) {
   return requestClient.post(
-    `/menu-permission-groups/${groupId}/versions:rollback`,
+    `/tenant-menu-permission-groups/${groupId}/versions:rollback`,
     {
       changeSummary: `Rollback from version ${sourceVersionId}`,
       groupId: Number(groupId),
@@ -135,7 +135,7 @@ async function rollbackMenuPermissionGroupVersion(
 }
 
 async function getTenantPermissionGroups(tenantId: string) {
-  return requestClient.get<SystemMenuPermissionGroupApi.TenantPermissionGroups>(
+  return requestClient.get<SystemTenantTenantMenuPermissionGroupApi.TenantPermissionGroups>(
     `/tenants/${tenantId}/permission-groups`,
   );
 }
@@ -178,18 +178,18 @@ async function updateTenantPermissionGroupVersion(
 }
 
 export {
-  createMenuPermissionGroup,
-  deleteMenuPermissionGroup,
+  createTenantMenuPermissionGroup,
+  deleteTenantMenuPermissionGroup,
   getCurrentTenantEffectiveMenus,
-  getMenuPermissionGroup,
-  getMenuPermissionGroupList,
-  getMenuPermissionGroupVersions,
+  getTenantMenuPermissionGroup,
+  getTenantMenuPermissionGroupList,
+  getTenantTenantMenuPermissionGroupVersions,
   getTenantEffectiveMenus,
   getTenantPermissionGroups,
-  publishMenuPermissionGroupVersion,
-  rollbackMenuPermissionGroupVersion,
-  updateMenuPermissionGroup,
-  updateMenuPermissionGroupStatus,
+  publishTenantTenantMenuPermissionGroupVersion,
+  rollbackTenantTenantMenuPermissionGroupVersion,
+  updateTenantMenuPermissionGroup,
+  updateTenantMenuPermissionGroupStatus,
   updateTenantPermissionGroups,
   updateTenantPermissionGroupVersion,
 };

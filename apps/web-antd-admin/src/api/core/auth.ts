@@ -57,17 +57,14 @@ export async function refreshTokenApi(refreshToken: string) {
  * 退出登录
  */
 export async function logoutApi() {
-  return requestClient.post('/auth/logout');
+  return requestClient.post('/auth/logout', {});
 }
 
 /**
  * 登录-用户名密码登录
  */
 export async function loginPasswordApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login/password', {
-    tenantId: 1,
-    ...data,
-  });
+  return requestClient.post<AuthApi.LoginResult>('/auth/login/password', data);
 }
 
 /**

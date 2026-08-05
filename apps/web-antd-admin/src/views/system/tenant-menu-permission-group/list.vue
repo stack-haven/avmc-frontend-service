@@ -3,8 +3,7 @@ import type {
   OnActionClickParams,
   VxeTableGridOptions,
 } from '#/adapter/vxe-table';
-import type { SystemMenuPermissionGroupApi } from '#/api/system/menu-permission-group';
-import type { SystemMenuApi } from '#/api/system/menu';
+import type { SystemTenantTenantMenuPermissionGroupApi } from '#/api/system/tenant-menu-permission-group';
 import type { Recordable } from '@vben/types';
 
 import { ref } from 'vue';
@@ -17,7 +16,6 @@ import {
   Input,
   message,
   Modal,
-  Select,
   Space,
   Table,
   Tag,
@@ -26,32 +24,33 @@ import {
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { ApiType } from '#/api';
 import {
-  deleteMenuPermissionGroup,
-  getMenuPermissionGroupVersions,
-  getMenuPermissionGroupList,
-  publishMenuPermissionGroupVersion,
-  rollbackMenuPermissionGroupVersion,
-  updateMenuPermissionGroupStatus,
-} from '#/api/system/menu-permission-group';
+  deleteTenantMenuPermissionGroup,
+  getTenantTenantMenuPermissionGroupVersions,
+  getTenantMenuPermissionGroupList,
+  publishTenantTenantMenuPermissionGroupVersion,
+  rollbackTenantTenantMenuPermissionGroupVersion,
+  updateTenantMenuPermissionGroupStatus,
+} from '#/api/system/tenant-menu-permission-group';
 import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+import MenuPermissionModal from './modules/menu-permission-modal.vue';
 
 const versionModalOpen = ref(false);
 const publishModalOpen = ref(false);
-const selectedGroup = ref<SystemMenuPermissionGroupApi.MenuPermissionGroup>();
-const versions = ref<SystemMenuPermissionGroupApi.MenuPermissionGroupVersion[]>(
+const selectedGroup = ref<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>();
+const versions = ref<SystemTenantTenantMenuPermissionGroupApi.TenantTenantMenuPermissionGroupVersion[]>(
   [],
 );
 const versionLoading = ref(false);
 const publishLoading = ref(false);
-const publishMenuIds = ref<number[]>([]);
 const publishSummary = ref('');
 const publishApiPermissionsText = ref('');
 const publishFeatureFlagsText = ref('{}');
 const publishResourceQuotasText = ref('{}');
-const menuOptions = ref<{ label: string; value: number }[]>([]);
+const menuPermissionOpen = ref(false);
+const menuPermissionGroup = ref<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>();
 
 const [FormDrawer, formDrawerApi] = useVbenDrawer({
   connectedComponent: Form,
@@ -70,7 +69,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }, formValues) => {
-          return await getMenuPermissionGroupList({
+          return await getTenantMenuPermissionGroupList({
             page: page.currentPage,
             pageSize: page.pageSize,
             ...formValues,
@@ -91,11 +90,11 @@ const [Grid, gridApi] = useVbenVxeGrid({
       search: true,
       zoom: true,
     },
-  } as VxeTableGridOptions<SystemMenuPermissionGroupApi.MenuPermissionGroup>,
+  } as VxeTableGridOptions<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>,
 });
 
 function onActionClick(
-  e: OnActionClickParams<SystemMenuPermissionGroupApi.MenuPermissionGroup>,
+  e: OnActionClickParams<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>,
 ) {
   switch (e.code) {
     case 'delete': {
@@ -106,6 +105,10 @@ function onActionClick(
       onEdit(e.row);
       break;
     }
+    case 'menuPermissions': {
+      openMenuPermissions(e.row);
+      break;
+    }
     case 'versions': {
       openVersions(e.row);
       break;
@@ -114,13 +117,13 @@ function onActionClick(
 }
 
 async function openVersions(
-  row: SystemMenuPermissionGroupApi.MenuPermissionGroup,
+  row: SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
 ) {
   selectedGroup.value = row;
   versionModalOpen.value = true;
   versionLoading.value = true;
   try {
-    const res = await getMenuPermissionGroupVersions(row.id);
+    const res = await getTenantTenantMenuPermissionGroupVersions(row.id);
     versions.value = res.items ?? [];
   } finally {
     versionLoading.value = false;
@@ -129,20 +132,6 @@ async function openVersions(
 
 async function openPublish() {
   if (!selectedGroup.value) return;
-  if (menuOptions.value.length === 0) {
-    const { getMenuList } = await import('#/api/system/menu');
-    const res = await getMenuList();
-    const items = Array.isArray(res) ? res : (res.items ?? []);
-    const flatten = (
-      menus: SystemMenuApi.SystemMenu[],
-    ): SystemMenuApi.SystemMenu[] =>
-      menus.flatMap((item) => [item, ...flatten(item.children ?? [])]);
-    menuOptions.value = flatten(items).map((item) => ({
-      label: item.meta?.title ?? item.name,
-      value: Number(item.id),
-    }));
-  }
-  publishMenuIds.value = selectedGroup.value.menuIds?.map(Number) ?? [];
   publishSummary.value = '';
   publishApiPermissionsText.value = (
     selectedGroup.value.apiPermissions ?? []
@@ -161,8 +150,9 @@ async function openPublish() {
 }
 
 async function publishVersion() {
-  if (!selectedGroup.value || publishMenuIds.value.length === 0) {
-    message.warning($t('system.menuPermissionGroup.menuRequired'));
+  const menuIds = selectedGroup.value?.menuIds?.map(Number) ?? [];
+  if (!selectedGroup.value || menuIds.length === 0) {
+    message.warning($t('system.tenantMenuPermissionGroup.menuRequired'));
     return;
   }
   let apiPermissions: string[];
@@ -173,16 +163,16 @@ async function publishVersion() {
     featureFlags = parseBoolRecord(publishFeatureFlagsText.value);
     resourceQuotas = parseNumberRecord(publishResourceQuotasText.value);
   } catch {
-    message.warning($t('system.menuPermissionGroup.capabilityJsonInvalid'));
+    message.warning($t('system.tenantMenuPermissionGroup.capabilityJsonInvalid'));
     return;
   }
   publishLoading.value = true;
   try {
-    await publishMenuPermissionGroupVersion(selectedGroup.value.id, {
+    await publishTenantTenantMenuPermissionGroupVersion(selectedGroup.value.id, {
       apiPermissions,
       changeSummary: publishSummary.value,
       featureFlags,
-      menuIds: publishMenuIds.value,
+      menuIds,
       resourceQuotas,
     });
     publishModalOpen.value = false;
@@ -221,18 +211,18 @@ function parseNumberRecord(value: unknown): Record<string, number> {
 }
 
 async function rollbackVersion(
-  version: SystemMenuPermissionGroupApi.MenuPermissionGroupVersion,
+  version: SystemTenantTenantMenuPermissionGroupApi.TenantTenantMenuPermissionGroupVersion,
 ) {
   if (!selectedGroup.value) return;
-  await rollbackMenuPermissionGroupVersion(selectedGroup.value.id, version.id);
-  message.success($t('system.menuPermissionGroup.rollbackSuccess'));
+  await rollbackTenantTenantMenuPermissionGroupVersion(selectedGroup.value.id, version.id);
+  message.success($t('system.tenantMenuPermissionGroup.rollbackSuccess'));
   await openVersions(selectedGroup.value);
   onRefresh();
 }
 
 function rollbackVersionRecord(record: Recordable<any>) {
   return rollbackVersion(
-    record as SystemMenuPermissionGroupApi.MenuPermissionGroupVersion,
+    record as SystemTenantTenantMenuPermissionGroupApi.TenantTenantMenuPermissionGroupVersion,
   );
 }
 
@@ -253,37 +243,44 @@ function confirm(content: string, title: string) {
 
 async function onStatusChange(
   newStatus: string,
-  row: SystemMenuPermissionGroupApi.MenuPermissionGroup,
+  row: SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
 ) {
   const status = ApiType.StatusOptions().find(
     (item) => item.value === newStatus,
   );
   try {
     await confirm(
-      $t('system.menuPermissionGroup.statusChangeConfirm', [
+      $t('system.tenantMenuPermissionGroup.statusChangeConfirm', [
         row.name,
         status?.label,
       ]),
-      $t('system.menuPermissionGroup.statusChangeTitle'),
+      $t('system.tenantMenuPermissionGroup.statusChangeTitle'),
     );
-    await updateMenuPermissionGroupStatus(row.id, { status: newStatus });
+    await updateTenantMenuPermissionGroupStatus(row.id, { status: newStatus });
     return true;
   } catch {
     return false;
   }
 }
 
-function onEdit(row: SystemMenuPermissionGroupApi.MenuPermissionGroup) {
+function onEdit(row: SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup) {
   formDrawerApi.setData(row).open();
 }
 
-function onDelete(row: SystemMenuPermissionGroupApi.MenuPermissionGroup) {
+function openMenuPermissions(
+  row: SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup,
+) {
+  menuPermissionGroup.value = row;
+  menuPermissionOpen.value = true;
+}
+
+function onDelete(row: SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup) {
   const hideLoading = message.loading({
     content: $t('ui.actionMessage.deleting', [row.name]),
     duration: 0,
     key: 'action_process_msg',
   });
-  deleteMenuPermissionGroup(row.id)
+  deleteTenantMenuPermissionGroup(row.id)
     .then(() => {
       message.success({
         content: $t('ui.actionMessage.deleteSuccess', [row.name]),
@@ -308,12 +305,17 @@ function onCreate() {
 <template>
   <Page auto-content-height>
     <FormDrawer @success="onRefresh" />
-    <Grid :table-title="$t('system.menuPermissionGroup.list')">
+    <MenuPermissionModal
+      v-model:open="menuPermissionOpen"
+      :group="menuPermissionGroup"
+      @success="onRefresh"
+    />
+    <Grid :table-title="$t('system.tenantMenuPermissionGroup.list')">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
           <Plus class="size-5" />
           {{
-            $t('ui.actionTitle.create', [$t('system.menuPermissionGroup.name')])
+            $t('ui.actionTitle.create', [$t('system.tenantMenuPermissionGroup.name')])
           }}
         </Button>
       </template>
@@ -321,44 +323,44 @@ function onCreate() {
     <Modal
       v-model:open="versionModalOpen"
       :footer="null"
-      :title="$t('system.menuPermissionGroup.versionHistory')"
+      :title="$t('system.tenantMenuPermissionGroup.versionHistory')"
       width="820px"
     >
       <div class="mb-4 flex justify-end">
         <Button type="primary" @click="openPublish">
           <Plus class="size-4" />
-          {{ $t('system.menuPermissionGroup.publishVersion') }}
+          {{ $t('system.tenantMenuPermissionGroup.publishVersion') }}
         </Button>
       </div>
       <Table
         :columns="[
           {
             dataIndex: 'version',
-            title: $t('system.menuPermissionGroup.version'),
+            title: $t('system.tenantMenuPermissionGroup.version'),
             width: 90,
           },
           {
             dataIndex: 'state',
-            title: $t('system.menuPermissionGroup.versionState'),
+            title: $t('system.tenantMenuPermissionGroup.versionState'),
             width: 110,
           },
           {
             dataIndex: 'menuIds',
-            title: $t('system.menuPermissionGroup.menuCount'),
+            title: $t('system.tenantMenuPermissionGroup.menuCount'),
             width: 100,
           },
           {
             dataIndex: 'changeSummary',
-            title: $t('system.menuPermissionGroup.changeSummary'),
+            title: $t('system.tenantMenuPermissionGroup.changeSummary'),
           },
           {
             dataIndex: 'publishedAt',
-            title: $t('system.menuPermissionGroup.publishedAt'),
+            title: $t('system.tenantMenuPermissionGroup.publishedAt'),
             width: 180,
           },
           {
             key: 'action',
-            title: $t('common.action'),
+            title: $t('system.tenantMenuPermissionGroup.operation'),
             width: 100,
           },
         ]"
@@ -375,8 +377,8 @@ function onCreate() {
           <template v-else-if="column.dataIndex === 'state'">
             {{
               record.state === 1
-                ? $t('system.menuPermissionGroup.published')
-                : $t('system.menuPermissionGroup.superseded')
+                ? $t('system.tenantMenuPermissionGroup.published')
+                : $t('system.tenantMenuPermissionGroup.superseded')
             }}
           </template>
           <template v-else-if="column.dataIndex === 'menuIds'">
@@ -389,7 +391,7 @@ function onCreate() {
               type="link"
               @click="rollbackVersionRecord(record)"
             >
-              {{ $t('system.menuPermissionGroup.rollback') }}
+              {{ $t('system.tenantMenuPermissionGroup.rollback') }}
             </Button>
           </template>
         </template>
@@ -398,34 +400,39 @@ function onCreate() {
     <Modal
       v-model:open="publishModalOpen"
       :confirm-loading="publishLoading"
-      :title="$t('system.menuPermissionGroup.publishVersion')"
+      :title="$t('system.tenantMenuPermissionGroup.publishVersion')"
       @ok="publishVersion"
     >
       <Space class="w-full" direction="vertical" size="middle">
-        <Select
-          v-model:value="publishMenuIds"
-          :options="menuOptions"
-          class="w-full"
-          mode="multiple"
-          :placeholder="$t('system.menuPermissionGroup.menus')"
-        />
+        <div class="rounded-lg border border-border bg-muted/30 px-4 py-3">
+          <div class="text-sm font-medium">
+            {{ $t('system.tenantMenuPermissionGroup.menuPermissionTitle') }}
+          </div>
+          <div class="text-muted-foreground mt-1 text-xs">
+            {{
+              $t('system.tenantMenuPermissionGroup.publishMenuSummary', [
+                selectedGroup?.menuIds?.length ?? 0,
+              ])
+            }}
+          </div>
+        </div>
         <Input
           v-model:value="publishSummary"
-          :placeholder="$t('system.menuPermissionGroup.changeSummary')"
+          :placeholder="$t('system.tenantMenuPermissionGroup.changeSummary')"
         />
         <Input.TextArea
           v-model:value="publishApiPermissionsText"
-          :placeholder="$t('system.menuPermissionGroup.apiPermissions')"
+          :placeholder="$t('system.tenantMenuPermissionGroup.apiPermissions')"
           :rows="3"
         />
         <Input.TextArea
           v-model:value="publishFeatureFlagsText"
-          :placeholder="$t('system.menuPermissionGroup.featureFlags')"
+          :placeholder="$t('system.tenantMenuPermissionGroup.featureFlags')"
           :rows="3"
         />
         <Input.TextArea
           v-model:value="publishResourceQuotasText"
-          :placeholder="$t('system.menuPermissionGroup.resourceQuotas')"
+          :placeholder="$t('system.tenantMenuPermissionGroup.resourceQuotas')"
           :rows="3"
         />
       </Space>
