@@ -141,6 +141,17 @@
     "statusChangeTitle": "Switch Package Status",
     "statusChangeConfirm": "Switch {0} status to [{1}]? This affects bound tenants."
   },
+  "post": {
+    "title": "Position Management",
+    "list": "Position List",
+    "name": "Position",
+    "postName": "Position Name",
+    "sort": "Sort",
+    "status": "Status",
+    "remark": "Remark",
+    "createTime": "Created At",
+    "operation": "Operation"
+  },
   "dictionary": {
     "title": "Data Dictionary",
     "list": "Dictionary Types",

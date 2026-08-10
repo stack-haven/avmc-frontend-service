@@ -60,6 +60,12 @@ const routes: RouteRecordRaw[] = [
             meta: { icon: 'charm:organisation', title: $t('system.user.title') },
             component: () => import('#/views/system/user/list.vue'),
           },
+          {
+            path: '/system/post',
+            name: 'SystemPost',
+            meta: { icon: 'mdi:badge-account-outline', title: $t('system.post.title') },
+            component: () => import('#/views/system/post/list.vue'),
+          },
         ],
       },
       // ===== 项目管理 =====
