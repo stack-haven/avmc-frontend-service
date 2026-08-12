@@ -27,6 +27,12 @@ async function getRoleList(params?: Recordable<any>) {
   });
 }
 
+async function getRoleSimpleList(params?: Recordable<any>) {
+  return requestClient.get<ApiType.ListResponse<SystemRoleApi.SystemRole>>('/roles/simple', {
+    params,
+  });
+}
+
 /**
  * 创建角色
  * @param data 角色数据
@@ -74,4 +80,4 @@ async function updateRoleStatus(
   return requestClient.put(`/roles/status-update/${id}`, data);
 }
 
-export { createRole, deleteRole, getRoleList, updateRole, updateRoleStatus };
+export { createRole, deleteRole, getRoleList, getRoleSimpleList, updateRole, updateRoleStatus };

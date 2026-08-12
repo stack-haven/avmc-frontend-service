@@ -139,8 +139,7 @@ function confirmPasswordReset() {
     :open="open"
     :title="$t('system.tenant.adminManagerTitle')"
     width="min(820px, calc(100vw - 32px))"
-    @cancel="close"
-  >
+    @cancel="close">
     <div class="space-y-4">
       <div class="rounded-xl border border-border bg-muted/30 px-4 py-3">
         <div class="flex flex-wrap items-center gap-2">
@@ -153,12 +152,11 @@ function confirmPasswordReset() {
       </div>
 
       <Spin :spinning="loading">
-        <div v-if="admins.length" class="space-y-3">
+        <div v-if="admins.length > 0" class="space-y-3">
           <article
             v-for="admin in admins"
             :key="admin.id"
-            class="rounded-xl border border-border bg-background p-4 transition-shadow hover:shadow-sm"
-          >
+            class="rounded-xl border border-border bg-background p-4 transition-shadow hover:shadow-sm">
             <div class="flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
               <div class="min-w-0">
                 <div class="flex flex-wrap items-center gap-2">
@@ -192,14 +190,12 @@ function confirmPasswordReset() {
     v-model:open="editOpen"
     :confirm-loading="saving"
     :title="$t('system.tenant.adminEditTitle')"
-    @ok="saveProfile"
-  >
+    @ok="saveProfile">
     <Alert
       class="mb-4"
       :message="$t('system.tenant.adminIdentityReadonly', [activeAdmin?.name ?? ''])"
       show-icon
-      type="info"
-    />
+      type="info"/>
     <Form layout="vertical">
       <FormItem :label="$t('system.tenant.adminRealname')">
         <Input v-model:value="editValues.realname" :maxlength="50" />
@@ -218,14 +214,12 @@ function confirmPasswordReset() {
     :confirm-loading="saving"
     :ok-button-props="{ disabled: !passwordStrong || !passwordMatches, danger: true }"
     :title="$t('system.tenant.adminResetPasswordTitle')"
-    @ok="confirmPasswordReset"
-  >
+    @ok="confirmPasswordReset">
     <Alert
       class="mb-4"
       :message="$t('system.tenant.adminPasswordImpact', [activeAdmin?.name ?? ''])"
       show-icon
-      type="warning"
-    />
+      type="warning"/>
     <Form layout="vertical">
       <FormItem :label="$t('system.tenant.adminNewPassword')">
         <Input.Password v-model:value="passwordValues.newPassword" autocomplete="new-password" />

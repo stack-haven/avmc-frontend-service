@@ -52,13 +52,6 @@ export function useFormSchema(): VbenFormSchema[] {
       fieldName: 'remark',
       label: $t('system.role.remark'),
     },
-    {
-      component: 'Input',
-      fieldName: 'menuIds',
-      formItemClass: 'items-start',
-      label: $t('system.role.setPermissions'),
-      modelPropName: 'modelValue',
-    },
   ];
 }
 
@@ -141,26 +134,26 @@ export function useColumns<T = SystemRoleApi.SystemRole>(
           nameField: 'name',
           nameTitle: $t('system.role.name'),
           onClick: onActionClick,
-          options: [
-            {
-              code: 'edit',
-              show: (row: SystemRoleApi.SystemRole) => !row.isTenantAdmin,
-              text: $t('common.edit'),
-            },
-            {
-              code: 'delete',
-              danger: true,
-              show: (row: SystemRoleApi.SystemRole) => !row.isTenantAdmin,
-              text: $t('common.delete'),
-            },
-          ],
         },
         name: 'CellOperation',
+        options: [
+          { code: 'edit', text: $t('common.edit') },
+          {
+            code: 'menuPermissions',
+            text: $t('system.role.configureMenus'),
+          },
+          {
+            code: 'delete',
+            danger: true,
+            disabled: (row: SystemRoleApi.SystemRole) => row.isTenantAdmin,
+            text: $t('common.delete'),
+          },
+        ],
       },
       field: 'operation',
       fixed: 'right',
       title: $t('system.role.operation'),
-      width: 130,
+      width: 260,
     },
   ];
 }

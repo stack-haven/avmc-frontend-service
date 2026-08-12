@@ -2,13 +2,15 @@ import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 import type { SystemUserApi } from '#/api';
 
-import { ApiType } from '#/api';
+import { reactive } from 'vue';
+
+import { ApiType, getDeptList } from '#/api';
 import { $t } from '#/locales';
 
-export function useFormSchema(
-  roleOptions: Array<{ label: string; value: number }>,
-  deptOptions: Array<{ label: string; value: number }>,
-): VbenFormSchema[] {
+/** 模块级部门名称映射表，由 list.vue 在加载部门树后写入 */
+export const deptNameMap = reactive<Record<number, string>>({});
+
+export function useFormSchema(): VbenFormSchema[] {
   return [
     {
       component: 'Input',
@@ -53,11 +55,18 @@ export function useFormSchema(
       label: $t('system.user.birthday'),
     },
     {
-      component: 'Select',
+      component: 'ApiTreeSelect',
       componentProps: {
         allowClear: true,
-        options: deptOptions,
+        api: getDeptList,
+        childrenField: 'children',
+        class: 'w-full',
+        labelField: 'name',
         placeholder: $t('system.user.deptPlaceholder'),
+        resultField: 'items',
+        showSearch: true,
+        treeDefaultExpandAll: true,
+        valueField: 'id',
       },
       fieldName: 'deptId',
       label: $t('system.user.department'),
@@ -69,20 +78,11 @@ export function useFormSchema(
         options: [
           { label: $t('system.user.genderMale'), value: 'GENDER_MALE' },
           { label: $t('system.user.genderFemale'), value: 'GENDER_FEMALE' },
+          { label: $t('system.user.genderUnknown'), value: 'GENDER_UNSPECIFIED' },
         ],
       },
       fieldName: 'gender',
       label: $t('system.user.gender'),
-    },
-    {
-      component: 'Select',
-      componentProps: {
-        mode: 'multiple',
-        options: roleOptions,
-        placeholder: $t('system.user.rolePlaceholder'),
-      },
-      fieldName: 'roleIds',
-      label: $t('system.user.roles'),
     },
     {
       component: 'RadioGroup',
@@ -97,6 +97,7 @@ export function useFormSchema(
     },
     {
       component: 'Textarea',
+      formItemClass: 'form-field-textarea',
       fieldName: 'description',
       label: $t('system.user.description'),
     },
@@ -131,7 +132,6 @@ export function useGridFormSchema(): VbenFormSchema[] {
 export function useColumns<T = SystemUserApi.SystemUser>(
   onActionClick: OnActionClickFn<T>,
   onStatusChange?: (newStatus: any, row: T) => PromiseLike<boolean | undefined>,
-  getDeptName?: (deptId?: number) => string,
 ): VxeTableGridOptions['columns'] {
   return [
     {
@@ -147,7 +147,8 @@ export function useColumns<T = SystemUserApi.SystemUser>(
     },
     {
       field: 'deptId',
-      formatter: ({ cellValue }) => getDeptName?.(cellValue) || '-',
+      formatter: ({ cellValue }: { cellValue: number }) =>
+        deptNameMap[cellValue] || '-',
       title: $t('system.user.department'),
       width: 160,
     },
@@ -188,11 +189,22 @@ export function useColumns<T = SystemUserApi.SystemUser>(
           onClick: onActionClick,
         },
         name: 'CellOperation',
+        options: [
+          { code: 'edit', text: $t('system.user.editProfile') },
+          {
+            code: 'roles',
+            ghost: true,
+            icon: 'mdi:account-key-outline',
+            text: $t('system.user.configureRoles'),
+            type: 'primary',
+          },
+          { code: 'delete', danger: true, text: $t('common.delete') },
+        ],
       },
       field: 'operation',
       fixed: 'right',
       title: $t('system.user.operation'),
-      width: 130,
+      width: 300,
     },
   ];
 }

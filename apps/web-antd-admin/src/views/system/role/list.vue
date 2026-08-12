@@ -5,6 +5,8 @@ import type {
 } from '#/adapter/vxe-table';
 import type { SystemRoleApi } from '#/api';
 
+import { ref } from 'vue';
+
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
 
@@ -16,11 +18,15 @@ import { $t } from '#/locales';
 
 import { useColumns, useGridFormSchema } from './data';
 import Form from './modules/form.vue';
+import MenuPermissionModal from './modules/menu-permission-modal.vue';
 
 const [FormDrawer, formDrawerApi] = useVbenDrawer({
   connectedComponent: Form,
   destroyOnClose: true,
 });
+
+const menuPermissionOpen = ref(false);
+const menuPermissionRole = ref<SystemRoleApi.SystemRole>();
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: {
@@ -71,6 +77,11 @@ function onActionClick(e: OnActionClickParams<SystemRoleApi.SystemRole>) {
       onEdit(e.row);
       break;
     }
+    case 'menuPermissions': {
+      menuPermissionRole.value = e.row;
+      menuPermissionOpen.value = true;
+      break;
+    }
   }
 }
 
@@ -113,8 +124,8 @@ async function onStatusChange(
   );
   try {
     await confirm(
-      `你要将${row.name}的状态切换为 【${status?.label}】 吗？`,
-      `切换状态`,
+      $t('system.role.statusChangeConfirm', [row.name, status?.label]),
+      $t('system.role.statusChangeTitle'),
     );
     await updateRoleStatus(row.id, { status: newStatus });
     return true;
@@ -157,6 +168,11 @@ function onCreate() {
 <template>
   <Page auto-content-height>
     <FormDrawer />
+    <MenuPermissionModal
+      v-model:open="menuPermissionOpen"
+      :role="menuPermissionRole"
+      @success="onRefresh"
+    />
     <Grid :table-title="$t('system.role.list')">
       <template #toolbar-tools>
         <Button type="primary" @click="onCreate">
