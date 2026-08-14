@@ -1,0 +1,50 @@
+{
+  "title": "语音智能引擎",
+  "dictionary": {
+    "title": "字典中心",
+    "list": "字典词列表",
+    "word": "标准词",
+    "level": "字典层级",
+    "category": "实体分类",
+    "source": "来源",
+    "priority": "优先级",
+    "aliases": "别名",
+    "alias": "别名",
+    "aliasPlaceholder": "多个别名用英文逗号分隔",
+    "operation": "操作"
+  },
+  "hotword": {
+    "title": "热词管理",
+    "list": "热词列表",
+    "word": "热词原文",
+    "target": "期望识别结果",
+    "weight": "权重",
+    "category": "分类",
+    "operation": "操作"
+  },
+  "provider": {
+    "title": "供应商管理",
+    "list": "供应商列表",
+    "name": "供应商",
+    "deploymentMode": "部署方式",
+    "streaming": "流式",
+    "hotwordSupport": "热词支持",
+    "config": "租户配置",
+    "providerName": "供应商名称",
+    "isActive": "启用",
+    "configJson": "连接配置 JSON",
+    "sampleRate": "采样率",
+    "language": "语言",
+    "operation": "操作"
+  },
+  "asr": {
+    "title": "语音识别",
+    "records": "识别记录",
+    "sessionId": "会话ID",
+    "rawText": "识别文本",
+    "confidence": "置信度",
+    "engine": "引擎",
+    "createdAt": "识别时间",
+    "operation": "操作"
+  }
+}

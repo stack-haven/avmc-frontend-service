@@ -1,0 +1,50 @@
+{
+  "title": "Voice Intelligence",
+  "dictionary": {
+    "title": "Dictionary",
+    "list": "Dictionary Words",
+    "word": "Word",
+    "level": "Level",
+    "category": "Category",
+    "source": "Source",
+    "priority": "Priority",
+    "aliases": "Aliases",
+    "alias": "Alias",
+    "aliasPlaceholder": "Separate aliases with comma",
+    "operation": "Operation"
+  },
+  "hotword": {
+    "title": "Hotwords",
+    "list": "Hotword List",
+    "word": "Word",
+    "target": "Target",
+    "weight": "Weight",
+    "category": "Category",
+    "operation": "Operation"
+  },
+  "provider": {
+    "title": "Providers",
+    "list": "Provider List",
+    "name": "Provider",
+    "deploymentMode": "Deployment",
+    "streaming": "Streaming",
+    "hotwordSupport": "Hotword",
+    "config": "Tenant Config",
+    "providerName": "Provider Name",
+    "isActive": "Active",
+    "configJson": "Config JSON",
+    "sampleRate": "Sample Rate",
+    "language": "Language",
+    "operation": "Operation"
+  },
+  "asr": {
+    "title": "Speech Recognition",
+    "records": "ASR Records",
+    "sessionId": "Session ID",
+    "rawText": "Text",
+    "confidence": "Confidence",
+    "engine": "Engine",
+    "createdAt": "Time",
+    "operation": "Operation"
+  }
+}
