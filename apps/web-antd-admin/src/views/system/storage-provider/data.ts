@@ -8,8 +8,11 @@ import type { StorageProviderApi } from '#/api';
 import { $t } from '#/locales';
 
 export const providerTypeOptions = () => [
-  { label: 'S3 Compatible', value: 's3-compatible' },
+  { label: $t('system.storageProvider.s3Compatible'), value: 's3-compatible' },
   { label: $t('system.storageProvider.local'), value: 'local' },
+  { label: $t('system.storageProvider.aliyunOss'), value: 'aliyun-oss' },
+  { label: $t('system.storageProvider.qiniuKodo'), value: 'qiniu-kodo' },
+  { label: $t('system.storageProvider.tencentCos'), value: 'tencent-cos' },
 ];
 
 export const statusOptions = () => [
@@ -30,6 +33,18 @@ export const searchSchema = (): VbenFormSchema[] => [
   { component: 'Select', componentProps: { allowClear: true, options: statusOptions() }, fieldName: 'status', label: $t('system.storageProvider.status') },
 ];
 
+const isType = (...types: string[]) => (values: Record<string, any>) =>
+  types.includes(values.type);
+
+const notLocal = (values: Record<string, any>) => values.type !== 'local';
+
+const show = (
+  condition: (values: Record<string, any>) => boolean,
+) => ({
+  show: condition,
+  triggerFields: ['type'],
+});
+
 export const formSchema = (): VbenFormSchema[] => [
   { component: 'Input', fieldName: 'code', label: $t('system.storageProvider.code'), rules: 'required' },
   { component: 'Input', fieldName: 'name', label: $t('system.storageProvider.providerName'), rules: 'required' },
@@ -37,15 +52,15 @@ export const formSchema = (): VbenFormSchema[] => [
   { component: 'RadioGroup', componentProps: { optionType: 'button', options: statusOptions() }, defaultValue: 1, fieldName: 'status', label: $t('system.storageProvider.status') },
   { component: 'Switch', defaultValue: false, fieldName: 'isDefault', label: $t('system.storageProvider.isDefault') },
   { component: 'Input', defaultValue: 'tenant-files', fieldName: 'defaultBucket', label: $t('system.storageProvider.defaultBucket') },
-  { component: 'Input', fieldName: 'endpoint', label: $t('system.storageProvider.endpoint') },
-  { component: 'Input', fieldName: 'region', label: $t('system.storageProvider.region') },
-  { component: 'Input', fieldName: 'accessKey', label: $t('system.storageProvider.accessKey') },
-  { component: 'InputPassword', fieldName: 'secretKey', label: $t('system.storageProvider.secretKey') },
-  { component: 'InputPassword', fieldName: 'sessionToken', label: $t('system.storageProvider.sessionToken') },
-  { component: 'Switch', defaultValue: false, fieldName: 'useSsl', label: $t('system.storageProvider.useSsl') },
-  { component: 'Switch', defaultValue: true, fieldName: 'forcePathStyle', label: $t('system.storageProvider.forcePathStyle') },
-  { component: 'Input', fieldName: 'publicBaseUrl', label: $t('system.storageProvider.publicBaseUrl') },
-  { component: 'Input', fieldName: 'localBasePath', label: $t('system.storageProvider.localBasePath') },
+  { component: 'Input', dependencies: show(isType('s3-compatible', 'aliyun-oss')), fieldName: 'endpoint', label: $t('system.storageProvider.endpoint') },
+  { component: 'Input', dependencies: show(isType('qiniu-kodo', 'tencent-cos')), fieldName: 'region', label: $t('system.storageProvider.region') },
+  { component: 'Input', dependencies: show(notLocal), fieldName: 'accessKey', label: $t('system.storageProvider.accessKey') },
+  { component: 'InputPassword', dependencies: show(notLocal), fieldName: 'secretKey', label: $t('system.storageProvider.secretKey') },
+  { component: 'InputPassword', dependencies: show(isType('s3-compatible', 'tencent-cos')), fieldName: 'sessionToken', label: $t('system.storageProvider.sessionToken') },
+  { component: 'Switch', dependencies: show(notLocal), defaultValue: false, fieldName: 'useSsl', label: $t('system.storageProvider.useSsl') },
+  { component: 'Switch', dependencies: show(isType('s3-compatible')), defaultValue: true, fieldName: 'forcePathStyle', label: $t('system.storageProvider.forcePathStyle') },
+  { component: 'Input', dependencies: show(notLocal), fieldName: 'publicBaseUrl', label: $t('system.storageProvider.publicBaseUrl') },
+  { component: 'Input', componentProps: { placeholder: './uploads' }, defaultValue: './uploads', dependencies: show(isType('local')), fieldName: 'localBasePath', label: $t('system.storageProvider.localBasePath') },
   { component: 'Textarea', componentProps: { autoSize: { maxRows: 5, minRows: 2 } }, fieldName: 'remark', label: $t('system.storageProvider.remark') },
 ];
 

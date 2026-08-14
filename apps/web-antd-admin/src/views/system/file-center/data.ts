@@ -42,11 +42,15 @@ export const columns = (
   { field: 'visibility', formatter: ({ cellValue }) => visibilityOptions().find((item) => item.value === cellValue)?.label ?? cellValue, width: 110, title: $t('system.fileCenter.visibility') },
   { field: 'status', formatter: ({ cellValue }) => fileStatusOptions().find((item) => item.value === cellValue)?.label ?? cellValue, width: 110, title: $t('system.fileCenter.status') },
   { field: 'createdAt', minWidth: 170, title: $t('system.fileCenter.createdAt') },
-  { align: 'center', cellRender: { attrs: { nameField: 'fileName', onClick, options: [
-    { code: 'detail', text: $t('system.fileCenter.detail') },
+  { align: 'center', cellRender: { attrs: { nameField: 'fileName', onClick }, name: 'CellOperation', options: [
+    { code: 'preview', text: $t('system.fileCenter.preview'), show: (row: FileCenterApi.FileObject) => isImage(row) },
     { code: 'download', text: $t('system.fileCenter.download') },
-    { code: 'delete', text: $t('common.delete') },
-  ] }, name: 'CellOperation' }, field: 'operation', fixed: 'right', title: $t('system.fileCenter.operation'), width: 220 },
+    { code: 'delete', danger: true, text: $t('common.delete') },
+    { code: 'accessLog', group: 'more', text: $t('system.fileCenter.accessLogs') },
+    { code: 'edit', group: 'more', text: $t('system.fileCenter.edit') },
+    { code: 'replace', group: 'more', text: $t('system.fileCenter.replace') },
+    { code: 'detail', group: 'more', text: $t('system.fileCenter.detail') },
+  ] }, field: 'operation', fixed: 'right', title: $t('system.fileCenter.operation'), width: 220 },
 ];
 
 export const accessLogColumns = [
@@ -57,6 +61,14 @@ export const accessLogColumns = [
   { dataIndex: 'message', key: 'message', title: $t('system.fileCenter.message') },
   { dataIndex: 'createdAt', key: 'createdAt', title: $t('system.fileCenter.createdAt'), width: 180 },
 ];
+
+const imageExtensions = ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp', 'svg', 'ico', 'avif'];
+
+export function isImage(file: FileCenterApi.FileObject) {
+  if (file.contentType?.toLowerCase().startsWith('image/')) return true;
+  const ext = (file.fileName ?? '').split('.').pop()?.toLowerCase() ?? '';
+  return imageExtensions.includes(ext);
+}
 
 export function formatBytes(value: number) {
   if (!Number.isFinite(value) || value <= 0) return '0 B';

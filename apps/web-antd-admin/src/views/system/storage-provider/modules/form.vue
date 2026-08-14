@@ -76,7 +76,8 @@ const drawerTitle = computed(() =>
 
 function normalizePayload(values: Record<string, any>) {
   const payload = { ...values };
-  if (payload.type === 'local') {
+  const type = payload.type;
+  if (type === 'local') {
     payload.endpoint = '';
     payload.region = '';
     payload.accessKey = '';
@@ -84,9 +85,18 @@ function normalizePayload(values: Record<string, any>) {
     payload.sessionToken = '';
     payload.useSsl = false;
     payload.forcePathStyle = true;
-  }
-  if (payload.type === 's3-compatible') {
+    payload.publicBaseUrl = '';
+  } else {
     payload.localBasePath = '';
+  }
+  if (type !== 's3-compatible') {
+    payload.forcePathStyle = false;
+  }
+  if (type !== 's3-compatible' && type !== 'tencent-cos') {
+    payload.sessionToken = '';
+  }
+  if (type !== 'qiniu-kodo' && type !== 'tencent-cos') {
+    payload.region = '';
   }
   if (!payload.secretKey) delete payload.secretKey;
   if (!payload.sessionToken) delete payload.sessionToken;

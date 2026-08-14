@@ -5,7 +5,12 @@ import type { ApiType } from '../type';
 import { requestClient } from '#/api/request';
 
 export namespace StorageProviderApi {
-  export type ProviderType = 'local' | 's3-compatible';
+  export type ProviderType =
+    | 'aliyun-oss'
+    | 'local'
+    | 'qiniu-kodo'
+    | 's3-compatible'
+    | 'tencent-cos';
   export type HealthStatus = 'healthy' | 'unhealthy' | 'unknown';
 
   export interface Provider {

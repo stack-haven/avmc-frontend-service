@@ -14,7 +14,7 @@ import {
 import { get, isFunction, isString } from '@vben/utils';
 
 import { objectOmit } from '@vueuse/core';
-import { Button, Image, Popconfirm, Switch, Tag } from 'ant-design-vue';
+import { Button, Dropdown, Image, Menu, Popconfirm, Switch, Tag } from 'ant-design-vue';
 
 import { $t } from '#/locales';
 
@@ -263,9 +263,49 @@ setupVbenVxeTable({
           );
         }
 
-        const btns = operations.map((opt) =>
+        // 支持「更多」分组：group === 'more' 的操作收进下拉菜单，其余平铺为主入口。
+        const primaryOps = operations.filter((opt) => opt.group !== 'more');
+        const moreOps = operations.filter((opt) => opt.group === 'more');
+
+        const btns = primaryOps.map((opt) =>
           opt.code === 'delete' ? renderConfirm(opt) : renderBtn(opt),
         );
+
+        if (moreOps.length > 0) {
+          const menu = h(
+            Menu,
+            {
+              onClick: ({ key }: { key: string | number }) => {
+                attrs?.onClick?.({ code: String(key), row });
+              },
+            },
+            {
+              default: () =>
+                moreOps.map((opt) =>
+                  h(
+                    Menu.Item,
+                    { key: opt.code },
+                    { default: () => opt.text },
+                  ),
+                ),
+            },
+          );
+          btns.push(
+            h(
+              Dropdown,
+              { overlay: menu, trigger: ['click'] },
+              {
+                default: () =>
+                  h(
+                    Button,
+                    { size: 'small', type: 'link' },
+                    { default: () => $t('common.more') },
+                  ),
+              },
+            ),
+          );
+        }
+
         return h(
           'div',
           {

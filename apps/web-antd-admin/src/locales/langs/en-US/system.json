@@ -102,7 +102,14 @@
     "clearAll": "Clear all",
     "noMenusFound": "No matching menus found",
     "menuChangeImpact": "Menu permission changes affect all users with this role and take effect immediately.",
-    "menuSaveSuccess": "Menu permissions saved"
+    "menuSaveSuccess": "Menu permissions saved",
+    "selectDepartments": "Select Departments",
+    "departmentsSelected": "{0} departments selected",
+    "noDepartmentsSelected": "No departments selected",
+    "deptScopeHint": "Select the department scope for this role. Only applies when data scope is Custom Departments.",
+    "selectedDepartments": "selected",
+    "searchDepartments": "Search departments",
+    "noDepartmentsFound": "No matching departments found"
   },
   "tenantMenuPermissionGroup": {
     "title": "Tenant Business Packages",
@@ -243,7 +250,13 @@
     "setDefault": "Set Default",
     "alreadyDefault": "This provider is already default",
     "defaultConfirm": "Set {0} as default storage provider?",
-    "deleteConfirm": "Delete storage provider {0}? Providers referenced by files cannot be deleted."
+    "deleteConfirm": "Delete storage provider {0}? Providers referenced by files cannot be deleted.",
+    "s3Compatible": "S3 Compatible",
+    "aliyunOss": "Aliyun OSS",
+    "qiniuKodo": "Qiniu Kodo",
+    "tencentCos": "Tencent COS",
+    "appId": "App ID (Tencent)",
+    "zone": "Storage Zone"
   },
   "fileCenter": {
     "title": "File Center",
@@ -277,7 +290,30 @@
     "clientIp": "Client IP",
     "message": "Message",
     "downloadUrlMissing": "Download URL is empty",
-    "deleteConfirm": "Delete file {0}? File quotas will be released after deletion."
+    "deleteConfirm": "Delete file {0}? File quotas will be released after deletion.",
+    "upload": "Upload File",
+    "uploadTitle": "Upload File",
+    "uploadHint": "An upload session is created automatically after selecting a file. The file is downloadable after confirmation.",
+    "selectFile": "Select or drag file here",
+    "uploading": "Uploading…",
+    "uploadSuccess": "File uploaded successfully",
+    "uploadFailed": "File upload failed",
+    "confirming": "Confirming…",
+    "noFileSelected": "Please select a file first",
+    "uploadMethodUnsupported": "Unsupported storage provider, cannot proxy upload",
+    "edit": "Edit File",
+    "editTitle": "Edit File",
+    "editName": "File Name",
+    "editNameHint": "Only changes the display name, not the stored object.",
+    "nameRequired": "File name is required",
+    "replace": "Replace File",
+    "replaceTitle": "Replace File Content",
+    "replaceHint": "Replacement keeps the file ID and access records, updating only the binary content. Local storage provider only.",
+    "replaceSuccess": "File replaced successfully",
+    "previewTitle": "Image Preview",
+    "previewLoading": "Loading image…",
+    "previewFailed": "Failed to load image",
+    "notPreviewable": "This file type does not support preview. Download it to view."
   },
   "notification": {
     "title": "Notification Center",
@@ -316,7 +352,9 @@
     "updatedAt": "Updated At",
     "operation": "Operation",
     "sendInApp": "Send In-app",
-    "deleteTemplateConfirm": "Delete notification template {0}?"
+    "deleteTemplateConfirm": "Delete notification template {0}?",
+    "phones": "Phone numbers (comma separated)",
+    "push": "APP Push"
   },
   "operationLog": {
     "title": "Operation Audit",
@@ -582,5 +620,30 @@
     "adminPasswordConfirmTitle": "Confirm password reset",
     "adminPasswordConfirmContent": "Reset the password for {0} and revoke the account's active sessions?",
     "adminPasswordResetSuccess": "Administrator password reset"
+  },
+  "notificationProvider": {
+    "title": "Notification Providers",
+    "list": "Notification Provider List",
+    "name": "Provider",
+    "code": "Code",
+    "isDefault": "Default",
+    "endpoint": "Endpoint",
+    "accessKeyId": "Access Key ID",
+    "accessKeySecret": "Access Key Secret",
+    "signName": "SMS Sign Name",
+    "templateCode": "SMS Template Code",
+    "updatedAt": "Updated At",
+    "test": "Test",
+    "testSuccess": "Channel is healthy",
+    "testFailed": "Channel test failed",
+    "setDefault": "Set Default",
+    "alreadyDefault": "Already the default channel",
+    "defaultConfirm": "Set {0} as the default notification channel?",
+    "deleteConfirm": "Delete notification provider {0}?",
+    "aliyunSms": "Aliyun SMS",
+    "yunpian": "Yunpian",
+    "jpush": "JPush",
+    "getui": "Getui",
+    "providerType": "Provider"
   }
 }

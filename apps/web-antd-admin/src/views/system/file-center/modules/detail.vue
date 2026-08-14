@@ -5,35 +5,21 @@ import { computed, ref } from 'vue';
 
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { Descriptions, DescriptionsItem, Table } from 'ant-design-vue';
+import { Descriptions, DescriptionsItem } from 'ant-design-vue';
 
-import { getFileAccessLogList, getFileObject } from '#/api';
+import { getFileObject } from '#/api';
 import { $t } from '#/locales';
 
-import {
-  accessLogColumns,
-  fileStatusOptions,
-  formatBytes,
-  visibilityOptions,
-} from '../data';
+import { fileStatusOptions, formatBytes, visibilityOptions } from '../data';
 
 const file = ref<FileCenterApi.FileObject>();
-const logs = ref<FileCenterApi.FileAccessLog[]>([]);
-const loading = ref(false);
 
 const [Drawer, drawerApi] = useVbenDrawer({
   async onOpenChange(open) {
     if (!open) return;
     const row = drawerApi.getData<FileCenterApi.FileObject>();
     if (!row?.id) return;
-    loading.value = true;
-    try {
-      file.value = await getFileObject(row.id);
-      const result = await getFileAccessLogList(row.id, { pageSize: 20, pageToken: '0' });
-      logs.value = result.items ?? [];
-    } finally {
-      loading.value = false;
-    }
+    file.value = await getFileObject(row.id);
   },
 });
 
@@ -83,18 +69,5 @@ const visibilityLabel = computed(() =>
         {{ file.createdAt }}
       </DescriptionsItem>
     </Descriptions>
-
-    <div class="mt-4 text-base font-medium">
-      {{ $t('system.fileCenter.accessLogs') }}
-    </div>
-    <Table
-      class="mt-2"
-      :columns="accessLogColumns"
-      :data-source="logs"
-      :loading="loading"
-      :pagination="false"
-      row-key="id"
-      size="small"
-    />
   </Drawer>
 </template>

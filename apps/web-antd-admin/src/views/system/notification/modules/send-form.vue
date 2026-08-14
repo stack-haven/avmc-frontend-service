@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { useVbenDrawer, useVbenForm } from '@vben/common-ui';
 
-import { sendInAppNotification } from '#/api';
+import { sendInAppNotification, sendNotification } from '#/api';
 import { $t } from '#/locales';
 
 import { sendFormSchema } from '../data';
@@ -21,6 +21,39 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const { valid } = await formApi.validate();
     if (!valid) return;
     const values = await formApi.getValues();
+    const isSms = values.channel === 'NOTIFICATION_CHANNEL_SMS';
+
+    if (isSms) {
+      const phones = String(values.phonesText)
+        .split(',')
+        .map((item) => item.trim())
+        .filter(Boolean);
+      if (phones.length === 0) {
+        await formApi.setFieldValue('phonesText', '');
+        return;
+      }
+      drawerApi.lock();
+      try {
+        await sendNotification({
+          businessId: values.businessId,
+          businessType: values.businessType,
+          channel: 'NOTIFICATION_CHANNEL_SMS',
+          content: values.content,
+          idempotencyKey: `web-sms-${Date.now()}`,
+          phones,
+          priority: values.priority,
+          templateCode: values.templateCode,
+          title: values.title,
+          variables: values.variables,
+        });
+        emits('success');
+        drawerApi.close();
+      } finally {
+        drawerApi.unlock();
+      }
+      return;
+    }
+
     const recipientUserIds = String(values.recipientUserIdsText)
       .split(',')
       .map((item) => Number(item.trim()))
@@ -51,7 +84,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
   async onOpenChange(open) {
     if (!open) return;
     await formApi.resetForm();
-    await formApi.setValues({ priority: 0 });
+    await formApi.setValues({ channel: 'NOTIFICATION_CHANNEL_IN_APP', priority: 0 });
   },
 });
 </script>

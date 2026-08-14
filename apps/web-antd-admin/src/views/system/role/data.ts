@@ -42,6 +42,10 @@ export function useFormSchema(): VbenFormSchema[] {
     },
     {
       component: 'Input',
+      dependencies: {
+        show: (values: Record<string, any>) => values.dataScope === 5,
+        triggerFields: ['dataScope'],
+      },
       fieldName: 'deptIds',
       formItemClass: 'items-start',
       label: $t('system.role.customDepartments'),

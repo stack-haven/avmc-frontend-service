@@ -63,6 +63,20 @@ export namespace NotificationApi {
     businessId?: string;
     idempotencyKey?: string;
   }
+
+  export interface SendNotificationPayload {
+    channel: Channel;
+    content?: string;
+    phones?: string[];
+    recipientUserIds?: number[];
+    templateCode?: string;
+    title?: string;
+    variables?: string;
+    priority?: number;
+    businessType?: string;
+    businessId?: string;
+    idempotencyKey?: string;
+  }
 }
 
 export const getNotificationTemplateList = (params?: Recordable<any>) =>
@@ -89,6 +103,9 @@ export const deleteNotificationTemplate = (id: number) =>
 
 export const sendInAppNotification = (data: NotificationApi.SendInAppPayload) =>
   requestClient.post<{ taskId: number }>('/notifications:send-in-app', data);
+
+export const sendNotification = (data: NotificationApi.SendNotificationPayload) =>
+  requestClient.post<{ taskId: number }>('/notifications:send', data);
 
 export const getNotificationMessageList = (params?: Recordable<any>) =>
   requestClient.get<ApiType.ListResponse<NotificationApi.Message>>(

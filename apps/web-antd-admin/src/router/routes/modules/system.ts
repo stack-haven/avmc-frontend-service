@@ -3,6 +3,32 @@ import type { RouteRecordRaw } from 'vue-router';
 import { $t } from '#/locales';
 
 const routes: RouteRecordRaw[] = [
+  // ===== 通知中心 =====
+  {
+    meta: { icon: 'mdi:bell-outline', title: $t('system.notification.title') },
+    name: 'NotificationCenter',
+    path: '/notif',
+    children: [
+      {
+        path: '/notif/template',
+        name: 'NotifTemplate',
+        meta: { icon: 'mdi:card-text-outline', title: $t('system.notification.templates') },
+        component: () => import('#/views/system/notification/template.vue'),
+      },
+      {
+        path: '/notif/record',
+        name: 'NotifRecord',
+        meta: { icon: 'mdi:email-outline', title: $t('system.notification.messages') },
+        component: () => import('#/views/system/notification/record.vue'),
+      },
+      {
+        path: '/notif/provider',
+        name: 'NotifProvider',
+        meta: { icon: 'mdi:message-cog-outline', title: $t('system.notificationProvider.title') },
+        component: () => import('#/views/system/notification-provider/list.vue'),
+      },
+    ],
+  },
   {
     meta: {
       icon: 'ion:settings-outline',
@@ -94,13 +120,6 @@ const routes: RouteRecordRaw[] = [
             component: () => import('#/views/system/storage-provider/list.vue'),
           },
         ],
-      },
-      // ===== 通知中心 =====
-      {
-        path: '/system/notification',
-        name: 'SystemNotification',
-        meta: { icon: 'mdi:bell-outline', title: $t('system.notification.title') },
-        component: () => import('#/views/system/notification/list.vue'),
       },
       // ===== 监控与审计 =====
       {

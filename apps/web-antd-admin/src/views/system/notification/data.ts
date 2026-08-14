@@ -48,8 +48,21 @@ export const templateFormSchema = (): VbenFormSchema[] => [
   { component: 'Textarea', fieldName: 'remark', label: $t('system.notification.remark') },
 ];
 
+const isSendChannel = (channel: string) => (values: Record<string, any>) =>
+  values.channel === channel;
+
+const showWhen = (condition: (values: Record<string, any>) => boolean) => ({
+  show: condition,
+  triggerFields: ['channel'],
+});
+
 export const sendFormSchema = (): VbenFormSchema[] => [
-  { component: 'Input', fieldName: 'recipientUserIdsText', label: $t('system.notification.recipientUserIds'), rules: 'required' },
+  { component: 'RadioGroup', componentProps: { optionType: 'button', options: [
+    { label: $t('system.notification.inApp'), value: 'NOTIFICATION_CHANNEL_IN_APP' },
+    { label: $t('system.notification.sms'), value: 'NOTIFICATION_CHANNEL_SMS' },
+  ] }, defaultValue: 'NOTIFICATION_CHANNEL_IN_APP', fieldName: 'channel', label: $t('system.notification.channel') },
+  { component: 'Input', dependencies: showWhen(isSendChannel('NOTIFICATION_CHANNEL_IN_APP')), fieldName: 'recipientUserIdsText', label: $t('system.notification.recipientUserIds'), rules: 'required' },
+  { component: 'Input', dependencies: showWhen(isSendChannel('NOTIFICATION_CHANNEL_SMS')), fieldName: 'phonesText', label: $t('system.notification.phones'), rules: 'required' },
   { component: 'Input', fieldName: 'templateCode', label: $t('system.notification.templateCode') },
   { component: 'Input', fieldName: 'title', label: $t('system.notification.messageTitle') },
   { component: 'Textarea', componentProps: { autoSize: { maxRows: 8, minRows: 3 } }, fieldName: 'content', label: $t('system.notification.content') },

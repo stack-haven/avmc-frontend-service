@@ -21,5 +21,10 @@
   "yes": "是",
   "no": "否",
   "showSearchPanel": "显示搜索面板",
-  "hideSearchPanel": "隐藏搜索面板"
+  "hideSearchPanel": "隐藏搜索面板",
+  "save": "保存",
+  "updateSuccess": "更新成功",
+  "deleteSuccess": "删除成功",
+  "createSuccess": "新增成功",
+  "more": "更多"
 }
