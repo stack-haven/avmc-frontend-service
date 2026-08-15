@@ -92,7 +92,7 @@ async function updateTenantMenuPermissionGroupStatus(
   id: string,
   data: Pick<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'status'>,
 ) {
-  return requestClient.put(`/tenant-menu-permission-groups/status-update/${id}`, data);
+  return requestClient.post(`/tenant-menu-permission-groups/${id}:status-update`, data);
 }
 
 async function getTenantTenantMenuPermissionGroupVersions(groupId: string | number) {

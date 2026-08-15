@@ -77,7 +77,7 @@ async function updateRoleStatus(
   id: number,
   data: Partial<SystemRoleApi.SystemRole>,
 ) {
-  return requestClient.put(`/roles/status-update/${id}`, data);
+  return requestClient.post(`/roles/${id}:status-update`, data);
 }
 
 export { createRole, deleteRole, getRoleList, getRoleSimpleList, updateRole, updateRoleStatus };

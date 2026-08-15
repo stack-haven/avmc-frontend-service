@@ -2,30 +2,83 @@
 import { Page, useVbenModal } from '@vben/common-ui';
 import { createIconifyIcon } from '@vben/icons';
 
-import { Button } from 'ant-design-vue';
+import { Button, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getAsrRecordList } from '#/api';
+import { getAsrRecordAudio, getAsrRecordList, reRecognize } from '#/api';
 import { $t } from '#/locales';
 
+import AudioPlayer from './modules/audio-player.vue';
 import VoiceRecognition from './modules/voice-recognition.vue';
 
 const MicrophoneIcon = createIconifyIcon('mdi:microphone');
+const PlayIcon = createIconifyIcon('mdi:play-circle-outline');
 
 const [VoiceModal, voiceModalApi] = useVbenModal({
   connectedComponent: VoiceRecognition,
   destroyOnClose: true,
 });
 
+const [AudioModal, audioModalApi] = useVbenModal({
+  connectedComponent: AudioPlayer,
+  destroyOnClose: true,
+});
+
+async function playAudio(id: number) {
+  try {
+    const resp = await getAsrRecordAudio(id);
+    if (!resp.audioData) {
+      message.warning('该记录无原始音频');
+      return;
+    }
+    const bytes = atob(resp.audioData);
+    const arr = new Uint8Array(bytes.length);
+    for (let i = 0; i < bytes.length; i += 1) arr[i] = bytes.charCodeAt(i);
+    const blob = new Blob([arr], { type: resp.contentType || 'audio/webm' });
+    const url = URL.createObjectURL(blob);
+    audioModalApi.setData({ url, title: '原始音频预览', sessionId: `#${id}` }).open();
+  } catch (e: any) {
+    message.error(e?.message || '音频播放失败');
+  }
+}
+
+async function reRecognizeRecord(id: number) {
+  const hide = message.loading('重新识别中（约 10-15s）...', 0);
+  try {
+    await reRecognize(id);
+    hide();
+    message.success('重新识别完成');
+    gridApi.query();
+  } catch (e: any) {
+    hide();
+    message.error(e?.message || '重新识别失败');
+  }
+}
+
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
     columns: [
-      { field: 'id', width: 80, title: 'ID' },
+      { field: 'id', width: 70, title: 'ID' },
+      // 音频预览图标
+      {
+        align: 'center',
+        field: 'audio',
+        slots: { default: 'audio' },
+        title: '音频',
+        width: 70,
+      },
       { field: 'sessionId', width: 150, title: $t('evie.asr.sessionId') },
-      { field: 'rawText', minWidth: 280, title: $t('evie.asr.rawText') },
-      { field: 'confidence', width: 100, title: $t('evie.asr.confidence') },
+      // 识别文本：单行省略 + 悬停显示全文
+      {
+        field: 'rawText',
+        minWidth: 260,
+        showOverflow: 'tooltip',
+        title: $t('evie.asr.rawText'),
+      },
+      { field: 'confidence', width: 90, title: $t('evie.asr.confidence') },
       { field: 'engine', width: 100, title: $t('evie.asr.engine') },
-      { field: 'createdAt', width: 180, title: $t('evie.asr.createdAt') },
+      { field: 'createdAt', width: 170, title: $t('evie.asr.createdAt') },
+      { align: 'center', field: 'action', slots: { default: 'action' }, title: '操作', width: 100 },
     ],
     height: 'auto',
     proxyConfig: {
@@ -53,11 +106,22 @@ function onRefresh() {
 <template>
   <Page auto-content-height>
     <VoiceModal @success="onRefresh" />
+    <AudioModal />
     <Grid :table-title="$t('evie.asr.records')">
       <template #toolbar-tools>
         <Button type="primary" @click="voiceModalApi.open()">
           <MicrophoneIcon class="mr-1 size-4" />
           {{ $t('evie.asr.title') }}
+        </Button>
+      </template>
+      <template #audio="{ row }">
+        <Button type="link" size="small" @click="playAudio(row.id)">
+          <PlayIcon class="size-5" />
+        </Button>
+      </template>
+      <template #action="{ row }">
+        <Button type="link" size="small" @click="reRecognizeRecord(row.id)">
+          重新识别
         </Button>
       </template>
     </Grid>

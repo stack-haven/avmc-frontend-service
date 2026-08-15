@@ -44,7 +44,7 @@ async function updateProjectStatus(
   id: string,
   data: Pick<SystemProjectApi.SystemProject, 'status'>,
 ) {
-  return requestClient.put(`/projects/status-update/${id}`, data);
+  return requestClient.post(`/projects/${id}:status-update`, data);
 }
 
 export {

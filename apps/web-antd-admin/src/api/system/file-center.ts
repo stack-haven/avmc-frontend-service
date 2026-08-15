@@ -62,7 +62,7 @@ export const getFileAccessLogList = (id: number, params?: Recordable<any>) =>
 
 export const presignFileDownload = (id: number) =>
   requestClient.get<{ downloadUrl: string; expiresAt: string }>(
-    `/files/${id}/download-url`,
+    `/files/${id}:download-url`,
   );
 
 export const deleteFileObject = (id: number, idempotencyKey?: string) =>
@@ -103,7 +103,7 @@ export const uploadFileContent = (
   content: string,
   contentType?: string,
 ) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}/content`, {
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:content`, {
     content,
     contentType,
   });
@@ -112,7 +112,7 @@ export const confirmFileUpload = (
   id: number,
   data?: { etag?: string; sha256?: string; size?: number },
 ) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}/confirm`, data);
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:confirm`, data);
 
 export const updateFileObject = (id: number, fileName: string) =>
   requestClient.put<{ file: FileCenterApi.FileObject }>(`/files/${id}`, {
@@ -124,7 +124,7 @@ export const replaceFileContent = (
   content: string,
   data?: { contentType?: string; fileName?: string },
 ) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}/replace`, {
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:replace`, {
     content,
     ...data,
   });
@@ -134,7 +134,7 @@ export const downloadFileContent = (id: number) =>
     content: string;
     contentType?: string;
     fileName?: string;
-  }>(`/files/${id}/download`);
+  }>(`/files/${id}:download`);
 
 export const uploadFilePart = (
   id: number,
@@ -154,9 +154,9 @@ export const listFileParts = (id: number) =>
   }>(`/files/${id}/parts`);
 
 export const completeFileUpload = (id: number, parts: FilePartInfo[]) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}/complete`, {
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:complete`, {
     parts,
   });
 
 export const abortFileUpload = (id: number) =>
-  requestClient.post<{}>(`/files/${id}/abort`, {});
+  requestClient.post<{}>(`/files/${id}:abort`, {});

@@ -41,3 +41,13 @@ export const getAsrRecordList = (params?: Recordable<any>) =>
 
 export const getAsrRecord = (id: number) =>
   requestClient.get<AsrRecord>(`/evie/v1/asr/records/${id}`);
+
+export const getAsrRecordAudio = (id: number) =>
+  requestClient.get<{ audioData: string; contentType: string }>(
+    `/evie/v1/asr/records/${id}/audio`,
+  );
+
+export const reRecognize = (id: number) =>
+  requestClient.post<RecognizeAndCorrectResult>(
+    `/evie/v1/asr/records/${id}:re-recognize`,
+  );

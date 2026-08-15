@@ -54,7 +54,7 @@ export const updateUser = (
 };
 
 export const updateUserStatus = (id: number, status: string) =>
-  requestClient.put(`/users/status-update/${id}`, { status });
+  requestClient.post(`/users/${id}:status-update`, { status });
 
 export const deleteUser = (id: number) =>
   requestClient.delete(`/users/${id}`);
