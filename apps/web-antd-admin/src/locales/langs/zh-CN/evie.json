@@ -45,6 +45,18 @@
     "confidence": "置信度",
     "engine": "引擎",
     "createdAt": "识别时间",
-    "operation": "操作"
+    "operation": "操作",
+    "modeStream": "实时识别",
+    "modeBatch": "整段识别",
+    "startRecording": "点击开始录音",
+    "recording": "正在录音 {seconds}s，点击停止",
+    "streamHint": "边说边识别，实时出字",
+    "batchHint": "录完整段后一次性识别",
+    "recognizing": "识别中...",
+    "correcting": "纠错中...",
+    "originalText": "原始识别",
+    "correctedText": "纠错后（标准企业语言）",
+    "corrections": "纠错",
+    "noVoice": "未识别到语音"
   }
 }

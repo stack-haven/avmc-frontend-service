@@ -59,3 +59,9 @@ export const reRecognize = (id: number) =>
     {},
     { timeout: 120_000 },
   );
+
+export const correctText = (text: string, sessionId?: string) =>
+  requestClient.post<RecognizeAndCorrectResult>('/evie/v1/correction:correct', {
+    text,
+    session_id: sessionId,
+  });

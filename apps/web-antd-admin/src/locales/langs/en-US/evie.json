@@ -45,6 +45,18 @@
     "confidence": "Confidence",
     "engine": "Engine",
     "createdAt": "Time",
-    "operation": "Operation"
+    "operation": "Operation",
+    "modeStream": "Real-time",
+    "modeBatch": "Whole Audio",
+    "startRecording": "Click to record",
+    "recording": "Recording {seconds}s, click to stop",
+    "streamHint": "Recognize while speaking",
+    "batchHint": "Recognize after recording",
+    "recognizing": "Recognizing...",
+    "correcting": "Correcting...",
+    "originalText": "Raw Recognition",
+    "correctedText": "Corrected (Standard)",
+    "corrections": "Corrections",
+    "noVoice": "No speech detected"
   }
 }
