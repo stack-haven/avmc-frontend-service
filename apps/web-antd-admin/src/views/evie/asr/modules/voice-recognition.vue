@@ -74,12 +74,15 @@ function stopRecord() {
 
 async function handleStop() {
   const blob = new Blob(chunks, { type: mediaRecorder?.mimeType || 'audio/webm' });
-  const base64 = await blobToBase64(blob);
   loading.value = true;
   try {
+    // 讯飞等云 ASR 需要 raw PCM 16kHz，将 webm/opus 转 PCM
+    const pcmBase64 = await webmToPcmBase64(blob);
     const resp = await recognizeAndCorrect({
       sessionId: `web-${Date.now()}`,
-      audioData: base64,
+      audioData: pcmBase64,
+      encoding: 1, // PCM
+      sampleRate: 16000,
     });
     originalText.value = resp.originalText;
     correctedText.value = resp.correctedText;
@@ -93,13 +96,29 @@ async function handleStop() {
   }
 }
 
-function blobToBase64(blob: Blob): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = () => resolve((reader.result as string).split(',')[1] || '');
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
+// 将浏览器录音（webm/opus 等）解码并重采样为 16kHz 16bit PCM，返回 base64。
+async function webmToPcmBase64(blob: Blob): Promise<string> {
+  const arrayBuffer = await blob.arrayBuffer();
+  const audioContext = new AudioContext({ sampleRate: 16000 });
+  try {
+    const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+    const channelData = audioBuffer.getChannelData(0); // 单声道
+    const pcm = new Int16Array(channelData.length);
+    for (let i = 0; i < channelData.length; i += 1) {
+      const s = Math.max(-1, Math.min(1, channelData[i]!));
+      pcm[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+    }
+    // Int16Array → base64（按字节）
+    const bytes = new Uint8Array(pcm.buffer);
+    let binary = '';
+    const chunkSize = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunkSize) {
+      binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+    }
+    return btoa(binary);
+  } finally {
+    await audioContext.close();
+  }
 }
 </script>
 

@@ -28,11 +28,17 @@ export const recognizeAndCorrect = (data: {
   encoding?: number;
   sampleRate?: number;
 }) =>
-  requestClient.post<RecognizeAndCorrectResult>('/evie/v1/asr:recognize-and-correct', {
-    session_id: data.sessionId,
-    format: { encoding: data.encoding ?? 4, sample_rate: data.sampleRate ?? 16000 },
-    audio_data: data.audioData,
-  });
+  requestClient.post<RecognizeAndCorrectResult>(
+    '/evie/v1/asr:recognize-and-correct',
+    {
+      session_id: data.sessionId,
+      format: { encoding: data.encoding ?? 4, sample_rate: data.sampleRate ?? 16000 },
+      audio_data: data.audioData,
+    },
+    // 讯飞 IAT 实时流式按 40ms/帧节流发送，识别耗时约 = 音频时长 + 网络往返，
+    // 需远超默认 10s 超时。
+    { timeout: 120_000 },
+  );
 
 export const getAsrRecordList = (params?: Recordable<any>) =>
   requestClient.get<{ records: AsrRecord[]; total: number }>('/evie/v1/asr/records', {
@@ -51,4 +57,5 @@ export const reRecognize = (id: number) =>
   requestClient.post<RecognizeAndCorrectResult>(
     `/evie/v1/asr/records/${id}:re-recognize`,
     {},
+    { timeout: 120_000 },
   );
