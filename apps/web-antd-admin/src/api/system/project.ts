@@ -20,31 +20,31 @@ export namespace SystemProjectApi {
 }
 
 async function getProjectList(params: Recordable<any>) {
-  return requestClient.get<Array<SystemProjectApi.SystemProject>>('/projects', {
+  return requestClient.get<Array<SystemProjectApi.SystemProject>>('/platform/v1/projects', {
     params,
   });
 }
 
 async function createProject(data: Omit<SystemProjectApi.SystemProject, 'id'>) {
-  return requestClient.post('/projects', data);
+  return requestClient.post('/platform/v1/projects', data);
 }
 
 async function updateProject(
   id: string,
   data: Omit<SystemProjectApi.SystemProject, 'id'>,
 ) {
-  return requestClient.put(`/projects/${id}`, data);
+  return requestClient.put(`/platform/v1/projects/${id}`, data);
 }
 
 async function deleteProject(id: string) {
-  return requestClient.delete(`/projects/${id}`);
+  return requestClient.delete(`/platform/v1/projects/${id}`);
 }
 
 async function updateProjectStatus(
   id: string,
   data: Pick<SystemProjectApi.SystemProject, 'status'>,
 ) {
-  return requestClient.post(`/projects/${id}:status-update`, data);
+  return requestClient.post(`/platform/v1/projects/${id}:status-update`, data);
 }
 
 export {

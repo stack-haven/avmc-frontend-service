@@ -50,7 +50,7 @@ export const createStorageProvider = async (
 ) => {
   const result = await requestClient.post<{
     provider: StorageProviderApi.Provider;
-  }>('/storage-providers', { provider });
+  }>('/platform/v1/storage-providers', { provider });
   return result.provider;
 };
 
@@ -60,17 +60,17 @@ export const updateStorageProvider = async (
 ) => {
   const result = await requestClient.put<{
     provider: StorageProviderApi.Provider;
-  }>(`/storage-providers/${id}`, { provider });
+  }>(`/platform/v1/storage-providers/${id}`, { provider });
   return result.provider;
 };
 
 export const deleteStorageProvider = (id: number) =>
-  requestClient.delete(`/storage-providers/${id}`);
+  requestClient.delete(`/platform/v1/storage-providers/${id}`);
 
 export const setDefaultStorageProvider = async (id: number) => {
   const result = await requestClient.post<{
     provider: StorageProviderApi.Provider;
-  }>(`/storage-providers/${id}:set-default`, { id });
+  }>(`/platform/v1/storage-providers/${id}:set-default`, { id });
   return result.provider;
 };
 

@@ -25,17 +25,17 @@ export namespace SystemDictionaryApi {
   }
 }
 export const getDictionaryTypeList = (params?: Recordable<any>) =>
-  requestClient.get<ApiType.ListResponse<SystemDictionaryApi.DictionaryType>>('/dictionaries', { params });
+  requestClient.get<ApiType.ListResponse<SystemDictionaryApi.DictionaryType>>('/platform/v1/dictionaries', { params });
 export const getDictionaryType = (id: number) =>
-  requestClient.get<SystemDictionaryApi.DictionaryType>(`/dictionaries/${id}`);
+  requestClient.get<SystemDictionaryApi.DictionaryType>(`/platform/v1/dictionaries/${id}`);
 export const createDictionaryType = (data: Omit<SystemDictionaryApi.DictionaryType, 'id'>) =>
-  requestClient.post<SystemDictionaryApi.DictionaryType>('/dictionaries', data);
+  requestClient.post<SystemDictionaryApi.DictionaryType>('/platform/v1/dictionaries', data);
 export const updateDictionaryType = (id: number, data: Omit<SystemDictionaryApi.DictionaryType, 'id'>) =>
-  requestClient.put<SystemDictionaryApi.DictionaryType>(`/dictionaries/${id}`, data);
-export const deleteDictionaryType = (id: number) => requestClient.delete(`/dictionaries/${id}`);
+  requestClient.put<SystemDictionaryApi.DictionaryType>(`/platform/v1/dictionaries/${id}`, data);
+export const deleteDictionaryType = (id: number) => requestClient.delete(`/platform/v1/dictionaries/${id}`);
 export const createDictionaryItem = (data: Omit<SystemDictionaryApi.DictionaryItem, 'id'>) =>
-  requestClient.post<SystemDictionaryApi.DictionaryItem>('/dictionary-items', data);
+  requestClient.post<SystemDictionaryApi.DictionaryItem>('/platform/v1/dictionary-items', data);
 export const updateDictionaryItem = (id: number, data: Omit<SystemDictionaryApi.DictionaryItem, 'id'>) =>
-  requestClient.put<SystemDictionaryApi.DictionaryItem>(`/dictionary-items/${id}`, data);
-export const deleteDictionaryItem = (id: number) => requestClient.delete(`/dictionary-items/${id}`);
+  requestClient.put<SystemDictionaryApi.DictionaryItem>(`/platform/v1/dictionary-items/${id}`, data);
+export const deleteDictionaryItem = (id: number) => requestClient.delete(`/platform/v1/dictionary-items/${id}`);
 

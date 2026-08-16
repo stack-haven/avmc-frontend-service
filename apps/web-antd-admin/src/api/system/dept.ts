@@ -31,7 +31,7 @@ export namespace SystemDeptApi {
 async function getDeptList() {
   return requestClient.get<{
     items: Array<SystemDeptApi.SystemDept>;
-  }>('/depts/tree');
+  }>('/platform/v1/depts/list-tree');
 }
 
 /**
@@ -41,7 +41,7 @@ async function getDeptList() {
 async function createDept(
   data: Omit<SystemDeptApi.SystemDept, 'children' | 'id'>,
 ) {
-  return requestClient.post('/depts', data);
+  return requestClient.post('/platform/v1/depts', data);
 }
 
 /**
@@ -54,7 +54,7 @@ async function updateDept(
   id: number,
   data: Omit<SystemDeptApi.SystemDept, 'children' | 'id'>,
 ) {
-  return requestClient.put(`/depts/${id}`, data);
+  return requestClient.put(`/platform/v1/depts/${id}`, data);
 }
 
 /**
@@ -62,7 +62,7 @@ async function updateDept(
  * @param id 部门 ID
  */
 async function deleteDept(id: number) {
-  return requestClient.delete(`/depts/${id}`);
+  return requestClient.delete(`/platform/v1/depts/${id}`);
 }
 
 async function getDeptDeleteImpact(id: number) {

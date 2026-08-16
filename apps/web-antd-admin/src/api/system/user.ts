@@ -27,16 +27,16 @@ export namespace SystemUserApi {
 }
 
 export const getUserList = (params?: Recordable<any>) =>
-  requestClient.get<ApiType.ListResponse<SystemUserApi.SystemUser>>('/users', {
+  requestClient.get<ApiType.ListResponse<SystemUserApi.SystemUser>>('/platform/v1/users', {
     params,
   });
 
 export const getUser = (id: number) =>
-  requestClient.get<SystemUserApi.SystemUser>(`/users/${id}`);
+  requestClient.get<SystemUserApi.SystemUser>(`/platform/v1/users/${id}`);
 
 export const createUser = (
   data: Omit<SystemUserApi.SystemUser, 'id' | 'isTenantAdmin'>,
-) => requestClient.post('/users', data);
+) => requestClient.post('/platform/v1/users', data);
 
 export const updateUser = (
   id: number,
@@ -47,14 +47,14 @@ export const updateUser = (
   delete user.isTenantAdmin;
   delete user.createdAt;
   delete user.updatedAt;
-  return requestClient.put(`/users/${id}`, {
+  return requestClient.put(`/platform/v1/users/${id}`, {
     updateMask: Object.keys(user).join(','),
     user,
   });
 };
 
 export const updateUserStatus = (id: number, status: string) =>
-  requestClient.post(`/users/${id}:status-update`, { status });
+  requestClient.post(`/platform/v1/users/${id}:status-update`, { status });
 
 export const deleteUser = (id: number) =>
-  requestClient.delete(`/users/${id}`);
+  requestClient.delete(`/platform/v1/users/${id}`);

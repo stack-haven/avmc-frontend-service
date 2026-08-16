@@ -26,5 +26,5 @@ export const getLoginLogList = (params?: Recordable<any>) =>
   );
 
 export const getLoginLog = (id: string) =>
-  requestClient.get<SystemLoginLogApi.LoginLog>(`/login-logs/${id}`);
+  requestClient.get<SystemLoginLogApi.LoginLog>(`/platform/v1/login-logs/${id}`);
 

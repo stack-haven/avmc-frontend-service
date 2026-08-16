@@ -22,13 +22,13 @@ export namespace SystemRoleApi {
  */
 
 async function getRoleList(params?: Recordable<any>) {
-  return requestClient.get<ApiType.ListResponse<SystemRoleApi.SystemRole>>('/roles', {
+  return requestClient.get<ApiType.ListResponse<SystemRoleApi.SystemRole>>('/platform/v1/roles', {
     params,
   });
 }
 
 async function getRoleSimpleList(params?: Recordable<any>) {
-  return requestClient.get<ApiType.ListResponse<SystemRoleApi.SystemRole>>('/roles/simple', {
+  return requestClient.get<ApiType.ListResponse<SystemRoleApi.SystemRole>>('/platform/v1/roles/simple', {
     params,
   });
 }
@@ -38,7 +38,7 @@ async function getRoleSimpleList(params?: Recordable<any>) {
  * @param data 角色数据
  */
 async function createRole(data: Omit<SystemRoleApi.SystemRole, 'id'>) {
-  return requestClient.post('/roles', data);
+  return requestClient.post('/platform/v1/roles', data);
 }
 
 /**
@@ -53,7 +53,7 @@ async function updateRole(
 ) {
   const role = { ...data };
   delete role.isTenantAdmin;
-  return requestClient.put(`/roles/${id}`, {
+  return requestClient.put(`/platform/v1/roles/${id}`, {
     role,
     updateMask: Object.keys(role).join(','),
   });
@@ -64,7 +64,7 @@ async function updateRole(
  * @param id 角色 ID
  */
 async function deleteRole(id: number) {
-  return requestClient.delete(`/roles/${id}`);
+  return requestClient.delete(`/platform/v1/roles/${id}`);
 }
 
 /**
@@ -77,7 +77,7 @@ async function updateRoleStatus(
   id: number,
   data: Partial<SystemRoleApi.SystemRole>,
 ) {
-  return requestClient.post(`/roles/${id}:status-update`, data);
+  return requestClient.post(`/platform/v1/roles/${id}:status-update`, data);
 }
 
 export { createRole, deleteRole, getRoleList, getRoleSimpleList, updateRole, updateRoleStatus };

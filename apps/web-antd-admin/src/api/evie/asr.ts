@@ -50,4 +50,5 @@ export const getAsrRecordAudio = (id: number) =>
 export const reRecognize = (id: number) =>
   requestClient.post<RecognizeAndCorrectResult>(
     `/evie/v1/asr/records/${id}:re-recognize`,
+    {},
   );

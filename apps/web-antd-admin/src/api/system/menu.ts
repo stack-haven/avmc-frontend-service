@@ -51,8 +51,8 @@ export namespace SystemMenuApi {
       badgeType?: (typeof BadgeTypes)[number] | keyof typeof BadgeTypes;
       /** 徽标颜色 */
       badgeVariants?:
-        | (typeof BadgeVariants)[number]
-        | keyof typeof BadgeVariants;
+      | (typeof BadgeVariants)[number]
+      | keyof typeof BadgeVariants;
       /** 在菜单中隐藏下级 */
       hideChildrenInMenu?: boolean;
       /** 在面包屑中隐藏 */
@@ -103,14 +103,14 @@ export namespace SystemMenuApi {
  * 获取菜单数据列表
  */
 // async function getMenuList(): Promise<Array<SystemMenuApi.SystemMenu>> {
-//   const res = await requestClient.get<ApiType.ListResponse<SystemMenuApi.SystemMenu>>('/menus/tree')
+//   const res = await requestClient.get<ApiType.ListResponse<SystemMenuApi.SystemMenu>>('/platform/v1/menus/list-tree')
 //   return res.items;
 // }
 async function getMenuList() {
   return requestClient.get<
     | ApiType.ListResponse<SystemMenuApi.SystemMenu>
     | Array<SystemMenuApi.SystemMenu>
-  >('/menus/tree');
+  >('/platform/v1/menus/list-tree');
 }
 
 async function isMenuNameExists(
@@ -118,7 +118,7 @@ async function isMenuNameExists(
   id?: SystemMenuApi.SystemMenu['id'],
 ): Promise<boolean> {
   const res = await requestClient.post<SystemMenuApi.ExitstMenu>(
-    '/menus/name-exists',
+    '/platform/v1/menus/name-exists',
     { id, name },
   );
   return res.exist;
@@ -129,7 +129,7 @@ async function isMenuPathExists(
   id?: SystemMenuApi.SystemMenu['id'],
 ): Promise<boolean> {
   const res = await requestClient.post<SystemMenuApi.ExitstMenu>(
-    '/menus/path-exists',
+    '/platform/v1/menus/path-exists',
     { id, path },
   );
   return res.exist;
@@ -141,7 +141,7 @@ async function isMenuPathExists(
 async function createMenu(
   data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
 ) {
-  return requestClient.post('/menus', data);
+  return requestClient.post('/platform/v1/menus', data);
 }
 
 /**
@@ -154,7 +154,7 @@ async function updateMenu(
   id: string,
   data: Omit<SystemMenuApi.SystemMenu, 'children' | 'id'>,
 ) {
-  return requestClient.put(`/menus/${id}`, data);
+  return requestClient.put(`/platform/v1/menus/${id}`, data);
 }
 
 /**
@@ -162,7 +162,7 @@ async function updateMenu(
  * @param id 菜单 ID
  */
 async function deleteMenu(id: string) {
-  return requestClient.delete(`/menus/${id}`);
+  return requestClient.delete(`/platform/v1/menus/${id}`);
 }
 
 export {

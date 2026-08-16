@@ -87,7 +87,7 @@ export const getNotificationTemplateList = (params?: Recordable<any>) =>
 
 export const createNotificationTemplate = (
   data: Omit<NotificationApi.Template, 'createdAt' | 'id' | 'updatedAt'>,
-) => requestClient.post<NotificationApi.Template>('/notification-templates', data);
+) => requestClient.post<NotificationApi.Template>('/platform/v1/notification-templates', data);
 
 export const updateNotificationTemplate = (
   id: number,
@@ -99,13 +99,13 @@ export const updateNotificationTemplate = (
   );
 
 export const deleteNotificationTemplate = (id: number) =>
-  requestClient.delete(`/notification-templates/${id}`);
+  requestClient.delete(`/platform/v1/notification-templates/${id}`);
 
 export const sendInAppNotification = (data: NotificationApi.SendInAppPayload) =>
-  requestClient.post<{ taskId: number }>('/notifications:send-in-app', data);
+  requestClient.post<{ taskId: number }>('/platform/v1/notifications:send-in-app', data);
 
 export const sendNotification = (data: NotificationApi.SendNotificationPayload) =>
-  requestClient.post<{ taskId: number }>('/notifications:send', data);
+  requestClient.post<{ taskId: number }>('/platform/v1/notifications:send', data);
 
 export const getNotificationMessageList = (params?: Recordable<any>) =>
   requestClient.get<ApiType.ListResponse<NotificationApi.Message>>(
@@ -120,10 +120,10 @@ export const getMyNotificationList = (params?: Recordable<any>) =>
   );
 
 export const getMyUnreadNotificationCount = () =>
-  requestClient.get<{ total: number }>('/my/notifications:unread-count');
+  requestClient.get<{ total: number }>('/platform/v1/my/notifications:unread-count');
 
 export const markNotificationRead = (id: number) =>
-  requestClient.post(`/my/notifications/${id}:read`);
+  requestClient.post(`/platform/v1/my/notifications/${id}:read`);
 
 export const markNotificationsRead = (ids: number[]) =>
-  requestClient.post('/my/notifications:read', { ids });
+  requestClient.post('/platform/v1/my/notifications:read', { ids });

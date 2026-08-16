@@ -115,7 +115,7 @@ async function getTenantList(params?: Recordable<any>) {
  * 获取租户详情
  */
 async function getTenant(id: number) {
-  return requestClient.get<SystemTenantApi.SystemTenant>(`/tenants/${id}`);
+  return requestClient.get<SystemTenantApi.SystemTenant>(`/platform/v1/tenants/${id}`);
 }
 
 /**
@@ -126,7 +126,7 @@ async function createTenant(data: {
   operatorId: number;
   initialAdmin: SystemTenantApi.TenantInitialAdmin;
 }) {
-  return requestClient.post('/tenants', data);
+  return requestClient.post('/platform/v1/tenants', data);
 }
 
 /**
@@ -136,7 +136,7 @@ async function updateTenant(
   id: number,
   data: { tenant: Partial<SystemTenantApi.SystemTenant>; operatorId: number },
 ) {
-  return requestClient.put(`/tenants/${id}`, data.tenant, {
+  return requestClient.put(`/platform/v1/tenants/${id}`, data.tenant, {
     params: { operatorId: data.operatorId },
   });
 }
@@ -145,7 +145,7 @@ async function updateTenant(
  * 删除租户
  */
 async function deleteTenant(id: number) {
-  return requestClient.delete(`/tenants/${id}`, { data: { operatorId: 1 } });
+  return requestClient.delete(`/platform/v1/tenants/${id}`, { data: { operatorId: 1 } });
 }
 
 /**
@@ -156,7 +156,7 @@ async function updateTenantLifecycle(
   lifecycleStatus: TenantLifecycleStatus,
   operatorId: number = 1,
 ) {
-  return requestClient.put(`/tenants/${id}/lifecycle`, {
+  return requestClient.put(`/platform/v1/tenants/${id}/lifecycle`, {
     lifecycleStatus,
     operatorId,
   });
@@ -164,7 +164,7 @@ async function updateTenantLifecycle(
 
 async function getTenantAdmins(tenantId: number) {
   return requestClient.get<{ items: SystemTenantApi.TenantAdmin[] }>(
-    `/tenants/${tenantId}/admins`,
+    `/platform/v1/tenants/${tenantId}/admins`,
   );
 }
 
@@ -173,7 +173,7 @@ async function updateTenantAdmin(
   adminUserId: number,
   data: { email?: string; phone?: string; realname?: string },
 ) {
-  return requestClient.put(`/tenants/${tenantId}/admins/${adminUserId}`, {
+  return requestClient.put(`/platform/v1/tenants/${tenantId}/admins/${adminUserId}`, {
     ...data,
     adminUserId,
     operatorId: 1,
@@ -187,7 +187,7 @@ async function resetTenantAdminPassword(
   newPassword: string,
 ) {
   return requestClient.post(
-    `/tenants/${tenantId}/admins/${adminUserId}:reset-password`,
+    `/platform/v1/tenants/${tenantId}/admins/${adminUserId}:reset-password`,
     { adminUserId, newPassword, operatorId: 1, tenantId },
   );
 }
@@ -209,7 +209,7 @@ export {
  */
 export async function searchTenantsByName(params?: Recordable<any>) {
   return requestClient.get<{ items: SystemTenantApi.SystemTenant[] }>(
-    '/tenants/simples',
+    '/platform/v1/tenants/simples',
     { params },
   );
 }

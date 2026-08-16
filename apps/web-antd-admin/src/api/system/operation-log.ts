@@ -21,7 +21,7 @@ export namespace SystemOperationLogApi {
   }
 }
 export const getOperationLogList = (params?: Recordable<any>) =>
-  requestClient.get<ApiType.ListResponse<SystemOperationLogApi.OperationLog>>('/operation-logs', { params });
+  requestClient.get<ApiType.ListResponse<SystemOperationLogApi.OperationLog>>('/platform/v1/operation-logs', { params });
 export const getOperationLog = (id: string) =>
-  requestClient.get<SystemOperationLogApi.OperationLog>(`/operation-logs/${id}`);
+  requestClient.get<SystemOperationLogApi.OperationLog>(`/platform/v1/operation-logs/${id}`);
 

@@ -24,8 +24,8 @@ export const getSessionList = (params?: Recordable<any>) =>
   );
 
 export const getMySessions = () =>
-  requestClient.get<{ items: SystemSessionApi.Session[] }>('/sessions/mine');
+  requestClient.get<{ items: SystemSessionApi.Session[] }>('/platform/v1/sessions/mine');
 
 export const revokeSession = (id: string) =>
-  requestClient.delete(`/sessions/${id}`);
+  requestClient.delete(`/platform/v1/sessions/${id}`);
 

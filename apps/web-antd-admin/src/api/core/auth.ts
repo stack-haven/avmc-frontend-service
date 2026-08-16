@@ -40,7 +40,7 @@ export namespace AuthApi {
  * 登录
  */
 export async function loginApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login', data);
+  return requestClient.post<AuthApi.LoginResult>('/platform/v1/auth/login', data);
 }
 
 /**
@@ -48,7 +48,7 @@ export async function loginApi(data: AuthApi.LoginParams) {
  */
 export async function refreshTokenApi(refreshToken: string) {
   return baseRequestClient.post<AuthApi.RefreshTokenResult>(
-    '/auth/refresh-token',
+    '/platform/v1/auth/refresh-token',
     { refreshToken },
   );
 }
@@ -57,21 +57,21 @@ export async function refreshTokenApi(refreshToken: string) {
  * 退出登录
  */
 export async function logoutApi() {
-  return requestClient.post('/auth/logout', {});
+  return requestClient.post('/platform/v1/auth/logout', {});
 }
 
 /**
  * 登录-用户名密码登录
  */
 export async function loginPasswordApi(data: AuthApi.LoginParams) {
-  return requestClient.post<AuthApi.LoginResult>('/auth/login/password', data);
+  return requestClient.post<AuthApi.LoginResult>('/platform/v1/auth/login-password', data);
 }
 
 /**
  * 获取登录用户信息
  */
 export async function getAcccessProfileApi() {
-  return requestClient.get<AuthApi.ProfileResult>('/auth/vben/profile');
+  return requestClient.get<AuthApi.ProfileResult>('/platform/v1/auth/vben-profile');
 }
 
 /**
@@ -79,7 +79,7 @@ export async function getAcccessProfileApi() {
  */
 export async function getAccessCodesApi() {
   return requestClient
-    .get<AuthApi.AccessCodesResult>('/auth/codes')
+    .get<AuthApi.AccessCodesResult>('/platform/v1/auth/codes')
     .then((res) => res.codes ?? []);
 }
 
@@ -109,7 +109,7 @@ export async function getAccessMenusApi(): Promise<
   RouteRecordStringComponent[]
 > {
   return requestClient
-    .get<AuthApi.MenusResult>('/auth/menus')
+    .get<AuthApi.MenusResult>('/platform/v1/auth/menus')
     .then((res) => (res.items ?? []).map(normalizeMenuQuery));
 }
 /**

@@ -62,7 +62,7 @@ export namespace SystemTenantTenantMenuPermissionGroupApi {
 async function getTenantMenuPermissionGroupList(params?: Recordable<any>) {
   return requestClient.get<
     ApiType.ListResponse<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup>
-  >('/tenant-menu-permission-groups', { params });
+  >('/platform/v1/tenant-menu-permission-groups', { params });
 }
 
 async function getTenantMenuPermissionGroup(id: string) {
@@ -74,31 +74,31 @@ async function getTenantMenuPermissionGroup(id: string) {
 async function createTenantMenuPermissionGroup(
   data: Omit<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'id'>,
 ) {
-  return requestClient.post('/tenant-menu-permission-groups', data);
+  return requestClient.post('/platform/v1/tenant-menu-permission-groups', data);
 }
 
 async function updateTenantMenuPermissionGroup(
   id: string,
   data: Omit<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'id'>,
 ) {
-  return requestClient.put(`/tenant-menu-permission-groups/${id}`, data);
+  return requestClient.put(`/platform/v1/tenant-menu-permission-groups/${id}`, data);
 }
 
 async function deleteTenantMenuPermissionGroup(id: string) {
-  return requestClient.delete(`/tenant-menu-permission-groups/${id}`);
+  return requestClient.delete(`/platform/v1/tenant-menu-permission-groups/${id}`);
 }
 
 async function updateTenantMenuPermissionGroupStatus(
   id: string,
   data: Pick<SystemTenantTenantMenuPermissionGroupApi.TenantMenuPermissionGroup, 'status'>,
 ) {
-  return requestClient.post(`/tenant-menu-permission-groups/${id}:status-update`, data);
+  return requestClient.post(`/platform/v1/tenant-menu-permission-groups/${id}:status-update`, data);
 }
 
 async function getTenantTenantMenuPermissionGroupVersions(groupId: string | number) {
   return requestClient.get<{
     items: SystemTenantTenantMenuPermissionGroupApi.TenantTenantMenuPermissionGroupVersion[];
-  }>(`/tenant-menu-permission-groups/${groupId}/versions`);
+  }>(`/platform/v1/tenant-menu-permission-groups/${groupId}/versions`);
 }
 
 async function publishTenantTenantMenuPermissionGroupVersion(
@@ -136,7 +136,7 @@ async function rollbackTenantTenantMenuPermissionGroupVersion(
 
 async function getTenantPermissionGroups(tenantId: string) {
   return requestClient.get<SystemTenantTenantMenuPermissionGroupApi.TenantPermissionGroups>(
-    `/tenants/${tenantId}/permission-groups`,
+    `/platform/v1/tenants/${tenantId}/permission-groups`,
   );
 }
 
@@ -144,7 +144,7 @@ async function updateTenantPermissionGroups(
   tenantId: string,
   groupIds: number[],
 ) {
-  return requestClient.put(`/tenants/${tenantId}/permission-groups`, {
+  return requestClient.put(`/platform/v1/tenants/${tenantId}/permission-groups`, {
     groupIds,
     tenantId: Number(tenantId),
   });
@@ -152,13 +152,13 @@ async function updateTenantPermissionGroups(
 
 async function getTenantEffectiveMenus(tenantId: string) {
   return requestClient.get<ApiType.ListResponse<SystemMenuApi.SystemMenu>>(
-    `/tenants/${tenantId}/effective-menus`,
+    `/platform/v1/tenants/${tenantId}/effective-menus`,
   );
 }
 
 async function getCurrentTenantEffectiveMenus() {
   return requestClient.get<ApiType.ListResponse<SystemMenuApi.SystemMenu>>(
-    '/current-tenant/effective-menus',
+    '/platform/v1/current-tenant/effective-menus',
   );
 }
 
@@ -168,7 +168,7 @@ async function updateTenantPermissionGroupVersion(
   data: { autoUpgrade: boolean; versionId?: number },
 ) {
   return requestClient.put(
-    `/tenants/${tenantId}/permission-groups/${groupId}/version`,
+    `/platform/v1/tenants/${tenantId}/permission-groups/${groupId}/version`,
     {
       ...data,
       groupId: Number(groupId),

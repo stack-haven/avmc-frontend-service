@@ -56,11 +56,11 @@ export const getWebhookSubscriptionList = (params?: Recordable<any>) =>
   );
 
 export const getWebhookSubscription = (id: number) =>
-  requestClient.get<WebhookApi.Subscription>(`/webhook-subscriptions/${id}`);
+  requestClient.get<WebhookApi.Subscription>(`/platform/v1/webhook-subscriptions/${id}`);
 
 export const createWebhookSubscription = (
   data: Omit<WebhookApi.Subscription, 'createdAt' | 'id' | 'updatedAt'>,
-) => requestClient.post<WebhookApi.Subscription>('/webhook-subscriptions', { subscription: data });
+) => requestClient.post<WebhookApi.Subscription>('/platform/v1/webhook-subscriptions', { subscription: data });
 
 export const updateWebhookSubscription = (
   id: number,
@@ -72,7 +72,7 @@ export const updateWebhookSubscription = (
   );
 
 export const deleteWebhookSubscription = (id: number) =>
-  requestClient.delete(`/webhook-subscriptions/${id}`);
+  requestClient.delete(`/platform/v1/webhook-subscriptions/${id}`);
 
 // Delivery log management
 export const getWebhookDeliveryLogList = (params?: Recordable<any>) =>
@@ -82,7 +82,7 @@ export const getWebhookDeliveryLogList = (params?: Recordable<any>) =>
   );
 
 export const getWebhookDeliveryLog = (id: number) =>
-  requestClient.get<WebhookApi.DeliveryLog>(`/webhook-delivery-logs/${id}`);
+  requestClient.get<WebhookApi.DeliveryLog>(`/platform/v1/webhook-delivery-logs/${id}`);
 
 export const retryWebhookDelivery = (id: number) =>
   requestClient.post<{ newDeliveryLogId: number }>(

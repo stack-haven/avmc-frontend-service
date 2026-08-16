@@ -30,28 +30,28 @@ async function getPostList(params?: Recordable<any>) {
  * 获取岗位详情
  */
 async function getPost(id: string) {
-  return requestClient.get<SystemPostApi.SystemPost>(`/posts/${id}`);
+  return requestClient.get<SystemPostApi.SystemPost>(`/platform/v1/posts/${id}`);
 }
 
 /**
  * 创建岗位
  */
 async function createPost(data: SystemPostApi.SystemPost) {
-  return requestClient.post('/posts', data);
+  return requestClient.post('/platform/v1/posts', data);
 }
 
 /**
  * 更新岗位
  */
 async function updatePost(id: string, data: SystemPostApi.SystemPost) {
-  return requestClient.put(`/posts/${id}`, data);
+  return requestClient.put(`/platform/v1/posts/${id}`, data);
 }
 
 /**
  * 删除岗位
  */
 async function deletePost(id: string) {
-  return requestClient.delete(`/posts/${id}`);
+  return requestClient.delete(`/platform/v1/posts/${id}`);
 }
 
 export { createPost, deletePost, getPost, getPostList, updatePost };

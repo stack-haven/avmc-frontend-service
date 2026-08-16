@@ -44,7 +44,7 @@ export const createNotificationProvider = async (
 ) => {
   const result = await requestClient.post<{
     provider: NotificationProviderApi.Provider;
-  }>('/notification-providers', { provider });
+  }>('/platform/v1/notification-providers', { provider });
   return result.provider;
 };
 
@@ -54,17 +54,17 @@ export const updateNotificationProvider = async (
 ) => {
   const result = await requestClient.put<{
     provider: NotificationProviderApi.Provider;
-  }>(`/notification-providers/${id}`, { provider });
+  }>(`/platform/v1/notification-providers/${id}`, { provider });
   return result.provider;
 };
 
 export const deleteNotificationProvider = (id: number) =>
-  requestClient.delete(`/notification-providers/${id}`);
+  requestClient.delete(`/platform/v1/notification-providers/${id}`);
 
 export const setDefaultNotificationProvider = async (id: number) => {
   const result = await requestClient.post<{
     provider: NotificationProviderApi.Provider;
-  }>(`/notification-providers/${id}:set-default`, { id });
+  }>(`/platform/v1/notification-providers/${id}:set-default`, { id });
   return result.provider;
 };
 

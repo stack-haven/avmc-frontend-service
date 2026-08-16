@@ -82,7 +82,7 @@ export const getAsyncTask = (id: number) =>
   );
 
 export const cancelAsyncTask = (id: number) =>
-  requestClient.post(`/async-tasks/${id}:cancel`);
+  requestClient.post(`/platform/v1/async-tasks/${id}:cancel`);
 
 export const retryAsyncTask = (id: number) =>
   requestClient.post<{ task: SystemAsyncTaskApi.AsyncTask }>(

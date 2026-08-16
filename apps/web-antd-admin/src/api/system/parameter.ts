@@ -60,7 +60,7 @@ export const createParameterDefinition = async (
 ) => {
   const result = await requestClient.post<{
     parameter: ParameterApi.Definition;
-  }>('/parameters/definitions', data);
+  }>('/platform/v1/parameters/definitions', data);
   return result.parameter;
 };
 
@@ -70,15 +70,15 @@ export const updateParameterDefinition = async (
 ) => {
   const result = await requestClient.put<{
     parameter: ParameterApi.Definition;
-  }>(`/parameters/definitions/${id}`, data);
+  }>(`/platform/v1/parameters/definitions/${id}`, data);
   return result.parameter;
 };
 
 export const deleteParameterDefinition = (id: number) =>
-  requestClient.delete(`/parameters/definitions/${id}`);
+  requestClient.delete(`/platform/v1/parameters/definitions/${id}`);
 
 export const getCurrentTenantParameters = (params?: { key?: string }) =>
-  requestClient.get<{ items: ParameterApi.Resolved[] }>('/parameters/current', {
+  requestClient.get<{ items: ParameterApi.Resolved[] }>('/platform/v1/parameters/current', {
     params,
   });
 
@@ -91,4 +91,4 @@ export const setCurrentTenantParameter = async (key: string, value: string) => {
 };
 
 export const resetCurrentTenantParameter = (key: string) =>
-  requestClient.delete(`/parameters/current/${encodeURIComponent(key)}`);
+  requestClient.delete(`/platform/v1/parameters/current/${encodeURIComponent(key)}`);

@@ -47,12 +47,12 @@ export namespace FileCenterApi {
 }
 
 export const getFileObjectList = (params?: Recordable<any>) =>
-  requestClient.get<ApiType.ListResponse<FileCenterApi.FileObject>>('/files', {
+  requestClient.get<ApiType.ListResponse<FileCenterApi.FileObject>>('/platform/v1/files', {
     params,
   });
 
 export const getFileObject = (id: number) =>
-  requestClient.get<FileCenterApi.FileObject>(`/files/${id}`);
+  requestClient.get<FileCenterApi.FileObject>(`/platform/v1/files/${id}`);
 
 export const getFileAccessLogList = (id: number, params?: Recordable<any>) =>
   requestClient.get<ApiType.ListResponse<FileCenterApi.FileAccessLog>>(
@@ -66,7 +66,7 @@ export const presignFileDownload = (id: number) =>
   );
 
 export const deleteFileObject = (id: number, idempotencyKey?: string) =>
-  requestClient.delete(`/files/${id}`, {
+  requestClient.delete(`/platform/v1/files/${id}`, {
     params: { idempotencyKey },
   });
 
@@ -96,14 +96,14 @@ export interface UploadSession {
 }
 
 export const createFileUploadSession = (data: CreateUploadSessionParams) =>
-  requestClient.post<UploadSession>('/files/upload-sessions', data);
+  requestClient.post<UploadSession>('/platform/v1/files/upload-sessions', data);
 
 export const uploadFileContent = (
   id: number,
   content: string,
   contentType?: string,
 ) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:content`, {
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/platform/v1/files/${id}:content`, {
     content,
     contentType,
   });
@@ -112,10 +112,10 @@ export const confirmFileUpload = (
   id: number,
   data?: { etag?: string; sha256?: string; size?: number },
 ) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:confirm`, data);
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/platform/v1/files/${id}:confirm`, data);
 
 export const updateFileObject = (id: number, fileName: string) =>
-  requestClient.put<{ file: FileCenterApi.FileObject }>(`/files/${id}`, {
+  requestClient.put<{ file: FileCenterApi.FileObject }>(`/platform/v1/files/${id}`, {
     fileName,
   });
 
@@ -124,7 +124,7 @@ export const replaceFileContent = (
   content: string,
   data?: { contentType?: string; fileName?: string },
 ) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:replace`, {
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/platform/v1/files/${id}:replace`, {
     content,
     ...data,
   });
@@ -134,14 +134,14 @@ export const downloadFileContent = (id: number) =>
     content: string;
     contentType?: string;
     fileName?: string;
-  }>(`/files/${id}:download`);
+  }>(`/platform/v1/files/${id}:download`);
 
 export const uploadFilePart = (
   id: number,
   partNumber: number,
   content: string,
 ) =>
-  requestClient.put<{ etag: string; partNumber: number }>(`/files/${id}/parts`, {
+  requestClient.put<{ etag: string; partNumber: number }>(`/platform/v1/files/${id}/parts`, {
     content,
     partNumber,
   });
@@ -151,12 +151,12 @@ export const listFileParts = (id: number) =>
     partSize: number;
     parts: FilePartInfo[];
     totalParts: number;
-  }>(`/files/${id}/parts`);
+  }>(`/platform/v1/files/${id}/parts`);
 
 export const completeFileUpload = (id: number, parts: FilePartInfo[]) =>
-  requestClient.post<{ file: FileCenterApi.FileObject }>(`/files/${id}:complete`, {
+  requestClient.post<{ file: FileCenterApi.FileObject }>(`/platform/v1/files/${id}:complete`, {
     parts,
   });
 
 export const abortFileUpload = (id: number) =>
-  requestClient.post<{}>(`/files/${id}:abort`, {});
+  requestClient.post<{}>(`/platform/v1/files/${id}:abort`, {});

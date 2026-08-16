@@ -9,10 +9,10 @@ export default defineConfig(async () => {
       target: 'http://127.0.0.1:8100',
       ws: true,
     },
-    '/api': {
+    '/api/platform': {
       changeOrigin: true,
-      rewrite: (path: string) => path.replace(/^\/api/, ''),
-      target: 'http://127.0.0.1:8000/admin/v1',
+      rewrite: (path: string) => path.replace(/^\/api\/platform/, '/platform'),
+      target: 'http://127.0.0.1:8000',
       ws: true,
     },
   };
