@@ -1,16 +1,9 @@
 <script setup lang="ts">
-import type { Dictionary } from '#/api/evie/dictionary';
-
 import { useVbenForm } from '#/adapter/form';
 import { useVbenDrawer } from '@vben/common-ui';
 
 import { formSchema } from '../data';
 
-interface Props {
-  data?: Dictionary;
-}
-
-const props = defineProps<Props>();
 const emit = defineEmits<{ success: [values: Record<string, any>] }>();
 
 const [Form, formApi] = useVbenForm({
@@ -26,19 +19,16 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const values = await formApi.getValues();
     emit('success', values);
   },
+  onOpenChange(isOpen: boolean) {
+    if (isOpen) {
+      const data = drawerApi.getData<Record<string, any>>();
+      formApi.resetForm();
+      if (data?.id) {
+        formApi.setValues(data);
+      }
+    }
+  },
 });
-
-function open() {
-  const data = props.data;
-  if (data?.id) {
-    formApi.setValues(data);
-  } else {
-    formApi.resetForm();
-  }
-  drawerApi.open();
-}
-
-defineExpose({ open });
 </script>
 
 <template>
