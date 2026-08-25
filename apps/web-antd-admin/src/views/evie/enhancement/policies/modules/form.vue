@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DictionaryWord } from '#/api/evie/dictionary';
+import type { EnhancementPolicy } from '#/api/evie/enhancement';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenDrawer } from '@vben/common-ui';
@@ -7,7 +7,7 @@ import { useVbenDrawer } from '@vben/common-ui';
 import { formSchema } from '../data';
 
 interface Props {
-  data?: DictionaryWord;
+  data?: EnhancementPolicy;
 }
 
 const props = defineProps<Props>();
@@ -24,23 +24,14 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const { valid } = await formApi.validate();
     if (!valid) return;
     const values = await formApi.getValues();
-    const aliases = (values.aliasesText || '')
-      .split(',')
-      .map((s: string) => s.trim())
-      .filter(Boolean)
-      .map((alias: string) => ({ alias }));
-    delete values.aliasesText;
-    emit('success', { ...values, aliases });
+    emit('success', values);
   },
 });
 
 function open() {
   const data = props.data;
-  if (data) {
-    formApi.setValues({
-      ...data,
-      aliasesText: (data.aliases || []).map((a) => a.alias).join(','),
-    });
+  if (data?.id) {
+    formApi.setValues(data);
   } else {
     formApi.resetForm();
   }
