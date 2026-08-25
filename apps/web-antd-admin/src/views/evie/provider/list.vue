@@ -48,7 +48,7 @@ async function toggle(providerName: string, isActive: boolean) {
     language: existing?.language || 'zh',
   };
   await updateTenantProviderConfig(config);
-  message.success($t('common.success'));
+  message.success($t('ui.actionMessage.operationSuccess'));
   await load();
 }
 

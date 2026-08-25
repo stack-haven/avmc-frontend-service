@@ -51,13 +51,13 @@ function refresh() {
 function onSubmit(values: any) {
   if (values.id) {
     updateProfile(values.id, values).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
     createProfile(values).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
@@ -73,7 +73,7 @@ function onAction({ code, row }: any) {
       title: $t('common.delete'),
       async onOk() {
         await deleteProfile(row.id);
-        message.success($t('common.success'));
+        message.success($t('ui.actionMessage.operationSuccess'));
         refresh();
       },
     });

@@ -58,7 +58,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
     values.providerName = providerName.value;
     // 保留 is_active（切换开关独立管理）
     await updateTenantProviderConfig(values);
-    message.success($t('common.success'));
+    message.success($t('ui.actionMessage.operationSuccess'));
     drawerApi.close();
     emits('success');
   },

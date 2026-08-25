@@ -64,7 +64,7 @@ function handlePublish() {
     content: $t('evie.dictionary.publishVersionHint'),
     async onOk() {
       await publishDictionary(dictionaryId.value!);
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       refresh();
     },
   });

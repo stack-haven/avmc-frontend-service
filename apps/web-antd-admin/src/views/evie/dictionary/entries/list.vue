@@ -56,13 +56,13 @@ function onSubmit(values: any) {
   const payload = { ...values, dictionaryId: dictionaryId.value };
   if (values.id) {
     updateEntry(values.id, payload).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
     createEntry(dictionaryId.value!, payload).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
@@ -78,7 +78,7 @@ function onAction({ code, row }: any) {
       title: $t('common.delete'),
       async onOk() {
         await deleteEntry(row.id);
-        message.success($t('common.success'));
+        message.success($t('ui.actionMessage.operationSuccess'));
         refresh();
       },
     });

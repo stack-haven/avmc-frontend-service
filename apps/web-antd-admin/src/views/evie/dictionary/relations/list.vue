@@ -58,13 +58,13 @@ function onSubmit(values: any) {
   const payload = { ...values, entryId: entryId.value };
   if (values.id) {
     updateRelation(values.id, payload).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
     createRelation(entryId.value!, payload).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
@@ -80,7 +80,7 @@ function onAction({ code, row }: any) {
       title: $t('common.delete'),
       async onOk() {
         await deleteRelation(row.id);
-        message.success($t('common.success'));
+        message.success($t('ui.actionMessage.operationSuccess'));
         refresh();
       },
     });

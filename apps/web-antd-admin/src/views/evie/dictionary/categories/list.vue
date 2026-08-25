@@ -47,13 +47,13 @@ function refresh() {
 function onSubmit(values: any) {
   if (values.id) {
     updateCategory(values.id, values).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
     createCategory(values).then(() => {
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
@@ -69,7 +69,7 @@ function handleDelete(row: any) {
     title: $t('common.delete'),
     async onOk() {
       await deleteCategory(row.id);
-      message.success($t('common.success'));
+      message.success($t('ui.actionMessage.operationSuccess'));
       refresh();
     },
   });
