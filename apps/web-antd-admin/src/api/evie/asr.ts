@@ -50,6 +50,27 @@ export const getAsrRecordList = (params?: Recordable<any>) =>
 export const getAsrRecord = (id: number) =>
   requestClient.get<AsrRecord>(`/evie/v1/asr/records/${id}`);
 
+export interface EnhancementStepSnapshot {
+  step: string;
+  before?: string;
+  after?: string;
+  durationMs?: number;
+  skipped?: boolean;
+  changes?: { from?: string; to?: string; type?: string; confidence?: number }[];
+}
+
+export interface AsrRecordDetail {
+  record: AsrRecord;
+  enhancedText?: string;
+  policyName?: string;
+  profileName?: string;
+  stepSnapshots?: EnhancementStepSnapshot[];
+  changes?: { from?: string; to?: string; type?: string; confidence?: number }[];
+}
+
+export const getAsrRecordDetail = (id: number) =>
+  requestClient.get<AsrRecordDetail>(`/evie/v1/asr/records/${id}/detail`);
+
 export const getAsrRecordAudio = (id: number) =>
   requestClient.get<{ audioData: string; contentType: string }>(
     `/evie/v1/asr/records/${id}/audio`,

@@ -190,7 +190,18 @@
     "originalText": "原始识别",
     "correctedText": "纠错后（标准企业语言）",
     "corrections": "纠错",
-    "noVoice": "未识别到语音"
+    "noVoice": "未识别到语音",
+    "recordDetail": "识别记录详情",
+    "loadingDetail": "加载详情中...",
+    "replay": "重听",
+    "noAudio": "无音频可播放",
+    "textCompare": "文本对比",
+    "enhanceSteps": "增强策略执行步骤",
+    "stepSkipped": "跳过",
+    "changesCount": "{0} 处变更",
+    "stepBefore": "处理前",
+    "noSteps": "暂无步骤数据",
+    "changesSummary": "变更汇总"
   },
   "dashboard": {
     "myDictionaries": "我的词库",

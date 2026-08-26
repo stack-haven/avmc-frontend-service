@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Page, useVbenModal } from '@vben/common-ui';
+import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
 import { createIconifyIcon } from '@vben/icons';
 
 import { Button, message } from 'ant-design-vue';
@@ -9,6 +9,7 @@ import { getAsrRecordAudio, getAsrRecordList, reRecognize } from '#/api';
 import { $t } from '#/locales';
 
 import AudioPlayer from './modules/audio-player.vue';
+import DetailDrawerComp from './modules/detail-drawer.vue';
 import VoiceRecognition from './modules/voice-recognition.vue';
 
 const MicrophoneIcon = createIconifyIcon('mdi:microphone');
@@ -21,6 +22,11 @@ const [VoiceModal, voiceModalApi] = useVbenModal({
 
 const [AudioModal, audioModalApi] = useVbenModal({
   connectedComponent: AudioPlayer,
+  destroyOnClose: true,
+});
+
+const [DetailDrawerWrapper, DetailDrawerApi] = useVbenDrawer({
+  connectedComponent: DetailDrawerComp,
   destroyOnClose: true,
 });
 
@@ -107,6 +113,7 @@ function onRefresh() {
   <Page auto-content-height>
     <VoiceModal @success="onRefresh" />
     <AudioModal />
+    <DetailDrawerWrapper />
     <Grid :table-title="$t('evie.asr.records')">
       <template #toolbar-tools>
         <Button type="primary" @click="voiceModalApi.open()">
@@ -120,6 +127,9 @@ function onRefresh() {
         </Button>
       </template>
       <template #action="{ row }">
+        <Button type="link" size="small" @click="DetailDrawerApi.setData(row).open()">
+          详情
+        </Button>
         <Button type="link" size="small" @click="reRecognizeRecord(row.id)">
           重新识别
         </Button>

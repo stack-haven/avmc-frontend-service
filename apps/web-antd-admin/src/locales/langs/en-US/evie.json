@@ -190,7 +190,18 @@
     "originalText": "Raw Recognition",
     "correctedText": "Corrected (Standard)",
     "corrections": "Corrections",
-    "noVoice": "No speech detected"
+    "noVoice": "No speech detected",
+    "recordDetail": "Recognition Detail",
+    "loadingDetail": "Loading detail...",
+    "replay": "Replay",
+    "noAudio": "No audio available",
+    "textCompare": "Text Compare",
+    "enhanceSteps": "Enhancement Steps",
+    "stepSkipped": "Skipped",
+    "changesCount": "{0} changes",
+    "stepBefore": "Before",
+    "noSteps": "No step data",
+    "changesSummary": "Changes Summary"
   },
   "dashboard": {
     "myDictionaries": "My Dictionaries",
