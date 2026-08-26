@@ -1,3 +1,6 @@
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
+
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
@@ -70,12 +73,15 @@ export const columns = (
   },
   ...stepFields.map((field) => ({
     align: 'center' as const,
-    cellRender: {
-      attrs: {
-        textMap: { true: $t('common.yes'), false: $t('common.no') },
-      },
-      name: 'CellTag',
-    },
+    cellRender: (({ row }: { row: any }) =>
+      h(
+        Tag,
+        {
+          color: row[field] ? 'green' : 'default',
+          style: { border: 'none', fontWeight: 500 },
+        },
+        () => (row[field] ? $t('common.yes') : $t('common.no')),
+      )) as any,
     field,
     title: $t(`evie.enhancement.${field}`),
     width: 110,

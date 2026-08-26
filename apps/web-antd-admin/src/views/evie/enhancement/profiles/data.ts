@@ -11,11 +11,16 @@ export const formSchema = (): VbenFormSchema[] => [
     rules: 'required',
   },
   {
-    component: 'InputNumber',
-    componentProps: { class: 'w-full', min: 1 },
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: $t('evie.enhancement.policyName'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
     fieldName: 'policyId',
-    label: $t('evie.enhancement.policyId'),
-    rules: 'required',
+    label: $t('evie.enhancement.policyName'),
+    rules: 'selectRequired',
   },
   {
     component: 'Textarea',

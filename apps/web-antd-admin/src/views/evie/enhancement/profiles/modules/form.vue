@@ -1,13 +1,16 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenDrawer } from '@vben/common-ui';
+
+import { getPolicyList } from '#/api/evie';
 
 import { formSchema } from '../data';
 
 const emit = defineEmits<{ success: [values: Record<string, any>] }>();
 const editId = ref<number>();
+const policyOptions = ref<{ label: string; value: number }[]>([]);
 
 const [Form, formApi] = useVbenForm({
   schema: formSchema(),
@@ -33,6 +36,26 @@ const [Drawer, drawerApi] = useVbenDrawer({
     }
   },
 });
+
+async function loadPolicies() {
+  try {
+    const resp = await getPolicyList({ pageSize: 100 });
+    policyOptions.value = resp.policies.map((p: any) => ({
+      label: `${p.name}（${p.mode}）`,
+      value: p.id,
+    }));
+    formApi.updateSchema([
+      {
+        fieldName: 'policyId',
+        componentProps: { options: policyOptions.value, showSearch: true, optionFilterProp: 'label' },
+      },
+    ]);
+  } catch {
+    policyOptions.value = [];
+  }
+}
+
+onMounted(loadPolicies);
 </script>
 
 <template>
