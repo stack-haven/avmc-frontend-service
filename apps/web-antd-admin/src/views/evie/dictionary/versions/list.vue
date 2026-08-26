@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { h, onMounted } from 'vue';
+import { h, onMounted, ref } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { Button, Modal, message } from 'ant-design-vue';
+import { Button, Modal, Select, Textarea, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDictionaryList, getVersionList, publishDictionary } from '#/api';
@@ -11,6 +11,11 @@ import { $t } from '#/locales';
 import { columns, searchSchema } from './data';
 
 defineOptions({ name: 'EvieVersionList' });
+
+const publishOpen = ref(false);
+const publishDictId = ref<number>();
+const publishDesc = ref('');
+const dictOptions = ref<{ label: string; value: number }[]>([]);
 
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: { schema: searchSchema(), submitOnChange: true },
@@ -41,22 +46,20 @@ function refresh() {
   gridApi.query();
 }
 
-async function handlePublish() {
-  const values = await gridApi.formApi.getValues();
-  const dictionaryId = values.dictionaryId;
-  if (!dictionaryId) {
+function handlePublish() {
+  publishOpen.value = true;
+  publishDesc.value = '';
+}
+
+async function confirmPublish() {
+  if (!publishDictId.value) {
     message.warning($t('evie.dictionary.selectDictionary'));
     return;
   }
-  Modal.confirm({
-    title: $t('evie.dictionary.publishVersion'),
-    content: $t('evie.dictionary.publishVersionHint'),
-    async onOk() {
-      await publishDictionary(dictionaryId);
-      message.success($t('ui.actionMessage.operationSuccess'));
-      refresh();
-    },
-  });
+  await publishDictionary(publishDictId.value, publishDesc.value || undefined);
+  message.success($t('ui.actionMessage.operationSuccess'));
+  publishOpen.value = false;
+  refresh();
 }
 
 function handleDetail(row: any) {
@@ -70,14 +73,14 @@ function handleDetail(row: any) {
 
 async function loadDictionaries() {
   const resp = await getDictionaryList({ pageSize: 200 });
-  const options = resp.dictionaries.map((d: any) => ({
+  dictOptions.value = resp.dictionaries.map((d: any) => ({
     label: d.name,
     value: d.id,
   }));
   gridApi.formApi.updateSchema([
     {
       fieldName: 'dictionaryId',
-      componentProps: { options, showSearch: true, optionFilterProp: 'label' },
+      componentProps: { options: dictOptions.value, showSearch: true, optionFilterProp: 'label' },
     },
   ]);
 }
@@ -99,5 +102,39 @@ onMounted(loadDictionaries);
         </Button>
       </template>
     </Grid>
+
+    <Modal
+      v-model:open="publishOpen"
+      :title="$t('evie.dictionary.publishVersion')"
+      :ok-text="$t('common.confirm')"
+      :cancel-text="$t('common.cancel')"
+      @ok="confirmPublish"
+    >
+      <div class="space-y-4 py-2">
+        <div>
+          <div class="mb-1 text-sm font-medium">
+            {{ $t('evie.dictionary.name') }}
+          </div>
+          <Select
+            v-model:value="publishDictId"
+            class="w-full"
+            :options="dictOptions"
+            :placeholder="$t('evie.dictionary.selectDictionary')"
+            show-search
+            option-filter-prop="label"
+          />
+        </div>
+        <div>
+          <div class="mb-1 text-sm font-medium">
+            {{ $t('evie.version.description') }}
+          </div>
+          <Textarea
+            v-model:value="publishDesc"
+            :placeholder="$t('evie.dictionary.publishVersionHint')"
+            :rows="3"
+          />
+        </div>
+      </div>
+    </Modal>
   </Page>
 </template>
