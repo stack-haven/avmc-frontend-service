@@ -50,7 +50,10 @@
     "pinyin": "Pinyin",
     "pinyinInitial": "Pinyin Initial",
     "normalizedText": "Normalized Text",
-    "sourceId": "Source ID"
+    "sourceId": "Source ID",
+    "basicInfo": "Required Information",
+    "advancedFields": "Advanced Fields (Pinyin, Normalized, Description)",
+    "autoPinyin": "Auto Generate"
   },
   "relation": {
     "entryId": "Entry",
@@ -161,5 +164,27 @@
     "correctedText": "Corrected (Standard)",
     "corrections": "Corrections",
     "noVoice": "No speech detected"
+  },
+  "dashboard": {
+    "myDictionaries": "My Dictionaries",
+    "systemDictionaries": "System Dictionaries",
+    "health": "Health",
+    "recentActivities": "Recent Activities",
+    "emptyMyDictionaries": "No dictionaries yet. Click + New to start",
+    "emptySystemDictionaries": "No system dictionaries",
+    "emptyActivities": "No recent activities",
+    "totalDictionaries": "Total Dictionaries",
+    "totalEntries": "Total Entries",
+    "totalRelations": "Total Relations",
+    "unresolvedConflicts": "Unresolved Conflicts",
+    "healthHint": "1.0 placeholder: hit rate and avg confidence require schema upgrades in 2.0"
+  },
+  "pinyin": {
+    "generating": "Generating pinyin...",
+    "generateFailed": "Generation failed (frontend fallback)",
+    "empty": "Please enter Standard Text first",
+    "resultLabel": "Pinyin",
+    "initialLabel": "Initials",
+    "normalizedLabel": "Normalized"
   }
 }

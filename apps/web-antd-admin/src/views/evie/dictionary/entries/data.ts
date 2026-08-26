@@ -25,6 +25,13 @@ export const statusOptions = [
 ];
 
 export const formSchema = (): VbenFormSchema[] => [
+  // 必填信息组（视觉分组标记）
+  {
+    fieldName: 'groupBasic',
+    label: $t('evie.entry.basicInfo'),
+    component: 'Divider',
+    componentProps: { orientation: 'left' },
+  },
   {
     component: 'Input',
     fieldName: 'standardText',
@@ -51,6 +58,14 @@ export const formSchema = (): VbenFormSchema[] => [
     defaultValue: 0,
     fieldName: 'priority',
     label: $t('evie.entry.priority'),
+  },
+
+  // 高级字段组（默认折叠，收纳在 Collapse 面板下）
+  {
+    fieldName: 'groupAdvanced',
+    label: $t('evie.entry.advancedFields'),
+    component: 'Divider',
+    componentProps: { orientation: 'left' },
   },
   {
     component: 'Input',

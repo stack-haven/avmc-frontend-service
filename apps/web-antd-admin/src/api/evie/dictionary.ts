@@ -182,3 +182,111 @@ export const getConflictList = (params?: Recordable<any>) =>
     '/evie/v1/dictionary-conflicts',
     { params },
   );
+
+// ---------- 词库统计 (Backend-0 P0) ----------
+export interface DictionaryStats {
+  dictionaryId?: number;
+  entryCount?: number;
+  enabledEntryCount?: number;
+  relationCount?: number;
+  versionCount?: number;
+  unresolvedConflictCount?: number;
+  hitRate?: number;
+  avgRecognitionConfidence?: number;
+  lastModifiedAt?: string;
+}
+
+export const getDictionaryStats = (dictionaryId: number) =>
+  requestClient.get<{ stats: DictionaryStats }>(
+    `/evie/v1/dictionaries/${dictionaryId}:stats`,
+  );
+
+// ---------- 词库级别关系列表 (Backend-0 P0) ----------
+export const listRelationsByDictionary = (
+  dictionaryId: number,
+  params?: Recordable<any>,
+) =>
+  requestClient.get<{ relations: DictionaryRelation[]; total: number }>(
+    `/evie/v1/dictionaries/${dictionaryId}/relations`,
+    { params },
+  );
+
+// ---------- 工作台总览 (Backend-1) ----------
+export interface DashboardMyDictionary {
+  id?: number;
+  name?: string;
+  scope?: string;
+  entryCount?: number;
+  relationCount?: number;
+  unresolvedConflictCount?: number;
+  lastModifiedAt?: string;
+}
+
+export interface DashboardSystemDictionary {
+  id?: number;
+  name?: string;
+  scope?: string;
+  entryCount?: number;
+  lastModifiedAt?: string;
+}
+
+export interface DashboardActivity {
+  id?: number;
+  type?: string;
+  title?: string;
+  summary?: string;
+  actorId?: number;
+  targetType?: string;
+  targetId?: number;
+  targetLabel?: string;
+  scope?: string;
+  createdAt?: string;
+}
+
+export interface DashboardHealthSummary {
+  totalDictionaries?: number;
+  totalEntries?: number;
+  enabledEntries?: number;
+  totalRelations?: number;
+  unresolvedConflicts?: number;
+  hitRate?: number;
+  avgRecognitionConfidence?: number;
+  coverageDictionaryCount?: number;
+  totalDictionaryCount?: number;
+}
+
+export interface DashboardOverview {
+  myDictionaries?: DashboardMyDictionary[];
+  systemDictionaries?: DashboardSystemDictionary[];
+  health?: DashboardHealthSummary;
+  recentActivities?: DashboardActivity[];
+}
+
+export const getDashboardOverview = (params?: { activitiesLimit?: number }) =>
+  requestClient.get<{ overview: DashboardOverview }>('/evie/v1/dashboard', {
+    params,
+  });
+
+// ---------- 词库健康度详细 (Backend-1) ----------
+export interface VocabularyHealthDetail {
+  dictionaryId?: number;
+  dictionaryName?: string;
+  entryCount?: number;
+  relationCount?: number;
+  hitRate?: number;
+  avgRecognitionConfidence?: number;
+  sampleCount?: number;
+}
+
+export const getVocabularyHealth = (params?: {
+  dictionaryScope?: string;
+  recentDays?: number;
+}) =>
+  requestClient.get<{ details: VocabularyHealthDetail[] }>(
+    '/evie/v1/vocabulary-health',
+    { params },
+  );
+
+// ---------- 拼音生成 (Backend-0 P0) ----------
+// 已迁移到 ./pinyin.ts：后端 EnhancementService.GeneratePinyin 由 pkg/pinyin 实现。
+// import { generatePinyin } from './pinyin';

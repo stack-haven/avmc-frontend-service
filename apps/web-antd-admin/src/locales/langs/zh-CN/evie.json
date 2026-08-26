@@ -50,7 +50,10 @@
     "pinyin": "全拼",
     "pinyinInitial": "拼音首字母",
     "normalizedText": "规范化文本",
-    "sourceId": "外部来源 ID"
+    "sourceId": "外部来源 ID",
+    "basicInfo": "必填信息",
+    "advancedFields": "高级字段（拼音、规范化文本、描述）",
+    "autoPinyin": "自动生成"
   },
   "relation": {
     "entryId": "所属词条",
@@ -161,5 +164,27 @@
     "correctedText": "纠错后（标准企业语言）",
     "corrections": "纠错",
     "noVoice": "未识别到语音"
+  },
+  "dashboard": {
+    "myDictionaries": "我的词库",
+    "systemDictionaries": "系统词库",
+    "health": "健康度",
+    "recentActivities": "最近活动",
+    "emptyMyDictionaries": "还没有词库。点击右上角「+ 新建」开始",
+    "emptySystemDictionaries": "暂无系统级词库",
+    "emptyActivities": "暂无最近活动",
+    "totalDictionaries": "总词库数",
+    "totalEntries": "总词条数",
+    "totalRelations": "总关系数",
+    "unresolvedConflicts": "未解决冲突",
+    "healthHint": "1.0 占位：识别命中率与平均置信度需 2.0 补 schema 后完善"
+  },
+  "pinyin": {
+    "generating": "拼音生成中...",
+    "generateFailed": "拼音生成失败（前端库兜底）",
+    "empty": "请先输入标准表达",
+    "resultLabel": "拼音",
+    "initialLabel": "首字母",
+    "normalizedLabel": "规范化"
   }
 }
