@@ -3,10 +3,16 @@ import { onMounted, ref } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-import { Button, Modal, Select, message } from 'ant-design-vue';
+import { Button, Empty, Modal, Select, message as toast } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { createRelation, deleteRelation, getDictionaryList, getEntryList, getRelationList, updateRelation } from '#/api';
+import {
+  createRelation,
+  deleteRelation,
+  getDictionaryList,
+  listRelationsByDictionary,
+  updateRelation,
+} from '#/api/evie';
 import { $t } from '#/locales';
 
 import { columns, searchSchema } from './data';
@@ -15,15 +21,15 @@ import RelationForm from './modules/form.vue';
 defineOptions({ name: 'EvieRelationList' });
 
 const dictionaryId = ref<number>();
-const entryId = ref<number>();
 const dictionaryOptions = ref<{ label: string; value: number }[]>([]);
-const entryOptions = ref<{ label: string; value: number }[]>([]);
 
 const [Drawer, drawerApi] = useVbenDrawer({
   connectedComponent: RelationForm,
   destroyOnClose: true,
 });
 
+// 使用 Backend-0 P0 ListRelationsByDictionary：不再先选 entryId，一次性返回该词库下所有关系。
+// 响应含 JOIN 字段 entry_standard_text / related_standard_text / dictionary_name（自然语言化展示）。
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: { schema: searchSchema(), submitOnChange: true },
   gridOptions: {
@@ -32,13 +38,14 @@ const [Grid, gridApi] = useVbenVxeGrid({
     proxyConfig: {
       ajax: {
         query: async ({ page }: any, values: Record<string, any>) => {
-          if (!entryId.value) {
+          if (!dictionaryId.value) {
             return { items: [], total: 0 };
           }
-          const resp = await getRelationList(entryId.value, {
+          const resp = await listRelationsByDictionary(dictionaryId.value, {
             pageSize: page.pageSize,
             pageToken: String((page.currentPage - 1) * page.pageSize),
-            ...values,
+            relationType: values.relationType,
+            keyword: values.keyword,
           });
           return { items: resp.relations, total: resp.total };
         },
@@ -55,16 +62,22 @@ function refresh() {
 }
 
 function onSubmit(values: any) {
-  const payload = { ...values, entryId: entryId.value };
+  // 关系 payload 携带 dictionaryId（来自列表选中），保证服务端多租户 scope 可见性
+  const payload = { ...values, dictionaryId: dictionaryId.value };
   if (values.id) {
     updateRelation(values.id, payload).then(() => {
-      message.success($t('ui.actionMessage.operationSuccess'));
+      toast.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
-    createRelation(entryId.value!, payload).then(() => {
-      message.success($t('ui.actionMessage.operationSuccess'));
+    // Backend 已有 CreateRelation 需要 entryId + dictionaryId；createRelation(entryId, data)
+    if (!payload.entryId) {
+      toast.error($t('evie.relation.entryIdRequired'));
+      return;
+    }
+    createRelation(payload.entryId, payload).then(() => {
+      toast.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
@@ -73,14 +86,15 @@ function onSubmit(values: any) {
 
 function onAction({ code, row }: any) {
   if (code === 'edit') {
-    drawerApi.setData({ ...row, entryId: entryId.value }).open();
+    // 把当前 dictionaryId 一并传入 form，让 entryId Select 懒加载该词库下的词条
+    drawerApi.setData({ ...row, dictionaryId: dictionaryId.value }).open();
   }
   if (code === 'delete') {
     Modal.confirm({
       title: $t('common.delete'),
       async onOk() {
         await deleteRelation(row.id);
-        message.success($t('ui.actionMessage.operationSuccess'));
+        toast.success($t('ui.actionMessage.operationSuccess'));
         refresh();
       },
     });
@@ -95,29 +109,11 @@ async function loadDictionaries() {
   }));
   if (!dictionaryId.value && dictionaryOptions.value.length) {
     dictionaryId.value = dictionaryOptions.value[0]?.value;
-    await loadEntries();
   }
 }
 
-async function loadEntries() {
-  if (!dictionaryId.value) return;
-  entryId.value = undefined;
-  const resp = await getEntryList(dictionaryId.value, { pageSize: 200 });
-  entryOptions.value = resp.entries.map((e: any) => ({
-    label: `${e.standardText} (${e.category ?? '-'})`,
-    value: e.id,
-  }));
-  if (entryOptions.value.length) {
-    entryId.value = entryOptions.value[0]?.value;
-  }
-  refresh();
-}
-
-function onDictionaryChange() {
-  loadEntries();
-}
-
-function onEntryChange() {
+function onDictionaryChange(value: any) {
+  dictionaryId.value = value;
   refresh();
 }
 
@@ -131,31 +127,26 @@ onMounted(loadDictionaries);
       <template #toolbar-tools>
         <Select
           v-model:value="dictionaryId"
-          class="!w-48"
+          class="!w-56"
           :options="dictionaryOptions"
           :placeholder="$t('evie.dictionary.selectDictionary')"
           show-search
           option-filter-prop="label"
           @change="onDictionaryChange"
         />
-        <Select
-          v-model:value="entryId"
-          class="!w-56"
-          :options="entryOptions"
-          :placeholder="$t('evie.dictionary.selectEntry')"
-          show-search
-          option-filter-prop="label"
-          @change="onEntryChange"
-        />
         <Button
           type="primary"
-          :disabled="!entryId"
-          @click="drawerApi.setData({ entryId }).open()"
+          :disabled="!dictionaryId"
+          @click="drawerApi.setData({ dictionaryId }).open()"
         >
           <Plus class="size-5" />
           {{ $t('common.create') }}
         </Button>
       </template>
     </Grid>
+    <Empty
+      v-if="!dictionaryId"
+      :description="$t('evie.relation.pleaseSelectDictionary')"
+    />
   </Page>
 </template>

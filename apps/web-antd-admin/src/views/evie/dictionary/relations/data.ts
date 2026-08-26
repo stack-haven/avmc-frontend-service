@@ -1,7 +1,11 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
+
 import { $t } from '#/locales';
+import { relationColor } from '#/views/evie/_shared/tokens';
 
 export const relationTypeOptions = [
   { label: $t('evie.relation.typeAlias'), value: 'ALIAS' },
@@ -18,6 +22,17 @@ export const statusOptions = [
 ];
 
 export const formSchema = (): VbenFormSchema[] => [
+  {
+    component: 'Select',
+    fieldName: 'entryId',
+    label: $t('evie.relation.entryId'),
+    rules: 'required',
+    // entryId Select 在 modules/form.vue 中根据 drawerApi 传入的 dictionaryId 动态加载
+    dependencies: {
+      // 随 dictionaryId 变化重新加载 options
+      triggerFields: ['dictionaryId'],
+    },
+  },
   {
     component: 'Select',
     componentProps: { options: relationTypeOptions },
@@ -57,32 +72,47 @@ export const searchSchema = (): VbenFormSchema[] => [
     fieldName: 'relationType',
     label: $t('evie.relation.relationType'),
   },
+  {
+    component: 'Input',
+    fieldName: 'keyword',
+    label: $t('evie.relation.keyword'),
+  },
 ];
 
 export const columns = (
   onClick: OnActionClickFn<any>,
 ): VxeTableGridOptions['columns'] => [
-  {
-    field: 'relationType',
-    formatter: ({ row }) => relationTypeLabel(row.relationType),
-    title: $t('evie.relation.relationType'),
-    width: 130,
-  },
+  // 自然语言化展示：相关表达 → 关系类型 → 标准词
+  // （后端 Backend-0 P0 ListRelationsByDictionary 已 JOIN entry_standard_text / related_standard_text）
   {
     field: 'relatedText',
-    minWidth: 140,
     title: $t('evie.relation.relatedText'),
+    minWidth: 160,
   },
   {
-    align: 'center',
-    field: 'targetEntryId',
-    title: $t('evie.relation.targetEntryId'),
-    width: 120,
+    field: 'relationType',
+    minWidth: 100,
+    title: $t('evie.relation.relationType'),
+    // 用 evie 关系类型色渲染（ALIAS 灰 / CORRECTION 红 / HOMOPHONE 橙 / ...）
+    cellRender: (({ row }: { row: any }) =>
+      h(
+        Tag,
+        {
+          color: relationColor(row.relationType),
+          style: { border: 'none', fontWeight: 500 },
+        },
+        () => relationTypeLabel(row.relationType),
+      )) as any,
   },
   {
-    field: 'source',
-    title: $t('evie.dictionary.source'),
-    width: 100,
+    field: 'entryStandardText',
+    minWidth: 140,
+    title: $t('evie.relation.entryStandardText'),
+  },
+  {
+    field: 'relatedStandardText',
+    minWidth: 140,
+    title: $t('evie.relation.relatedStandardText'),
   },
   {
     align: 'center',

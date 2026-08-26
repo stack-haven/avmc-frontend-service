@@ -65,7 +65,12 @@
     "typeAbbreviation": "Abbreviation",
     "typeRelated": "Related",
     "relatedText": "Related Text",
-    "targetEntryId": "Target Entry ID"
+    "targetEntryId": "Target Entry ID",
+    "entryIdRequired": "Please select an entry",
+    "entryStandardText": "Entry Text",
+    "relatedStandardText": "Target Text",
+    "keyword": "Search (text or entry)",
+    "pleaseSelectDictionary": "Please select a dictionary first"
   },
   "category": {
     "code": "Code",

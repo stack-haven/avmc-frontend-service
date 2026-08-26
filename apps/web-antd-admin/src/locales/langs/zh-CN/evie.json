@@ -65,7 +65,12 @@
     "typeAbbreviation": "缩写",
     "typeRelated": "相关",
     "relatedText": "关联表达",
-    "targetEntryId": "目标词条 ID"
+    "targetEntryId": "目标词条 ID",
+    "entryIdRequired": "请选择所属词条",
+    "entryStandardText": "所属词条的标准词",
+    "relatedStandardText": "关联目标的标准词",
+    "keyword": "模糊搜索（表达或词条）",
+    "pleaseSelectDictionary": "请先选择词库"
   },
   "category": {
     "code": "分类编码",
