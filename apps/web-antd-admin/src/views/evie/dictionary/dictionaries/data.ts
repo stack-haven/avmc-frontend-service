@@ -1,7 +1,12 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
+import { Tag } from 'ant-design-vue';
+import { h } from 'vue';
+
 import { $t } from '#/locales';
+
+import { scopeColor } from '#/views/evie/_shared/tokens';
 
 export const scopeOptions = [
   { label: $t('evie.dictionary.scopeTenant'), value: 'TENANT' },
@@ -75,9 +80,19 @@ export const columns = (
   { field: 'name', minWidth: 160, title: $t('evie.dictionary.name') },
   {
     field: 'scope',
-    formatter: ({ row }) => scopeLabel(row.scope),
     minWidth: 100,
     title: $t('evie.dictionary.scope'),
+    // 使用 evie 设计 token 中的 scope 颜色（PLATFORM 紫 / SYSTEM 蓝 / TENANT 绿），
+    // 避免与平台默认蓝混淆，让多租户边界视觉化。
+    cellRender: (({ row }: { row: any }) =>
+      h(
+        Tag,
+        {
+          color: scopeColor(row.scope),
+          style: { border: 'none', fontWeight: 500 },
+        },
+        () => scopeLabel(row.scope),
+      )) as any,
   },
   {
     field: 'source',
