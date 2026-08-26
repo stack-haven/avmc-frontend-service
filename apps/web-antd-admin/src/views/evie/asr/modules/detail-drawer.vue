@@ -15,6 +15,9 @@ import {
 import { getAsrRecordAudio, getAsrRecordDetail } from '#/api';
 import { $t } from '#/locales';
 
+// connectedComponent 模式下 list 通过 setData(row) 传入
+const props = defineProps<{ data?: { id?: number } }>();
+
 const detail = ref<any>();
 const audioUrl = ref('');
 const loading = ref(false);
@@ -22,15 +25,17 @@ const loading = ref(false);
 const [Drawer, drawerApi] = useVbenDrawer({
   onOpenChange: async (isOpen: boolean) => {
     if (!isOpen) return;
-    const row = drawerApi.getData<{ id: number }>();
-    if (!row?.id) return;
+    // 优先取 drawerApi 数据，兜底取 props.data（兼容 connectedComponent 传参方式）
+    const row = drawerApi.getData<{ id?: number }>() ?? props.data;
+    const id = row?.id;
+    if (!id) return;
     loading.value = true;
     detail.value = undefined;
     audioUrl.value = '';
     try {
       const [detailResp, audioResp] = await Promise.all([
-        getAsrRecordDetail(row.id),
-        getAsrRecordAudio(row.id).catch(() => null),
+        getAsrRecordDetail(id),
+        getAsrRecordAudio(id).catch(() => null),
       ]);
       detail.value = detailResp;
       if (audioResp?.audioData) {
