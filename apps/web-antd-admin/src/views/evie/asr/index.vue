@@ -104,11 +104,10 @@ const [Grid, gridApi] = useVbenVxeGrid({
         width: 70,
       },
       { field: 'sessionId', width: 150, title: $t('evie.asr.sessionId') },
-      // 识别文本：固定限宽单行省略 + 悬停显示全文（避免挤压操作列）
+      // 识别文本：自适应填充 + 单行省略 + 悬停显示全文（操作列固定右侧）
       {
         field: 'rawText',
-        minWidth: 220,
-        maxWidth: 340,
+        minWidth: 320,
         showOverflow: 'tooltip',
         title: $t('evie.asr.rawText'),
       },
