@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 
 import { useVbenModal } from '@vben/common-ui';
 import { createIconifyIcon } from '@vben/icons';
 import { useAccessStore } from '@vben/stores';
 
-import { Button, Divider, Segmented, Spin, Tag, message } from 'ant-design-vue';
+import { Button, Divider, Segmented, Select, Spin, Tag, message } from 'ant-design-vue';
 
-import { correctText, recognizeAndCorrect } from '#/api';
+import { correctText, getProfileList, recognizeAndCorrect } from '#/api';
 import { $t } from '#/locales';
 
 const MicrophoneIcon = createIconifyIcon('mdi:microphone');
@@ -25,6 +25,8 @@ const originalText = ref('');
 const correctedText = ref('');
 const changes = ref<{ from: string; to: string }[]>([]);
 const providerName = ref('');
+const profileId = ref<number>();
+const profileOptions = ref<{ label: string; value: number }[]>([]);
 
 let ws: WebSocket | null = null;
 let audioContext: AudioContext | null = null;
@@ -141,7 +143,7 @@ async function finalize() {
   }
   loading.value = true;
   try {
-    const resp = await correctText(text, `stream-${Date.now()}`);
+    const resp = await correctText(text, `stream-${Date.now()}`, profileId.value);
     correctedText.value = resp.correctedText;
     changes.value = resp.changes.map((c) => ({ from: c.from, to: c.to }));
     providerName.value = resp.providerName || 'xunfei';
@@ -174,6 +176,7 @@ async function finalizeBatch() {
       audioData: base64,
       encoding: 1, // PCM
       sampleRate: 16000,
+      profileId: profileId.value,
     });
     originalText.value = resp.originalText;
     correctedText.value = resp.correctedText;
@@ -205,6 +208,19 @@ function int16ToBase64(pcm: Int16Array): string {
   }
   return btoa(binary);
 }
+async function loadProfiles() {
+  try {
+    const resp = await getProfileList({ pageSize: 100 });
+    profileOptions.value = resp.profiles.map((p: any) => ({
+      label: p.name,
+      value: p.id,
+    }));
+  } catch {
+    profileOptions.value = [];
+  }
+}
+
+onMounted(loadProfiles);
 </script>
 
 <template>
@@ -218,6 +234,19 @@ function int16ToBase64(pcm: Int16Array): string {
           { label: $t('evie.asr.modeBatch'), value: 'batch' },
         ]"
       />
+
+      <!-- 增强场景选择 -->
+      <div class="w-full max-w-xs">
+        <Select
+          v-model:value="profileId"
+          class="w-full"
+          :options="profileOptions"
+          :placeholder="$t('evie.enhancement.profiles')"
+          allow-clear
+          show-search
+          option-filter-prop="label"
+        />
+      </div>
 
       <!-- 录音按钮 -->
       <div class="flex flex-col items-center gap-3">

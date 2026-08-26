@@ -27,6 +27,7 @@ export const recognizeAndCorrect = (data: {
   audioData: string;
   encoding?: number;
   sampleRate?: number;
+  profileId?: number;
 }) =>
   requestClient.post<RecognizeAndCorrectResult>(
     '/evie/v1/asr:recognize-and-correct',
@@ -34,6 +35,7 @@ export const recognizeAndCorrect = (data: {
       session_id: data.sessionId,
       format: { encoding: data.encoding ?? 4, sample_rate: data.sampleRate ?? 16000 },
       audio_data: data.audioData,
+      profile_id: data.profileId ?? 0,
     },
     // 讯飞 IAT 实时流式按 40ms/帧节流发送，识别耗时约 = 音频时长 + 网络往返，
     // 需远超默认 10s 超时。
@@ -60,8 +62,9 @@ export const reRecognize = (id: number) =>
     { timeout: 120_000 },
   );
 
-export const correctText = (text: string, sessionId?: string) =>
+export const correctText = (text: string, sessionId?: string, profileId?: number) =>
   requestClient.post<RecognizeAndCorrectResult>('/evie/v1/correction:correct', {
     text,
     session_id: sessionId,
+    profile_id: profileId ?? 0,
   });

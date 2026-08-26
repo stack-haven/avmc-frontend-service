@@ -28,7 +28,7 @@ export const searchSchema = (): VbenFormSchema[] => [
   {
     component: 'Input',
     fieldName: 'keyword',
-    label: $t('evie.dictionary.name'),
+    label: $t('evie.enhancement.profileName'),
   },
 ];
 
