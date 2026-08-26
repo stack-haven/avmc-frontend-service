@@ -8,13 +8,22 @@ import { $t } from '#/locales';
 import { relationColor } from '#/views/evie/_shared/tokens';
 
 export const relationTypeOptions = [
-  { label: $t('evie.relation.typeAlias'), value: 'ALIAS' },
-  { label: $t('evie.relation.typeCorrection'), value: 'CORRECTION' },
-  { label: $t('evie.relation.typeHomophone'), value: 'HOMOPHONE' },
-  { label: $t('evie.relation.typePhoneticSimilar'), value: 'PHONETIC_SIMILAR' },
-  { label: $t('evie.relation.typeAbbreviation'), value: 'ABBREVIATION' },
-  { label: $t('evie.relation.typeRelated'), value: 'RELATED' },
+  { label: $t('evie.relation.typeAliasOption'), value: 'ALIAS' },
+  { label: $t('evie.relation.typeCorrectionOption'), value: 'CORRECTION' },
+  { label: $t('evie.relation.typeHomophoneOption'), value: 'HOMOPHONE' },
+  { label: $t('evie.relation.typePhoneticSimilarOption'), value: 'PHONETIC_SIMILAR' },
+  { label: $t('evie.relation.typeAbbreviationOption'), value: 'ABBREVIATION' },
+  { label: $t('evie.relation.typeRelatedOption'), value: 'RELATED' },
 ];
+
+export const relationTypeHelpMap: Record<string, string> = {
+  ALIAS: $t('evie.relation.typeAliasHelp'),
+  CORRECTION: $t('evie.relation.typeCorrectionHelp'),
+  HOMOPHONE: $t('evie.relation.typeHomophoneHelp'),
+  PHONETIC_SIMILAR: $t('evie.relation.typePhoneticSimilarHelp'),
+  ABBREVIATION: $t('evie.relation.typeAbbreviationHelp'),
+  RELATED: $t('evie.relation.typeRelatedHelp'),
+};
 
 export const statusOptions = [
   { label: $t('evie.dictionary.enabled'), value: 1 },
@@ -24,14 +33,15 @@ export const statusOptions = [
 export const formSchema = (): VbenFormSchema[] => [
   {
     component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: $t('evie.relation.entryPlaceholder'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
     fieldName: 'entryId',
     label: $t('evie.relation.entryId'),
-    rules: 'required',
-    // entryId Select 在 modules/form.vue 中根据 drawerApi 传入的 dictionaryId 动态加载
-    dependencies: {
-      // 随 dictionaryId 变化重新加载 options
-      triggerFields: ['dictionaryId'],
-    },
+    rules: 'selectRequired',
   },
   {
     component: 'Select',
@@ -43,18 +53,36 @@ export const formSchema = (): VbenFormSchema[] => [
   },
   {
     component: 'Input',
+    componentProps: {
+      placeholder: $t('evie.relation.relatedText'),
+    },
     fieldName: 'relatedText',
     label: $t('evie.relation.relatedText'),
     rules: 'required',
   },
   {
-    component: 'InputNumber',
-    componentProps: { class: 'w-full', min: 0 },
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      options: [],
+      placeholder: $t('evie.relation.targetEntryPlaceholder'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
     fieldName: 'targetEntryId',
-    label: $t('evie.relation.targetEntryId'),
+    label: $t('evie.relation.targetEntry'),
   },
   {
-    component: 'Input',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: 'MANUAL', value: 'MANUAL' },
+        { label: 'SYNC', value: 'SYNC' },
+        { label: 'IMPORT', value: 'IMPORT' },
+        { label: 'API', value: 'API' },
+      ],
+    },
+    defaultValue: 'MANUAL',
     fieldName: 'source',
     label: $t('evie.dictionary.source'),
   },
@@ -107,17 +135,16 @@ export const columns = (
   onClick: OnActionClickFn<any>,
 ): VxeTableGridOptions['columns'] => [
   // 自然语言化展示：相关表达 → 关系类型 → 标准词
-  // （后端 Backend-0 P0 ListRelationsByDictionary 已 JOIN entry_standard_text / related_standard_text）
+  // （后端已 JOIN entry_standard_text / related_standard_text / dictionary_name）
   {
     field: 'relatedText',
     title: $t('evie.relation.relatedText'),
-    minWidth: 160,
+    minWidth: 140,
   },
   {
     field: 'relationType',
-    minWidth: 100,
+    minWidth: 130,
     title: $t('evie.relation.relationType'),
-    // 用 evie 关系类型色渲染（ALIAS 灰 / CORRECTION 红 / HOMOPHONE 橙 / ...）
     cellRender: (({ row }: { row: any }) =>
       h(
         Tag,
@@ -129,14 +156,19 @@ export const columns = (
       )) as any,
   },
   {
-    field: 'entryStandardText',
-    minWidth: 140,
-    title: $t('evie.relation.entryStandardText'),
-  },
-  {
     field: 'relatedStandardText',
     minWidth: 140,
     title: $t('evie.relation.relatedStandardText'),
+  },
+  {
+    field: 'entryStandardText',
+    minWidth: 130,
+    title: $t('evie.relation.entryStandardText'),
+  },
+  {
+    field: 'dictionaryName',
+    minWidth: 110,
+    title: $t('evie.relation.dictionaryName'),
   },
   {
     align: 'center',
@@ -146,12 +178,12 @@ export const columns = (
     },
     field: 'status',
     title: $t('evie.dictionary.status'),
-    width: 100,
+    width: 90,
   },
   {
     field: 'createdAt',
     title: $t('evie.dictionary.createdAt'),
-    width: 170,
+    width: 160,
   },
   {
     align: 'center',

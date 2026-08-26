@@ -74,7 +74,24 @@
     "relatedStandardText": "关联目标的标准词",
     "keyword": "模糊搜索（表达或词条）",
     "pleaseSelectDictionary": "请先选择词库",
-    "naturalLanguageView": "自然语言化视图"
+    "naturalLanguageView": "自然语言化视图",
+    "typeAliasOption": "别名 (ALIAS)",
+    "typeCorrectionOption": "纠错 (CORRECTION)",
+    "typeHomophoneOption": "同音 (HOMOPHONE)",
+    "typePhoneticSimilarOption": "音近 (PHONETIC_SIMILAR)",
+    "typeAbbreviationOption": "缩写 (ABBREVIATION)",
+    "typeRelatedOption": "相关 (RELATED)",
+    "typeAliasHelp": "同一实体的不同叫法，如：小田 → 田华；识别后自动替换为标准词",
+    "typeCorrectionHelp": "错误的写法/说法，如：金种子 → 金种籽；识别后自动纠正",
+    "typeHomophoneHelp": "读音相同但字不同的词，用于处理同音误识别",
+    "typePhoneticSimilarHelp": "读音相近的词，用于处理口音/方言导致的音近误识别",
+    "typeAbbreviationHelp": "简称/缩写，如：技术部 → 技术研发部；自动展开为标准词",
+    "typeRelatedHelp": "业务关联词，不替换文本；供未来 NER/推荐/关联检索使用",
+    "targetEntry": "目标词条",
+    "targetEntryPlaceholder": "选择关联的标准词条（可选）",
+    "entryPlaceholder": "选择所属词条（显示词库名）",
+    "dictionaryName": "所属词库",
+    "naturalExpr": "表达 → 类型 → 标准词"
   },
   "category": {
     "code": "分类编码",
@@ -195,15 +212,5 @@
     "resultLabel": "拼音",
     "initialLabel": "首字母",
     "normalizedLabel": "规范化"
-  },
-  "common": {
-    "deleteConfirm": "确认删除？此操作不可撤销。",
-    "loadError": "加载失败，请稍后重试",
-    "saveError": "保存失败，请检查输入",
-    "permissionDenied": "您没有此操作权限",
-    "enter": "进入",
-    "back": "返回",
-    "backToList": "返回词库列表",
-    "clickRowToEnter": "点击行进入"
   }
 }

@@ -1,0 +1,10 @@
+{
+  "deleteConfirm": "Are you sure? This action cannot be undone.",
+  "enter": "Enter",
+  "back": "Back",
+  "backToList": "Back to Dictionary List",
+  "clickRowToEnter": "Click row to enter",
+  "loadError": "Failed to load, please retry",
+  "saveError": "Save failed, please check input",
+  "permissionDenied": "You do not have permission"
+}

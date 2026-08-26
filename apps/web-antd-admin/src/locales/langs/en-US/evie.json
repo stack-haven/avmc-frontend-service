@@ -74,7 +74,24 @@
     "relatedStandardText": "Target Text",
     "keyword": "Search (text or entry)",
     "pleaseSelectDictionary": "Please select a dictionary first",
-    "naturalLanguageView": "Natural Language View"
+    "naturalLanguageView": "Natural Language View",
+    "typeAliasOption": "Alias (ALIAS)",
+    "typeCorrectionOption": "Correction (CORRECTION)",
+    "typeHomophoneOption": "Homophone (HOMOPHONE)",
+    "typePhoneticSimilarOption": "Phonetic Similar (PHONETIC_SIMILAR)",
+    "typeAbbreviationOption": "Abbreviation (ABBREVIATION)",
+    "typeRelatedOption": "Related (RELATED)",
+    "typeAliasHelp": "Different names for the same entity, e.g. 小田 → 田华; auto replaced with standard text",
+    "typeCorrectionHelp": "Wrong spelling/phrase, e.g. 金种子 → 金种籽; auto corrected",
+    "typeHomophoneHelp": "Words with same pronunciation but different characters",
+    "typePhoneticSimilarHelp": "Words with similar pronunciation due to accent/dialect",
+    "typeAbbreviationHelp": "Abbreviation, e.g. 技术部 → 技术研发部; auto expanded",
+    "typeRelatedHelp": "Business related words, not replaced; for future NER/recommendation",
+    "targetEntry": "Target Entry",
+    "targetEntryPlaceholder": "Select target standard entry (optional)",
+    "entryPlaceholder": "Select owning entry (shows dictionary)",
+    "dictionaryName": "Dictionary",
+    "naturalExpr": "Expression → Type → Standard"
   },
   "category": {
     "code": "Code",
@@ -195,15 +212,5 @@
     "resultLabel": "Pinyin",
     "initialLabel": "Initials",
     "normalizedLabel": "Normalized"
-  },
-  "common": {
-    "deleteConfirm": "Are you sure? This action cannot be undone.",
-    "loadError": "Failed to load, please retry",
-    "saveError": "Save failed, please check input",
-    "permissionDenied": "You do not have permission",
-    "enter": "Enter",
-    "back": "Back",
-    "backToList": "Back to Dictionary List",
-    "clickRowToEnter": "Click row to enter"
   }
 }
