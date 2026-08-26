@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
@@ -13,8 +13,6 @@ import { columns, searchSchema } from './data';
 import RelationForm from './modules/form.vue';
 
 defineOptions({ name: 'EvieRelationList' });
-
-const currentEntryId = ref<number>();
 
 const [Drawer, drawerApi] = useVbenDrawer({
   connectedComponent: RelationForm,
@@ -59,7 +57,7 @@ function onSubmit(values: any) {
       refresh();
     });
   } else {
-    createRelation(currentEntryId.value || 0, values).then(() => {
+    createRelation(values.entryId || 0, values).then(() => {
       message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
@@ -83,15 +81,9 @@ function onAction({ code, row }: any) {
   }
 }
 
-async function handleCreate() {
-  const values = await gridApi.formApi.getValues();
-  const entryId = values.entryId;
-  if (!entryId) {
-    message.warning($t('evie.dictionary.selectEntry'));
-    return;
-  }
-  currentEntryId.value = entryId;
-  drawerApi.setData({ entryId }).open();
+function handleCreate() {
+  // 新增关系：直接在抽屉内搜索选择所属词条，不依赖搜索区筛选
+  drawerApi.setData({}).open();
 }
 
 async function loadDictionaries() {

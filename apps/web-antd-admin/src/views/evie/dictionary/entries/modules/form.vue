@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { Collapse, CollapsePanel, message } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenDrawer } from '@vben/common-ui';
 
-import { generatePinyin } from '#/api/evie';
+import { generatePinyin, getDictionaryList } from '#/api/evie';
 import { $t } from '#/locales';
 
 import { formSchema } from '../data';
@@ -17,6 +17,25 @@ const editId = ref<number>();
 // 高级字段（拼音/规范化/描述）默认折叠，避免与必填字段视觉竞争
 const advancedActive = ref<string[]>([]);
 const pinyinLoading = ref(false);
+
+// 加载词库下拉（新建/编辑均可直接搜索选择词库）
+async function loadDictionaries() {
+  try {
+    const resp = await getDictionaryList({ pageSize: 200 });
+    const options = resp.dictionaries.map((d: any) => ({
+      label: d.name,
+      value: d.id,
+    }));
+    formApi.updateSchema([
+      {
+        fieldName: 'dictionaryId',
+        componentProps: { options, showSearch: true, optionFilterProp: 'label' },
+      },
+    ]);
+  } catch {
+    // 忽略：表单仍可打开，提交时校验必填
+  }
+}
 
 const [Form, formApi] = useVbenForm({
   schema: formSchema(),
@@ -41,7 +60,10 @@ const [Drawer, drawerApi] = useVbenDrawer({
       if (data?.id) {
         formApi.setValues(data);
       } else {
-        // 触发拼音生成（如果已有 standardText）
+        // 新建：若 list 已预选词库则带入
+        if (data?.dictionaryId) {
+          formApi.setValues({ dictionaryId: data.dictionaryId });
+        }
         if (data?.standardText) {
           handleStandardTextChange(data.standardText);
         }
@@ -88,6 +110,8 @@ watch(
     }
   },
 );
+
+onMounted(loadDictionaries);
 </script>
 
 <template>
@@ -95,8 +119,9 @@ watch(
     <Form>
       <template #default="slotProps">
         <div v-bind="slotProps">
-          <!-- 必填信息组：standardText / entryType / category / priority -->
+          <!-- 必填信息组：dictionaryId / standardText / entryType / category / priority -->
           <slot name="field-groupBasic" />
+          <slot name="field-dictionaryId" />
           <slot name="field-standardText" />
           <slot name="field-entryType" />
           <slot name="field-category" />

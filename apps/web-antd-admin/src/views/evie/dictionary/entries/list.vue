@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
@@ -13,8 +13,6 @@ import { columns, searchSchema } from './data';
 import EntryForm from './modules/form.vue';
 
 defineOptions({ name: 'EvieEntryList' });
-
-const currentDictionaryId = ref<number>();
 
 const [Drawer, drawerApi] = useVbenDrawer({
   connectedComponent: EntryForm,
@@ -59,7 +57,7 @@ function onSubmit(values: any) {
       refresh();
     });
   } else {
-    createEntry(currentDictionaryId.value || 0, payload).then(() => {
+    createEntry(values.dictionaryId || 0, payload).then(() => {
       message.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
@@ -83,15 +81,9 @@ function onAction({ code, row }: any) {
   }
 }
 
-async function handleCreate() {
-  const values = await gridApi.formApi.getValues();
-  const dictionaryId = values.dictionaryId;
-  if (!dictionaryId) {
-    message.warning($t('evie.dictionary.selectDictionary'));
-    return;
-  }
-  currentDictionaryId.value = dictionaryId;
-  drawerApi.setData({ dictionaryId }).open();
+function handleCreate() {
+  // 新增词条：直接在抽屉内搜索选择词库，不依赖搜索区筛选
+  drawerApi.setData({}).open();
 }
 
 async function loadDictionaries() {

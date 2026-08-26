@@ -33,6 +33,18 @@ export const formSchema = (): VbenFormSchema[] => [
     componentProps: { orientation: 'left' },
   },
   {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: $t('evie.dictionary.selectDictionary'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
+    fieldName: 'dictionaryId',
+    label: $t('evie.dictionary.name'),
+    rules: 'selectRequired',
+  },
+  {
     component: 'Input',
     fieldName: 'standardText',
     label: $t('evie.entry.standardText'),
@@ -124,6 +136,11 @@ export const searchSchema = (): VbenFormSchema[] => [
 export const columns = (
   onClick: OnActionClickFn<any>,
 ): VxeTableGridOptions['columns'] => [
+  {
+    field: 'dictionaryName',
+    minWidth: 110,
+    title: $t('evie.dictionary.name'),
+  },
   {
     field: 'standardText',
     minWidth: 140,
