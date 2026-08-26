@@ -138,7 +138,7 @@ export const columns = (
   // （后端已 JOIN entry_standard_text / related_standard_text / dictionary_name）
   {
     field: 'relatedText',
-    title: $t('evie.relation.relatedText'),
+    title: $t('evie.relation.relatedTextLabel'),
     minWidth: 140,
   },
   {
@@ -158,12 +158,12 @@ export const columns = (
   {
     field: 'relatedStandardText',
     minWidth: 140,
-    title: $t('evie.relation.relatedStandardText'),
+    title: $t('evie.relation.relatedStandardTextLabel'),
   },
   {
     field: 'entryStandardText',
     minWidth: 130,
-    title: $t('evie.relation.entryStandardText'),
+    title: $t('evie.relation.entryStandardTextLabel'),
   },
   {
     field: 'dictionaryName',

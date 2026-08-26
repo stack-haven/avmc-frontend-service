@@ -91,7 +91,11 @@
     "targetEntryPlaceholder": "选择关联的标准词条（可选）",
     "entryPlaceholder": "选择所属词条（显示词库名）",
     "dictionaryName": "所属词库",
-    "naturalExpr": "表达 → 类型 → 标准词"
+    "naturalExpr": "表达 → 类型 → 标准词",
+    "relatedTextLabel": "关联表达（口语/错字）",
+    "relatedStandardTextLabel": "目标标准词",
+    "entryStandardTextLabel": "所属词条",
+    "directionHint": "关系方向：『关联表达 → 目标标准词』。例：小田 →(别名)→ 田华，表示口语「小田」会增强为「田华」。"
   },
   "category": {
     "code": "分类编码",

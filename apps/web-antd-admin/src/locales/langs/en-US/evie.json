@@ -91,7 +91,11 @@
     "targetEntryPlaceholder": "Select target standard entry (optional)",
     "entryPlaceholder": "Select owning entry (shows dictionary)",
     "dictionaryName": "Dictionary",
-    "naturalExpr": "Expression → Type → Standard"
+    "naturalExpr": "Expression → Type → Standard",
+    "relatedTextLabel": "Expression (spoken/typo)",
+    "relatedStandardTextLabel": "Target Standard",
+    "entryStandardTextLabel": "Owning Entry",
+    "directionHint": "Direction: 'Expression → Target Standard'. e.g. 小田 →(alias)→ 田华 means spoken '小田' is enhanced to '田华'."
   },
   "category": {
     "code": "Code",

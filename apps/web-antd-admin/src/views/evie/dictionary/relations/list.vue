@@ -123,6 +123,12 @@ onMounted(() => {
 <template>
   <Page auto-content-height>
     <Drawer @success="onSubmit" />
+    <Alert
+      class="mb-3"
+      type="info"
+      show-icon
+      :message="$t('evie.relation.directionHint')"
+    />
     <Grid :table-title="$t('evie.dictionaryCenter.relations')">
       <template #toolbar-tools>
         <Button type="primary" @click="handleCreate">
