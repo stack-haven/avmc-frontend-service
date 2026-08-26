@@ -64,12 +64,15 @@ function reRecognizeRecord(id: number) {
 
 async function confirmReRecognize() {
   if (!reRecognizeId.value) return;
+  const id = reRecognizeId.value;
+  const profileId = reRecognizeProfileId.value;
+  // 确认后立即关闭模态框，避免 loading 期间仍可操作取消/确认
+  reRecognizeOpen.value = false;
   const hide = message.loading('重新识别中（约 10-15s）...', 0);
   try {
-    await reRecognize(reRecognizeId.value, reRecognizeProfileId.value);
+    await reRecognize(id, profileId);
     hide();
     message.success('重新识别完成');
-    reRecognizeOpen.value = false;
     gridApi.query();
   } catch (e: any) {
     hide();
