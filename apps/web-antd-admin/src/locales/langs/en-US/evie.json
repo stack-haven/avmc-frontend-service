@@ -10,7 +10,7 @@
     "conflicts": "Conflicts"
   },
   "dictionary": {
-    "name": "Name",
+    "name": "Dictionary Name",
     "scope": "Scope",
     "scopePlatform": "Platform",
     "scopeSystem": "System",
@@ -30,11 +30,12 @@
     "selectEntry": "Select entry",
     "publishVersion": "Publish Version",
     "publishVersionHint": "Generate a new version snapshot for current dictionary",
-    "snapshot": "Snapshot"
+    "snapshot": "Snapshot",
+    "empty": "No dictionaries yet. Click + New to start"
   },
   "entry": {
     "standardText": "Standard Text",
-    "entryType": "Entry Type",
+    "entryType": "Type",
     "typeWord": "Word",
     "typePhrase": "Phrase",
     "category": "Category",
@@ -48,12 +49,14 @@
     "categoryCustom": "Custom",
     "priority": "Priority",
     "pinyin": "Pinyin",
-    "pinyinInitial": "Pinyin Initial",
-    "normalizedText": "Normalized Text",
+    "pinyinInitial": "Initials",
+    "normalizedText": "Normalized",
     "sourceId": "Source ID",
     "basicInfo": "Required Information",
     "advancedFields": "Advanced Fields (Pinyin, Normalized, Description)",
-    "autoPinyin": "Auto Generate"
+    "autoPinyin": "Auto Generate",
+    "standardTextHint": "e.g. Hello, Hello!, Hello.",
+    "priorityHint": "Higher = preferred match"
   },
   "relation": {
     "entryId": "Entry",
@@ -70,7 +73,8 @@
     "entryStandardText": "Entry Text",
     "relatedStandardText": "Target Text",
     "keyword": "Search (text or entry)",
-    "pleaseSelectDictionary": "Please select a dictionary first"
+    "pleaseSelectDictionary": "Please select a dictionary first",
+    "naturalLanguageView": "Natural Language View"
   },
   "category": {
     "code": "Code",
@@ -191,5 +195,11 @@
     "resultLabel": "Pinyin",
     "initialLabel": "Initials",
     "normalizedLabel": "Normalized"
+  },
+  "common": {
+    "deleteConfirm": "Are you sure? This action cannot be undone.",
+    "loadError": "Failed to load, please retry",
+    "saveError": "Save failed, please check input",
+    "permissionDenied": "You do not have permission"
   }
 }
