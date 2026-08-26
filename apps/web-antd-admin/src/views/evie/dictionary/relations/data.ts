@@ -30,27 +30,13 @@ export const statusOptions = [
   { label: $t('evie.dictionary.disabled'), value: 2 },
 ];
 
+// 关系表单顺序按「新增关系」心智模型：
+// 1. 先输入口语/错字（关联表达）
+// 2. 再选择关系类型
+// 3. 选择增强成的目标标准词
+// 4. 所属词条（通常与目标标准词一致，选择目标后自动填充）
+// 5. 来源、描述
 export const formSchema = (): VbenFormSchema[] => [
-  {
-    component: 'Select',
-    componentProps: {
-      options: [],
-      placeholder: $t('evie.relation.entryPlaceholder'),
-      showSearch: true,
-      optionFilterProp: 'label',
-    },
-    fieldName: 'entryId',
-    label: $t('evie.relation.entryId'),
-    rules: 'selectRequired',
-  },
-  {
-    component: 'Select',
-    componentProps: { options: relationTypeOptions },
-    defaultValue: 'ALIAS',
-    fieldName: 'relationType',
-    label: $t('evie.relation.relationType'),
-    rules: 'required',
-  },
   {
     component: 'Input',
     componentProps: {
@@ -58,6 +44,14 @@ export const formSchema = (): VbenFormSchema[] => [
     },
     fieldName: 'relatedText',
     label: $t('evie.relation.relatedText'),
+    rules: 'required',
+  },
+  {
+    component: 'Select',
+    componentProps: { options: relationTypeOptions },
+    defaultValue: 'ALIAS',
+    fieldName: 'relationType',
+    label: $t('evie.relation.relationType'),
     rules: 'required',
   },
   {
@@ -71,6 +65,18 @@ export const formSchema = (): VbenFormSchema[] => [
     },
     fieldName: 'targetEntryId',
     label: $t('evie.relation.targetEntry'),
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      options: [],
+      placeholder: $t('evie.relation.entryPlaceholder'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
+    fieldName: 'entryId',
+    label: $t('evie.relation.entryId'),
+    rules: 'selectRequired',
   },
   {
     component: 'Select',

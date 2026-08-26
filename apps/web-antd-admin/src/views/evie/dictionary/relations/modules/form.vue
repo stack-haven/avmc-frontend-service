@@ -24,6 +24,10 @@ const [Drawer, drawerApi] = useVbenDrawer({
     const { valid } = await formApi.validate();
     if (!valid) return;
     const values = await formApi.getValues();
+    // 所属词条通常与目标标准词一致：若用户只选了目标标准词，自动填充所属词条
+    if (!values.entryId && values.targetEntryId) {
+      values.entryId = values.targetEntryId;
+    }
     emit('success', { ...values, id: editId.value });
   },
   onOpenChange(isOpen: boolean) {
