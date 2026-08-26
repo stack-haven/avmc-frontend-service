@@ -102,10 +102,11 @@ async function handleStandardTextChange(text: string) {
 }
 
 // 监听 standardText 变化（debounce 由 vben-form 内部处理）
+// 编辑模式不自动触发拼音生成，避免异步 setValues 干扰用户修改标准词
 watch(
   () => formApi.form?.values?.standardText,
   (newVal, oldVal) => {
-    if (newVal && newVal !== oldVal && newVal.length >= 2) {
+    if (newVal && newVal !== oldVal && newVal.length >= 2 && !editId.value) {
       handleStandardTextChange(newVal);
     }
   },
