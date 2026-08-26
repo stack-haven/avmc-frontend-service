@@ -152,7 +152,8 @@
     "errorMessage": "Error",
     "detail": "Enhancement Log Detail",
     "stageTiming": "Stage Timing",
-    "noStageTiming": "No stage timing"
+    "noStageTiming": "No stage timing",
+    "profileName": "Profile Name"
   },
   "provider": {
     "title": "Providers",

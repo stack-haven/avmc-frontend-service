@@ -23,7 +23,7 @@ export const formSchema = (): VbenFormSchema[] => [
   {
     component: 'Input',
     fieldName: 'name',
-    label: $t('evie.dictionary.name'),
+    label: $t('evie.enhancement.policyName'),
     rules: 'required',
   },
   {
@@ -60,7 +60,7 @@ export const columns = (
   {
     field: 'name',
     minWidth: 150,
-    title: $t('evie.dictionary.name'),
+    title: $t('evie.enhancement.policyName'),
   },
   {
     field: 'mode',

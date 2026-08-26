@@ -152,7 +152,8 @@
     "errorMessage": "错误信息",
     "detail": "增强记录详情",
     "stageTiming": "分阶段耗时",
-    "noStageTiming": "暂无分阶段耗时"
+    "noStageTiming": "暂无分阶段耗时",
+    "profileName": "场景名称"
   },
   "provider": {
     "title": "供应商管理",
