@@ -1,8 +1,30 @@
+import type { VbenFormSchema } from '#/adapter/form';
 import type { VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { $t } from '#/locales';
 
+export const searchSchema = (): VbenFormSchema[] => [
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      options: [],
+      placeholder: $t('evie.dictionary.selectDictionary'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
+    fieldName: 'dictionaryId',
+    label: $t('evie.dictionary.name'),
+  },
+];
+
 export const columns = (): VxeTableGridOptions['columns'] => [
+  {
+    align: 'center',
+    field: 'dictionaryId',
+    title: $t('evie.version.dictionaryId'),
+    width: 110,
+  },
   {
     align: 'center',
     field: 'versionNo',

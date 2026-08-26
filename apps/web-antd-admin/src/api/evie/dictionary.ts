@@ -95,7 +95,7 @@ export const deleteDictionary = (id: number) =>
   requestClient.delete(`/evie/v1/dictionaries/${id}`);
 
 // ---------- 词条 ----------
-export const getEntryList = (dictionaryId: number, params?: Recordable<any>) =>
+export const getEntryList = (dictionaryId = 0, params?: Recordable<any>) =>
   requestClient.get<{ entries: DictionaryEntry[]; total: number }>(
     `/evie/v1/dictionaries/${dictionaryId}/entries`,
     { params },
@@ -117,7 +117,7 @@ export const deleteEntry = (id: number) =>
   requestClient.delete(`/evie/v1/entries/${id}`);
 
 // ---------- 关系 ----------
-export const getRelationList = (entryId: number, params?: Recordable<any>) =>
+export const getRelationList = (entryId = 0, params?: Recordable<any>) =>
   requestClient.get<{ relations: DictionaryRelation[]; total: number }>(
     `/evie/v1/entries/${entryId}/relations`,
     { params },
@@ -158,7 +158,7 @@ export const deleteCategory = (id: number) =>
   requestClient.delete(`/evie/v1/dictionary-categories/${id}`);
 
 // ---------- 版本 ----------
-export const getVersionList = (dictionaryId: number, params?: Recordable<any>) =>
+export const getVersionList = (dictionaryId = 0, params?: Recordable<any>) =>
   requestClient.get<{ versions: DictionaryVersion[]; total: number }>(
     `/evie/v1/dictionaries/${dictionaryId}/versions`,
     { params },

@@ -31,22 +31,25 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onOpenChange(isOpen: boolean) {
     if (isOpen) {
       const data = drawerApi.getData<Record<string, any>>();
-      formApi.resetForm();
       editId.value = data?.id;
       dictionaryId.value = data?.dictionaryId;
-      // 立即加载 entry options
-      if (dictionaryId.value) {
-        loadEntries(dictionaryId.value);
-      }
-      if (data?.id) {
-        formApi.setValues(data);
-      }
+      // 先加载词条 options，再 setValues，确保 entryId 能正确回显
+      openWithData(data);
     }
   },
 });
 
+async function openWithData(data?: Record<string, any>) {
+  formApi.resetForm();
+  if (dictionaryId.value) {
+    await loadEntries(dictionaryId.value);
+  }
+  if (data?.id) {
+    formApi.setValues(data);
+  }
+}
+
 // 根据 dictionaryId 加载该词库下的所有词条（供 entryId Select 选）。
-// 1000 limit：实际词库下词条量通常 < 1000；超大词库需后续分页或搜索。
 async function loadEntries(dId: number) {
   try {
     const resp = await getEntryList(dId, { pageSize: 1000 });

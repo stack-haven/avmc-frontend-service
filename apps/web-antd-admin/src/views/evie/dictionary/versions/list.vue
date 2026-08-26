@@ -1,33 +1,31 @@
 <script setup lang="ts">
-import { h, onMounted, ref } from 'vue';
+import { h, onMounted } from 'vue';
 
 import { Page } from '@vben/common-ui';
-import { Button, Modal, Select, message } from 'ant-design-vue';
+import { Button, Modal, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getDictionaryList, getVersionList, publishDictionary } from '#/api';
 import { $t } from '#/locales';
 
-import { columns } from './data';
+import { columns, searchSchema } from './data';
 
 defineOptions({ name: 'EvieVersionList' });
 
-const dictionaryId = ref<number>();
-const dictionaryOptions = ref<{ label: string; value: number }[]>([]);
-
 const [Grid, gridApi] = useVbenVxeGrid({
+  formOptions: { schema: searchSchema(), submitOnChange: true },
   gridOptions: {
     columns: columns(),
     height: 'auto',
     proxyConfig: {
       ajax: {
-        query: async ({ page }: any) => {
-          if (!dictionaryId.value) {
-            return { items: [], total: 0 };
-          }
-          const resp = await getVersionList(dictionaryId.value, {
+        query: async ({ page }: any, values: Record<string, any>) => {
+          const dictionaryId = values.dictionaryId || 0;
+          const resp = await getVersionList(dictionaryId, {
             pageSize: page.pageSize,
             pageToken: String((page.currentPage - 1) * page.pageSize),
+            ...values,
+            dictionaryId: undefined,
           });
           return { items: resp.versions, total: resp.total };
         },
@@ -35,7 +33,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       response: { list: 'items', total: 'total' },
     },
     rowConfig: { keyField: 'id' },
-    toolbarConfig: { custom: true, refresh: true, zoom: true },
+    toolbarConfig: { custom: true, refresh: true, search: true, zoom: true },
   } as any,
 });
 
@@ -43,27 +41,18 @@ function refresh() {
   gridApi.query();
 }
 
-async function loadDictionaries() {
-  const resp = await getDictionaryList({ pageSize: 200 });
-  dictionaryOptions.value = resp.dictionaries.map((d: any) => ({
-    label: d.name,
-    value: d.id,
-  }));
-  if (!dictionaryId.value && dictionaryOptions.value.length) {
-    dictionaryId.value = dictionaryOptions.value[0]?.value;
+async function handlePublish() {
+  const values = await gridApi.formApi.getValues();
+  const dictionaryId = values.dictionaryId;
+  if (!dictionaryId) {
+    message.warning($t('evie.dictionary.selectDictionary'));
+    return;
   }
-}
-
-function onDictionaryChange() {
-  refresh();
-}
-
-function handlePublish() {
   Modal.confirm({
     title: $t('evie.dictionary.publishVersion'),
     content: $t('evie.dictionary.publishVersionHint'),
     async onOk() {
-      await publishDictionary(dictionaryId.value!);
+      await publishDictionary(dictionaryId);
       message.success($t('ui.actionMessage.operationSuccess'));
       refresh();
     },
@@ -79,6 +68,20 @@ function handleDetail(row: any) {
   });
 }
 
+async function loadDictionaries() {
+  const resp = await getDictionaryList({ pageSize: 200 });
+  const options = resp.dictionaries.map((d: any) => ({
+    label: d.name,
+    value: d.id,
+  }));
+  gridApi.formApi.updateSchema([
+    {
+      fieldName: 'dictionaryId',
+      componentProps: { options, showSearch: true, optionFilterProp: 'label' },
+    },
+  ]);
+}
+
 onMounted(loadDictionaries);
 </script>
 
@@ -86,20 +89,7 @@ onMounted(loadDictionaries);
   <Page auto-content-height>
     <Grid :table-title="$t('evie.dictionaryCenter.versions')">
       <template #toolbar-tools>
-        <Select
-          v-model:value="dictionaryId"
-          class="!w-56"
-          :options="dictionaryOptions"
-          :placeholder="$t('evie.dictionary.selectDictionary')"
-          show-search
-          option-filter-prop="label"
-          @change="onDictionaryChange"
-        />
-        <Button
-          type="primary"
-          :disabled="!dictionaryId"
-          @click="handlePublish"
-        >
+        <Button type="primary" @click="handlePublish">
           {{ $t('evie.dictionary.publishVersion') }}
         </Button>
       </template>

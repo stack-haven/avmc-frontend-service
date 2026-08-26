@@ -68,6 +68,30 @@ export const formSchema = (): VbenFormSchema[] => [
 export const searchSchema = (): VbenFormSchema[] => [
   {
     component: 'Select',
+    componentProps: {
+      allowClear: true,
+      options: [],
+      placeholder: $t('evie.dictionary.selectDictionary'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
+    fieldName: 'dictionaryId',
+    label: $t('evie.dictionary.name'),
+  },
+  {
+    component: 'Select',
+    componentProps: {
+      allowClear: true,
+      options: [],
+      placeholder: $t('evie.dictionary.selectEntry'),
+      showSearch: true,
+      optionFilterProp: 'label',
+    },
+    fieldName: 'entryId',
+    label: $t('evie.relation.entryId'),
+  },
+  {
+    component: 'Select',
     componentProps: { allowClear: true, options: relationTypeOptions },
     fieldName: 'relationType',
     label: $t('evie.relation.relationType'),

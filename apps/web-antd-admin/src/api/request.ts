@@ -80,8 +80,9 @@ function createRequestClient(baseURL: string, options?: RequestClientOptions) {
     defaultResponseInterceptor({
       codeField: 'code',
       dataField: (response: any) => response,
-      successCode: (code: number | string | undefined) =>
-        code === undefined || code === 0 || code === '0',
+      // 本项目后端业务错误走 HTTP 4xx/5xx（Kratos errors），HTTP 2xx 均视为成功。
+      // 不能按 code 字段判断：部分业务对象（如分类 code）字段与业务状态码同名。
+      successCode: () => true,
     }),
   );
 
