@@ -76,10 +76,10 @@ export const getAsrRecordAudio = (id: number) =>
     `/evie/v1/asr/records/${id}/audio`,
   );
 
-export const reRecognize = (id: number) =>
+export const reRecognize = (id: number, profileId?: number) =>
   requestClient.post<RecognizeAndCorrectResult>(
     `/evie/v1/asr/records/${id}:re-recognize`,
-    {},
+    { profile_id: profileId ?? 0 },
     { timeout: 120_000 },
   );
 

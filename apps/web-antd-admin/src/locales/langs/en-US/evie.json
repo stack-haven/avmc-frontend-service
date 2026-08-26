@@ -201,7 +201,9 @@
     "changesCount": "{0} changes",
     "stepBefore": "Before",
     "noSteps": "No step data",
-    "changesSummary": "Changes Summary"
+    "changesSummary": "Changes Summary",
+    "reRecognize": "Re-recognize",
+    "reRecognizeProfilePlaceholder": "Select enhancement profile (empty = default)"
   },
   "dashboard": {
     "myDictionaries": "My Dictionaries",

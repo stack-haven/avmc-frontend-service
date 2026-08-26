@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { Page, useVbenDrawer, useVbenModal } from '@vben/common-ui';
+import { onMounted, ref } from 'vue';
+
 import { createIconifyIcon } from '@vben/icons';
 
-import { Button, message } from 'ant-design-vue';
+import { Button, Modal, Select, message } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { getAsrRecordAudio, getAsrRecordList, reRecognize } from '#/api';
+import { getAsrRecordAudio, getAsrRecordList, getProfileList, reRecognize } from '#/api';
 import { $t } from '#/locales';
 
 import AudioPlayer from './modules/audio-player.vue';
@@ -14,6 +16,12 @@ import VoiceRecognition from './modules/voice-recognition.vue';
 
 const MicrophoneIcon = createIconifyIcon('mdi:microphone');
 const PlayIcon = createIconifyIcon('mdi:play-circle-outline');
+
+// 重新识别：增强场景选择
+const reRecognizeOpen = ref(false);
+const reRecognizeId = ref<number>();
+const reRecognizeProfileId = ref<number>();
+const reRecognizeOptions = ref<{ label: string; value: number }[]>([]);
 
 const [VoiceModal, voiceModalApi] = useVbenModal({
   connectedComponent: VoiceRecognition,
@@ -48,18 +56,40 @@ async function playAudio(id: number) {
   }
 }
 
-async function reRecognizeRecord(id: number) {
+function reRecognizeRecord(id: number) {
+  reRecognizeId.value = id;
+  reRecognizeProfileId.value = undefined;
+  reRecognizeOpen.value = true;
+}
+
+async function confirmReRecognize() {
+  if (!reRecognizeId.value) return;
   const hide = message.loading('重新识别中（约 10-15s）...', 0);
   try {
-    await reRecognize(id);
+    await reRecognize(reRecognizeId.value, reRecognizeProfileId.value);
     hide();
     message.success('重新识别完成');
+    reRecognizeOpen.value = false;
     gridApi.query();
   } catch (e: any) {
     hide();
     message.error(e?.message || '重新识别失败');
   }
 }
+
+async function loadProfiles() {
+  try {
+    const resp = await getProfileList({ pageSize: 100 });
+    reRecognizeOptions.value = resp.profiles.map((p: any) => ({
+      label: p.name,
+      value: p.id,
+    }));
+  } catch {
+    reRecognizeOptions.value = [];
+  }
+}
+
+onMounted(loadProfiles);
 
 const [Grid, gridApi] = useVbenVxeGrid({
   gridOptions: {
@@ -74,17 +104,18 @@ const [Grid, gridApi] = useVbenVxeGrid({
         width: 70,
       },
       { field: 'sessionId', width: 150, title: $t('evie.asr.sessionId') },
-      // 识别文本：单行省略 + 悬停显示全文
+      // 识别文本：固定限宽单行省略 + 悬停显示全文（避免挤压操作列）
       {
         field: 'rawText',
-        minWidth: 260,
+        minWidth: 220,
+        maxWidth: 340,
         showOverflow: 'tooltip',
         title: $t('evie.asr.rawText'),
       },
       { field: 'confidence', width: 90, title: $t('evie.asr.confidence') },
       { field: 'engine', width: 100, title: $t('evie.asr.engine') },
       { field: 'createdAt', width: 170, title: $t('evie.asr.createdAt') },
-      { align: 'center', field: 'action', slots: { default: 'action' }, title: '操作', width: 100 },
+      { align: 'center', field: 'action', slots: { default: 'action' }, title: '操作', width: 170, fixed: 'right' },
     ],
     height: 'auto',
     proxyConfig: {
@@ -135,5 +166,29 @@ function onRefresh() {
         </Button>
       </template>
     </Grid>
+
+    <!-- 重新识别：选择增强场景 -->
+    <Modal
+      v-model:open="reRecognizeOpen"
+      :title="$t('evie.asr.reRecognize')"
+      :ok-text="$t('common.confirm')"
+      :cancel-text="$t('common.cancel')"
+      @ok="confirmReRecognize"
+    >
+      <div class="py-3">
+        <div class="mb-1 text-sm font-medium">
+          {{ $t('evie.enhancement.profiles') }}
+        </div>
+        <Select
+          v-model:value="reRecognizeProfileId"
+          class="w-full"
+          :options="reRecognizeOptions"
+          :placeholder="$t('evie.asr.reRecognizeProfilePlaceholder')"
+          allow-clear
+          show-search
+          option-filter-prop="label"
+        />
+      </div>
+    </Modal>
   </Page>
 </template>

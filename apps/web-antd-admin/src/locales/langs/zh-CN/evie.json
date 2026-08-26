@@ -201,7 +201,9 @@
     "changesCount": "{0} 处变更",
     "stepBefore": "处理前",
     "noSteps": "暂无步骤数据",
-    "changesSummary": "变更汇总"
+    "changesSummary": "变更汇总",
+    "reRecognize": "重新识别",
+    "reRecognizeProfilePlaceholder": "选择增强场景（留空=默认方案）"
   },
   "dashboard": {
     "myDictionaries": "我的词库",
