@@ -200,6 +200,10 @@
     "deleteConfirm": "确认删除？此操作不可撤销。",
     "loadError": "加载失败，请稍后重试",
     "saveError": "保存失败，请检查输入",
-    "permissionDenied": "您没有此操作权限"
+    "permissionDenied": "您没有此操作权限",
+    "enter": "进入",
+    "back": "返回",
+    "backToList": "返回词库列表",
+    "clickRowToEnter": "点击行进入"
   }
 }

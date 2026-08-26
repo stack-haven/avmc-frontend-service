@@ -76,6 +76,8 @@ export const searchSchema = (): VbenFormSchema[] => [
 
 export const columns = (
   onClick: OnActionClickFn<any>,
+  // 预留第二参数用于「行点击进入」等扩展处理（由 list.vue 透传）
+  _onRowClick?: (row: any) => void,
 ): VxeTableGridOptions['columns'] => [
   { field: 'name', minWidth: 160, title: $t('evie.dictionary.name') },
   {
@@ -127,6 +129,7 @@ export const columns = (
         nameField: 'name',
         onClick,
         options: [
+          { code: 'enter', text: $t('common.enter') },
           { code: 'edit', text: $t('common.edit') },
           { code: 'delete', text: $t('common.delete') },
         ],
@@ -136,7 +139,7 @@ export const columns = (
     field: 'operation',
     fixed: 'right',
     title: $t('evie.dictionary.operation'),
-    width: 150,
+    width: 180,
   },
 ];
 

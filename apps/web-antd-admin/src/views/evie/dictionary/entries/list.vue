@@ -1,18 +1,22 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-import { Button, Empty, Modal, Select, message } from 'ant-design-vue';
+import { Button, Empty, Modal, Select, message as toast } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { createEntry, deleteEntry, getDictionaryList, getEntryList, updateEntry } from '#/api';
+import { createEntry, deleteEntry, getDictionaryList, getEntryList, updateEntry } from '#/api/evie';
 import { $t } from '#/locales';
 
 import { columns, searchSchema } from './data';
 import EntryForm from './modules/form.vue';
+import { useDictionaryContext } from '#/views/evie/_shared/use-dictionary-context';
 
 defineOptions({ name: 'EvieEntryList' });
+
+// 词库上下文（从 URL ?dictionaryId=N 预选）
+const { dictionaryId: urlDictionaryId, setDictionaryId } = useDictionaryContext();
 
 const dictionaryId = ref<number>();
 const dictionaryOptions = ref<{ label: string; value: number }[]>([]);
@@ -56,13 +60,13 @@ function onSubmit(values: any) {
   const payload = { ...values, dictionaryId: dictionaryId.value };
   if (values.id) {
     updateEntry(values.id, payload).then(() => {
-      message.success($t('ui.actionMessage.operationSuccess'));
+      toast.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
     createEntry(dictionaryId.value!, payload).then(() => {
-      message.success($t('ui.actionMessage.operationSuccess'));
+      toast.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
@@ -75,10 +79,10 @@ function onAction({ code, row }: any) {
   }
   if (code === 'delete') {
     Modal.confirm({
-      title: $t('common.delete'),
+      title: $t('common.deleteConfirm'),
       async onOk() {
         await deleteEntry(row.id);
-        message.success($t('ui.actionMessage.operationSuccess'));
+        toast.success($t('ui.actionMessage.operationSuccess'));
         refresh();
       },
     });
@@ -91,15 +95,29 @@ async function loadDictionaries() {
     label: d.name,
     value: d.id,
   }));
-  if (!dictionaryId.value && dictionaryOptions.value.length) {
+  // 优先使用 URL 中的 dictionaryId；URL 未指定时回退到列表首项
+  const preferred = urlDictionaryId.value;
+  if (preferred && dictionaryOptions.value.some((d) => d.value === preferred)) {
+    dictionaryId.value = preferred;
+  } else if (!dictionaryId.value && dictionaryOptions.value.length) {
     dictionaryId.value = dictionaryOptions.value[0]?.value;
   }
 }
 
 function onDictionaryChange(value: any) {
   dictionaryId.value = value;
+  // 同步到 URL，便于分享与后退
+  setDictionaryId(value);
   refresh();
 }
+
+// 监听 URL dictionaryId 变化（如浏览器后退）
+watch(urlDictionaryId, (v) => {
+  if (v && v !== dictionaryId.value) {
+    dictionaryId.value = v;
+    refresh();
+  }
+});
 
 onMounted(loadDictionaries);
 </script>

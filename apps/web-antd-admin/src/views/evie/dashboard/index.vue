@@ -27,7 +27,8 @@ async function loadOverview() {
 
 function openDictionary(id?: number) {
   if (!id) return;
-  router.push({ path: `/evie/dictionary/dictionaries` }); // 简化：跳到列表，后续详情页可直链
+  // 跳到词条列表（带 dictionaryId URL 上下文，entries 页自动预选）
+  router.push({ path: '/evie/dictionary/entries', query: { dictionaryId: String(id) } });
 }
 
 function formatTime(iso?: string) {

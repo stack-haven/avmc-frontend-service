@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
@@ -17,8 +17,12 @@ import { $t } from '#/locales';
 
 import { columns, searchSchema } from './data';
 import RelationForm from './modules/form.vue';
+import { useDictionaryContext } from '#/views/evie/_shared/use-dictionary-context';
 
 defineOptions({ name: 'EvieRelationList' });
+
+// 词库上下文（从 URL ?dictionaryId=N 预选）
+const { dictionaryId: urlDictionaryId, setDictionaryId } = useDictionaryContext();
 
 const dictionaryId = ref<number>();
 const dictionaryOptions = ref<{ label: string; value: number }[]>([]);
@@ -107,15 +111,29 @@ async function loadDictionaries() {
     label: d.name,
     value: d.id,
   }));
-  if (!dictionaryId.value && dictionaryOptions.value.length) {
+  // 优先使用 URL 中的 dictionaryId；URL 未指定时回退到列表首项
+  const preferred = urlDictionaryId.value;
+  if (preferred && dictionaryOptions.value.some((d) => d.value === preferred)) {
+    dictionaryId.value = preferred;
+  } else if (!dictionaryId.value && dictionaryOptions.value.length) {
     dictionaryId.value = dictionaryOptions.value[0]?.value;
   }
 }
 
 function onDictionaryChange(value: any) {
   dictionaryId.value = value;
+  // 同步到 URL，便于分享与后退
+  setDictionaryId(value);
   refresh();
 }
+
+// 监听 URL dictionaryId 变化（如浏览器后退）
+watch(urlDictionaryId, (v) => {
+  if (v && v !== dictionaryId.value) {
+    dictionaryId.value = v;
+    refresh();
+  }
+});
 
 onMounted(loadDictionaries);
 </script>

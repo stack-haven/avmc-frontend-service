@@ -1,16 +1,20 @@
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
+
 import { Page, useVbenDrawer } from '@vben/common-ui';
 import { Plus } from '@vben/icons';
-import { Button, Modal, message } from 'ant-design-vue';
+import { Button, Modal, message as toast } from 'ant-design-vue';
 
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
-import { createDictionary, deleteDictionary, getDictionaryList, updateDictionary } from '#/api';
+import { createDictionary, deleteDictionary, getDictionaryList, updateDictionary } from '#/api/evie';
 import { $t } from '#/locales';
 
 import { columns, searchSchema } from './data';
 import DictionaryForm from './modules/form.vue';
 
 defineOptions({ name: 'EvieDictionaryList' });
+
+const router = useRouter();
 
 const [Drawer, drawerApi] = useVbenDrawer({
   connectedComponent: DictionaryForm,
@@ -20,7 +24,7 @@ const [Drawer, drawerApi] = useVbenDrawer({
 const [Grid, gridApi] = useVbenVxeGrid({
   formOptions: { schema: searchSchema(), submitOnChange: true },
   gridOptions: {
-    columns: columns(onAction),
+    columns: columns(onAction, onEnter),
     height: 'auto',
     proxyConfig: {
       ajax: {
@@ -35,7 +39,7 @@ const [Grid, gridApi] = useVbenVxeGrid({
       },
       response: { list: 'items', total: 'total' },
     },
-    rowConfig: { keyField: 'id' },
+    rowConfig: { isHover: true, keyField: 'id', rowClass: 'cursor-pointer' },
     toolbarConfig: { custom: true, refresh: true, search: true, zoom: true },
   } as any,
 });
@@ -47,29 +51,42 @@ function refresh() {
 function onSubmit(values: any) {
   if (values.id) {
     updateDictionary(values.id, values).then(() => {
-      message.success($t('ui.actionMessage.operationSuccess'));
+      toast.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   } else {
     createDictionary(values).then(() => {
-      message.success($t('ui.actionMessage.operationSuccess'));
+      toast.success($t('ui.actionMessage.operationSuccess'));
       drawerApi.close();
       refresh();
     });
   }
 }
 
+/**
+ * 行点击 / 「进入」操作：跳转到词条列表（带 dictionaryId URL 上下文）。
+ * 替代「详情页」设计——通过 4 个子页面（entries/relations/versions/conflicts）
+ * 的 URL ?dictionaryId=N 预选机制实现「上下文导航」。
+ */
+function onEnter(row: any) {
+  if (!row?.id) return;
+  router.push({ path: '/evie/dictionary/entries', query: { dictionaryId: String(row.id) } });
+}
+
 function onAction({ code, row }: any) {
+  if (code === 'enter') {
+    onEnter(row);
+  }
   if (code === 'edit') {
     drawerApi.setData(row).open();
   }
   if (code === 'delete') {
     Modal.confirm({
-      title: $t('common.delete'),
+      title: $t('common.deleteConfirm'),
       async onOk() {
         await deleteDictionary(row.id);
-        message.success($t('ui.actionMessage.operationSuccess'));
+        toast.success($t('ui.actionMessage.operationSuccess'));
         refresh();
       },
     });
