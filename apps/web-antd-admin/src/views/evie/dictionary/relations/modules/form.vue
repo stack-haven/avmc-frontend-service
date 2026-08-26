@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenDrawer } from '@vben/common-ui';
@@ -38,11 +38,49 @@ const [Drawer, drawerApi] = useVbenDrawer({
       if (data?.id) {
         formApi.setValues(data);
       }
+      // 根据关系类型控制「所属词条」显隐
+      updateEntryVisibility(data?.relationType || 'ALIAS');
     }
   },
 });
 
 // 加载全部词条（供所属词条/目标词条选择）
+// 关系类型决定「所属词条」是否显示：
+// ALIAS/CORRECTION/同音/音近/缩写 只需目标标准词（所属自动=目标）；
+// RELATED 需要单独指定所属词条。
+function updateEntryVisibility(relationType?: string) {
+  const isRelated = relationType === 'RELATED';
+  formApi.updateSchema([
+    {
+      fieldName: 'entryId',
+      show: isRelated,
+    } as any,
+  ]);
+}
+
+// 监听关系类型变化：非 RELATED 时隐藏所属词条
+watch(
+  () => formApi.form?.values?.relationType,
+  (val) => {
+    updateEntryVisibility(val as string);
+    // 非 RELATED 且选了目标标准词时，自动同步所属词条
+    if (val !== 'RELATED' && formApi.form?.values?.targetEntryId) {
+      formApi.setValues({ entryId: formApi.form.values.targetEntryId });
+    }
+  },
+);
+
+// 监听目标标准词变化：非 RELATED 时自动填充所属词条
+watch(
+  () => formApi.form?.values?.targetEntryId,
+  (val) => {
+    const relType = formApi.form?.values?.relationType;
+    if (val && relType !== 'RELATED') {
+      formApi.setValues({ entryId: val });
+    }
+  },
+);
+
 async function loadAllEntries() {
   try {
     const resp = await getEntryList(0, { pageSize: 1000 });
