@@ -1,10 +1,13 @@
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
-
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
 import { $t } from '#/locales';
+
+// step 字段 Tag 选项：true=绿色「是」，false=灰色「否」。
+const stepTagOptions = () => [
+  { color: 'green', label: $t('common.yes'), value: true },
+  { color: 'default', label: $t('common.no'), value: false },
+];
 
 export const modeOptions = [
   { label: $t('evie.enhancement.modeHighPerformance'), value: 'HIGH_PERFORMANCE' },
@@ -73,15 +76,8 @@ export const columns = (
   },
   ...stepFields.map((field) => ({
     align: 'center' as const,
-    cellRender: (({ row }: { row: any }) =>
-      h(
-        Tag,
-        {
-          color: row[field] ? 'green' : 'default',
-          style: { border: 'none', fontWeight: 500 },
-        },
-        () => (row[field] ? $t('common.yes') : $t('common.no')),
-      )) as any,
+    // 使用 Vben 对象式 cellRender（vxe-table 4.19 不支持函数式 cellRender）
+    cellRender: { name: 'CellTag', options: stepTagOptions() },
     field,
     title: $t(`evie.enhancement.${field}`),
     width: 110,

@@ -121,7 +121,7 @@
     "title": "Enhancement",
     "policies": "Policies",
     "profiles": "Profiles",
-    "logs": "Logs",
+    "logs": "Enhancement Logs",
     "mode": "Mode",
     "modeHighPerformance": "High Performance",
     "modeStandard": "Standard",
@@ -149,7 +149,7 @@
     "pinyinTimeMs": "Pinyin (ms)",
     "fuzzyTimeMs": "Fuzzy (ms)",
     "contextTimeMs": "Context (ms)",
-    "logStatus": "Status",
+    "logStatus": "Result",
     "statusSuccess": "Success",
     "statusDegraded": "Degraded",
     "statusFailed": "Failed",
@@ -157,7 +157,14 @@
     "detail": "Enhancement Log Detail",
     "stageTiming": "Stage Timing",
     "noStageTiming": "No stage timing",
-    "profileName": "Profile Name"
+    "profileName": "Profile Name",
+    "userCorrected": "User Corrected",
+    "feedbackText": "Feedback",
+    "directionHint": "Tip: select dictionary + entry to filter; relations can also be created without an entry.",
+    "relatedTextLabel": "Expression",
+    "relatedStandardTextLabel": "Target Text",
+    "entryStandardTextLabel": "Entry",
+    "dictionaryName": "Dictionary"
   },
   "provider": {
     "title": "Providers",

@@ -1,9 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { Tag } from 'ant-design-vue';
-import { h } from 'vue';
-
 import { $t } from '#/locales';
 
 import { scopeColor } from '#/views/evie/_shared/tokens';
@@ -25,6 +22,14 @@ export const statusOptions = [
   { label: $t('evie.dictionary.enabled'), value: 1 },
   { label: $t('evie.dictionary.disabled'), value: 2 },
 ];
+
+// scope 列表 Tag 选项：用 evie scopeColor 着色，供 CellTag 使用。
+const scopeTagOptions = () =>
+  scopeOptions.map((o) => ({
+    color: scopeColor(o.value),
+    label: o.label,
+    value: o.value,
+  }));
 
 export const formSchema = (): VbenFormSchema[] => [
   {
@@ -84,17 +89,8 @@ export const columns = (
     field: 'scope',
     minWidth: 100,
     title: $t('evie.dictionary.scope'),
-    // 使用 evie 设计 token 中的 scope 颜色（PLATFORM 紫 / SYSTEM 蓝 / TENANT 绿），
-    // 避免与平台默认蓝混淆，让多租户边界视觉化。
-    cellRender: (({ row }: { row: any }) =>
-      h(
-        Tag,
-        {
-          color: scopeColor(row.scope),
-          style: { border: 'none', fontWeight: 500 },
-        },
-        () => scopeLabel(row.scope),
-      )) as any,
+    // 使用 Vben 对象式 cellRender + CellTag，PLATFORM 紫 / SYSTEM 蓝 / TENANT 绿。
+    cellRender: { attrs: { options: scopeTagOptions() }, name: 'CellTag' },
   },
   {
     field: 'source',

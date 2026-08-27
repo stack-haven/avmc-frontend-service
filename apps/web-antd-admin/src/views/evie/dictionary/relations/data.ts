@@ -1,9 +1,6 @@
 import type { VbenFormSchema } from '#/adapter/form';
 import type { OnActionClickFn, VxeTableGridOptions } from '#/adapter/vxe-table';
 
-import { h } from 'vue';
-import { Tag } from 'ant-design-vue';
-
 import { $t } from '#/locales';
 import { relationColor } from '#/views/evie/_shared/tokens';
 
@@ -29,6 +26,14 @@ export const statusOptions = [
   { label: $t('evie.dictionary.enabled'), value: 1 },
   { label: $t('evie.dictionary.disabled'), value: 2 },
 ];
+
+// 关系类型 Tag 选项（使用 evie 关系类型色），供列表 CellTag 使用。
+const relationTypeTagOptions = () =>
+  relationTypeOptions.map((o) => ({
+    color: relationColor(o.value),
+    label: o.label,
+    value: o.value,
+  }));
 
 // 关系表单顺序按「新增关系」心智模型：
 // 1. 先输入口语/错字（关联表达）
@@ -151,15 +156,9 @@ export const columns = (
     field: 'relationType',
     minWidth: 130,
     title: $t('evie.relation.relationType'),
-    cellRender: (({ row }: { row: any }) =>
-      h(
-        Tag,
-        {
-          color: relationColor(row.relationType),
-          style: { border: 'none', fontWeight: 500 },
-        },
-        () => relationTypeLabel(row.relationType),
-      )) as any,
+    // 使用 Vben 对象式 cellRender + CellTag（vxe-table 4.19 不支持函数式 cellRender），
+    // options 用 relationColor 着色，实现 6 种关系类型视觉区分。
+    cellRender: { attrs: { options: relationTypeTagOptions() }, name: 'CellTag' },
   },
   {
     field: 'relatedStandardText',

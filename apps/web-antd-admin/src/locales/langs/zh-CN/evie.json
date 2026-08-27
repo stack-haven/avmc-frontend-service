@@ -149,7 +149,7 @@
     "pinyinTimeMs": "拼音纠错(ms)",
     "fuzzyTimeMs": "模糊匹配(ms)",
     "contextTimeMs": "上下文纠错(ms)",
-    "logStatus": "记录状态",
+    "logStatus": "执行结果",
     "statusSuccess": "成功",
     "statusDegraded": "降级",
     "statusFailed": "失败",
@@ -157,7 +157,14 @@
     "detail": "增强记录详情",
     "stageTiming": "分阶段耗时",
     "noStageTiming": "暂无分阶段耗时",
-    "profileName": "场景名称"
+    "profileName": "场景名称",
+    "userCorrected": "用户已纠正",
+    "feedbackText": "反馈内容",
+    "directionHint": "提示：选择词库 + 词条后，关系列表自动加载；不选择词条也能保存关系。",
+    "relatedTextLabel": "关联表达",
+    "relatedStandardTextLabel": "关联目标",
+    "entryStandardTextLabel": "所属词条",
+    "dictionaryName": "词库"
   },
   "provider": {
     "title": "供应商管理",
