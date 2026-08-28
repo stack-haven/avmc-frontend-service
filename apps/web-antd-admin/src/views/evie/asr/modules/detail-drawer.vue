@@ -156,7 +156,7 @@ function releaseAudio() {
           </div>
           <div>
             <div class="mb-1 text-xs text-muted-foreground">
-              {{ $t('evie.asr.correctedText') }}
+              {{ $t('evie.asr.enhancedText') }}
             </div>
             <div class="whitespace-pre-wrap text-sm leading-6 font-medium">
               {{ detail.enhancedText || detail.record?.rawText }}

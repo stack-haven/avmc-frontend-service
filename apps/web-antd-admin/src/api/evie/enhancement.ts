@@ -105,3 +105,30 @@ export const getLogList = (params?: Recordable<any>) =>
 
 export const getLog = (id: number) =>
   requestClient.get<EnhancementLog>(`/evie/v1/enhancement-logs/${id}`);
+
+// 纯文本增强响应（不经 ASR）。
+export interface EnhanceTextResult {
+  originalText: string;
+  enhancedText: string;
+  changes?: { from: string; to: string; type: string; confidence: number }[];
+  status: number; // 1=SUCCESS 2=DEGRADED 3=FAILED
+  processingTimeMs?: number;
+  cleaningTimeMs?: number;
+  fillerTimeMs?: number;
+  vocabMatchTimeMs?: number;
+  aliasTimeMs?: number;
+  deterministicTimeMs?: number;
+  pinyinTimeMs?: number;
+  fuzzyTimeMs?: number;
+  contextTimeMs?: number;
+  errorMessage?: string;
+}
+
+// 纯文本增强：直接对输入文本走 8 层流水线。
+// profileId 决定策略：0=租户默认；非 0=场景关联策略。
+export const enhanceText = (text: string, sessionId?: string, profileId?: number) =>
+  requestClient.post<EnhanceTextResult>('/evie/v1/enhancement:text', {
+    text,
+    session_id: sessionId ?? '',
+    profile_id: profileId ?? 0,
+  });

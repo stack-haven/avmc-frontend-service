@@ -7,7 +7,7 @@ import { useAccessStore } from '@vben/stores';
 
 import { Button, Divider, Segmented, Select, Spin, Tag, message } from 'ant-design-vue';
 
-import { correctText, getProfileList, recognizeAndCorrect } from '#/api';
+import { enhanceText, getProfileList, recognize } from '#/api';
 import { $t } from '#/locales';
 
 const MicrophoneIcon = createIconifyIcon('mdi:microphone');
@@ -22,7 +22,7 @@ const recording = ref(false);
 const loading = ref(false);
 const seconds = ref(0);
 const originalText = ref('');
-const correctedText = ref('');
+const enhancedText = ref('');
 const changes = ref<{ from: string; to: string }[]>([]);
 const providerName = ref('');
 const profileId = ref<number>();
@@ -49,7 +49,7 @@ function reset() {
   loading.value = false;
   seconds.value = 0;
   originalText.value = '';
-  correctedText.value = '';
+  enhancedText.value = '';
   changes.value = [];
   providerName.value = '';
   pcmChunks = [];
@@ -143,13 +143,13 @@ async function finalize() {
   }
   loading.value = true;
   try {
-    const resp = await correctText(text, `stream-${Date.now()}`, profileId.value);
-    correctedText.value = resp.correctedText;
-    changes.value = resp.changes.map((c) => ({ from: c.from, to: c.to }));
-    providerName.value = resp.providerName || 'xunfei';
+    const resp = await enhanceText(text, `stream-${Date.now()}`, profileId.value);
+    enhancedText.value = resp.enhancedText ?? text;
+    changes.value = (resp.changes ?? []).map((c: { from: string; to: string }) => ({ from: c.from, to: c.to }));
+    providerName.value = 'xunfei'; // enhanceText 不返回 providerName，默认填
     emits('success');
   } catch {
-    correctedText.value = text;
+    enhancedText.value = text;
   } finally {
     loading.value = false;
   }
@@ -171,17 +171,18 @@ async function finalizeBatch() {
     }
     pcmChunks = [];
     const base64 = int16ToBase64(merged);
-    const resp = await recognizeAndCorrect({
+    const resp = await recognize({
       sessionId: `batch-${Date.now()}`,
       audioData: base64,
       encoding: 1, // PCM
       sampleRate: 16000,
       profileId: profileId.value,
+      // policyId 留 0（不强增强），如需增强可由调用方按需传入
     });
-    originalText.value = resp.originalText;
-    correctedText.value = resp.correctedText;
-    changes.value = resp.changes.map((c) => ({ from: c.from, to: c.to }));
-    providerName.value = resp.providerName || 'xunfei';
+    originalText.value = resp.rawText;
+    enhancedText.value = resp.enhancedText ?? resp.rawText;
+    changes.value = (resp.changes ?? []).map((c: { from: string; to: string }) => ({ from: c.from, to: c.to }));
+    providerName.value = resp.providerName ?? 'xunfei';
     emits('success');
   } catch (e: any) {
     message.error(e?.message || '识别失败');
@@ -280,14 +281,14 @@ onMounted(loadProfiles);
         </div>
       </div>
 
-      <!-- 识别/纠错中 -->
+      <!-- 识别/增强中 -->
       <div v-if="loading" class="flex items-center gap-2 text-muted-foreground">
         <Spin size="small" />
         {{ $t('evie.asr.correcting') }}
       </div>
 
       <!-- 识别结果 -->
-      <div v-if="originalText || correctedText" class="w-full space-y-3">
+      <div v-if="originalText || enhancedText" class="w-full space-y-3">
         <Divider />
         <div v-if="providerName" class="text-xs text-muted-foreground">
           引擎：<Tag color="blue">{{ providerName }}</Tag>
@@ -300,14 +301,14 @@ onMounted(loadProfiles);
             {{ originalText }}
           </div>
         </div>
-        <div v-if="correctedText">
+        <div v-if="enhancedText">
           <div class="mb-1 text-sm font-medium text-primary">
-            {{ $t('evie.asr.correctedText') }}
+            {{ $t('evie.asr.enhancedText') }}
           </div>
           <div
             class="rounded-lg bg-primary/5 p-3 text-sm font-medium leading-relaxed"
           >
-            {{ correctedText }}
+            {{ enhancedText }}
           </div>
         </div>
         <div v-if="changes.length" class="flex flex-wrap items-center gap-1">
