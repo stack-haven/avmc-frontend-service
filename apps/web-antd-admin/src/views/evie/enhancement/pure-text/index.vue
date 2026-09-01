@@ -88,7 +88,7 @@ async function runEnhance() {
   result.value = null;
   try {
     const pid = profileId.value && profileId.value > 0 ? profileId.value : 0;
-    const resp = await enhanceText(inputText.value, `pure-${Date.now()}`, pid);
+    const resp = await enhanceText(inputText.value, pid);
     result.value = resp as EnhanceResponse;
   } catch (e: any) {
     message.error(e?.message ?? '增强失败');

@@ -54,9 +54,10 @@ const [Drawer, drawerApi] = useVbenDrawer({
   onCancel: () => drawerApi.close(),
 });
 
+// 后端 step.Name() 真实取值（保持一致）
 const STEP_LABELS: Record<string, string> = {
   cleaning: '文本清洗',
-  filler_removal: '口水词处理',
+  filler: '口水词处理',
   vocabulary_matching: '词库匹配',
   alias_resolution: '别名解析',
   deterministic_replacement: '确定性替换',
@@ -68,7 +69,7 @@ const STEP_LABELS: Record<string, string> = {
 
 const STEP_COLORS: Record<string, string> = {
   cleaning: 'gray',
-  filler_removal: 'orange',
+  filler: 'orange',
   vocabulary_matching: 'purple',
   alias_resolution: 'blue',
   deterministic_replacement: 'green',
@@ -86,7 +87,8 @@ function changeText(changes?: any[]) {
   if (!changes?.length) return '无变更';
   return changes
     .map((c) => {
-      if (c.action === 'DELETE' || c.to === '') return `删除「${c.from}」`;
+      // 删除：to 为空字符串（proto EnhanceChange 仅保留 from/to/type/confidence）
+      if (c.to === '' || c.to == null) return `删除「${c.from}」`;
       return `「${c.from}」→「${c.to}」`;
     })
     .join('；');

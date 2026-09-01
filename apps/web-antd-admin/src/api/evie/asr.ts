@@ -26,6 +26,7 @@ export interface EnhanceChange {
 
 export interface RecognizeResult {
   requestId: string;
+  sessionId: string;     // 后端统一生成的 UUID session_id
   rawText: string;       // ASR 原始文本
   enhancedText: string;  // 增强后文本
   confidence: number;
@@ -47,7 +48,6 @@ export interface RecognizeResult {
 }
 
 export interface RecognizeParams {
-  sessionId: string;
   audioData: string;
   encoding?: number;
   sampleRate?: number;
@@ -68,7 +68,6 @@ export const recognize = (data: RecognizeParams) =>
   requestClient.post<RecognizeResult>(
     '/evie/v1/asr:recognize',
     {
-      session_id: data.sessionId,
       format: { encoding: data.encoding ?? 4, sample_rate: data.sampleRate ?? 16000 },
       audio_data: data.audioData,
       profile_id: data.profileId ?? 0,

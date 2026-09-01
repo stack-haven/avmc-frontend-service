@@ -62,10 +62,9 @@ async function startRecord() {
     if (mode.value === 'stream') {
       const accessStore = useAccessStore();
       const token = accessStore.accessToken;
-      const sessionId = `stream-${Date.now()}`;
-      // 连接后端流式 WebSocket
+      // 连接后端流式 WebSocket（session_id 由后端统一生成）
       ws = new WebSocket(
-        `ws://${location.hostname}:8100/evie/v1/asr/stream?token=${token}&session_id=${sessionId}`,
+        `ws://${location.hostname}:8100/evie/v1/asr/stream?token=${token}`,
       );
       ws.onmessage = handleMessage;
       ws.onerror = () => message.error('流式连接异常');
@@ -143,7 +142,7 @@ async function finalize() {
   }
   loading.value = true;
   try {
-    const resp = await enhanceText(text, `stream-${Date.now()}`, profileId.value);
+    const resp = await enhanceText(text, profileId.value);
     enhancedText.value = resp.enhancedText ?? text;
     changes.value = (resp.changes ?? []).map((c: { from: string; to: string }) => ({ from: c.from, to: c.to }));
     providerName.value = 'xunfei'; // enhanceText 不返回 providerName，默认填
@@ -172,7 +171,6 @@ async function finalizeBatch() {
     pcmChunks = [];
     const base64 = int16ToBase64(merged);
     const resp = await recognize({
-      sessionId: `batch-${Date.now()}`,
       audioData: base64,
       encoding: 1, // PCM
       sampleRate: 16000,

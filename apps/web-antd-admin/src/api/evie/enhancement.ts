@@ -110,6 +110,7 @@ export const getLog = (id: number) =>
 export interface EnhanceTextResult {
   originalText: string;
   enhancedText: string;
+  sessionId: string; // 后端统一生成的 UUID session_id
   changes?: { from: string; to: string; type: string; confidence: number }[];
   status: number; // 1=SUCCESS 2=DEGRADED 3=FAILED
   processingTimeMs?: number;
@@ -126,9 +127,8 @@ export interface EnhanceTextResult {
 
 // 纯文本增强：直接对输入文本走 8 层流水线。
 // profileId 决定策略：0=租户默认；非 0=场景关联策略。
-export const enhanceText = (text: string, sessionId?: string, profileId?: number) =>
+export const enhanceText = (text: string, profileId?: number) =>
   requestClient.post<EnhanceTextResult>('/evie/v1/enhancement:text', {
     text,
-    session_id: sessionId ?? '',
     profile_id: profileId ?? 0,
   });
